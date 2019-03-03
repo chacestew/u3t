@@ -7,9 +7,7 @@ import styledNormalize from 'styled-normalize';
 import TopNav from './Common/TopNav';
 import Main from './Common/Main';
 
-import Home from './Pages/Home';
-import Cat from './Pages/Cat';
-import Dog from './Pages/Play';
+import Play from './Pages/Play';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -32,9 +30,8 @@ const App = () => (
       <TopNav />
     </header>
     <Main>
-      <Route exact path="/" component={Home} />
-      <Route path="/cat" component={Cat} />
-      <Route path="/play" component={Dog} />
+      <Route exact path="/" component={null} />
+      <Route path="/play" component={Play} />
     </Main>
   </>
 );
