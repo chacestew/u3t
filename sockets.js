@@ -1,6 +1,10 @@
 import Game from './ServerGame';
 
+const isEven = num => num !== 0 && !(num % 2);
+
 const games = new Map();
+const queue = new Set();
+
 let rooms = 0;
 
 export default server => {
@@ -10,42 +14,60 @@ export default server => {
     let room;
     let game;
 
-    socket.on('join', data => {
-      if (!data.room) {
+    console.log('connected!', socket.id);
+
+    socket.on('join-queue', () => {
+      if (isEven(queue.size + 1)) {
+        const otherSocket = [...queue].pop();
+        queue.delete(otherSocket);
+
         rooms += 1;
         room = rooms;
-        game = new Game();
-        games.set(room, games);
-        socket.join(`room:${rooms}`);
-        socket.emit('joined', { room: rooms });
-      } else {
-        game = games.get(data.room);
-        if (!game) throw new Error('No game found by that ID.');
-        room = { data: { room } };
-        game.joinPlayer(socket.id);
-        socket.join(`room:${room}`);
-        socket.to(room).emit('joined');
-      }
+        game = new Game([socket.id, otherSocket.id]);
+        games.set(room, game);
+        console.log('got two! game:', room, 'players:', [socket.id, otherSocket.id]);
 
-      if (game.getReadyStatus()) {
-        game.assignSeats();
-        game.getPlayers().forEach(p => {
-          socket.to(p).emit('seat', game.getSeatById(p));
-        });
+        io.to(socket.id)
+          .to(otherSocket.id)
+          .emit('found-match', { room });
+      } else {
+        queue.add(socket);
       }
+    });
+
+    socket.on('join', data => {
+      game = games.get(data.room);
+      if (!game) throw new Error(`No game found by that ID: ${data.room}`);
+      const seat = game.joinPlayer(socket.id);
+
+      socket.join(data.room, err => {
+        if (err) throw new Error(err);
+
+        socket.emit('joined', { seat }, () => {
+          if (game.isReadyToStart()) {
+            io.to(data.room).emit('started', { state: game.getGameState() });
+          }
+        });
+      });
     });
 
     socket.on('play', data => {
-      game.playTurn(data.state);
-      const nextState = game.getGameState();
+      const nextState = game.playTurn({
+        id: socket.id,
+        player: data.player,
+        board: data.board,
+        cell: data.cell,
+      });
+
       if (nextState.error) {
         // errorhandling
       }
-      socket.to(data.room).emit('sync', { state: nextState });
+
+      socket.broadcast.to(data.room).emit('sync', { state: nextState });
     });
 
     socket.on('disconnect', () => {
-      // handle leaver
+      console.log('disconnected!', socket.id);
     });
   });
 };
