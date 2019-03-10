@@ -42,7 +42,8 @@ const didWinGame = (state, payload) => {
 // Public
 export const initialState = {
   turn: 0,
-  boards: Array(9).fill({ winner: null, cells: Array(9).fill(null) }),
+  currentPlayer: 1,
+  boards: Array.from({ length: 9 }, () => ({ winner: null, cells: Array(9).fill(null) })),
   activeBoard: 4,
   winner: null,
 };
@@ -51,32 +52,43 @@ export const initialState = {
 export default (state, payload) => {
   const { player, board, cell } = payload;
   const nextState = { ...state };
+  console.log('\n\n---playTurn called---');
+  console.log('State:', state);
+  console.log('Payload:', payload);
 
   if (state.currentPlayer !== player) {
+    console.log('Play out of turn.');
     return { state: nextState, error: 'Play out of turn.' };
   }
 
-  if (state.currentBoard !== board) {
+  if (state.activeBoard && state.activeBoard !== board) {
+    console.log('Chose wrong board.');
     return { state: nextState, error: 'Chose wrong board.' };
   }
 
-  if (state.boards[board].cells[cell] === null) {
+  if (state.boards[board].cells[cell] !== null) {
+    console.log('Cell is occupied.');
     return { state: nextState, error: 'Cell is occupied.' };
   }
 
   nextState.boards[board].cells[cell] = player;
+  nextState.turn += 1;
+  nextState.currentPlayer = nextState.currentPlayer === 1 ? 2 : 1;
+  nextState.activeBoard = nextState.boards[cell].cells.includes(null) ? cell : null;
 
   if (!didWinBoard(nextState, payload)) {
-    return { state: nextState };
+    console.log('Normal turn complete.');
+    return { state: { ...nextState } };
   }
 
   nextState.boards[board].winner = player;
 
   if (!didWinGame(nextState, payload)) {
+    console.log('Won board!.');
     return { state: nextState };
   }
 
   nextState.winner = player;
-
+  console.log('Won game!.');
   return { state: nextState };
 };
