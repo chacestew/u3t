@@ -1,42 +1,32 @@
-import playTurn, { initialState } from './game';
+import play, { initialState } from './src/game';
 
 class ServerGame {
-  constructor() {
-    this.players = [];
+  constructor({ players = [] }) {
+    this.playerIds = [];
+    this.seats = [];
     this.gameState = { ...initialState };
   }
 
   joinPlayer(id) {
-    if (this.players.length >= 2) {
+    if (this.playerIds.length >= 2) {
       throw new Error('Too many players?');
     }
 
-    this.players.push({ id });
-
-    if (this.players.length === 2) {
-      this.assignSeats();
-    }
-
-    return this.players;
+    return this.playerIds.push(id);
   }
 
-  assignSeats() {
-    if (Math.random() < 0.5) {
-      this.players[0].seat = 1;
-      this.players[1].seat = 2;
-    } else {
-      this.players[0].seat = 2;
-      this.players[1].seat = 1;
-    }
-  }
-
-  play() {
-    const nextState = playTurn(this.gameState);
-    this.gameState = nextState;
+  playTurn(payload) {
+    const nextState = play(this.gameState, payload);
+    this.gameState = nextState.state;
+    return nextState.state;
   }
 
   getGameState() {
     return this.gameState;
+  }
+
+  isReadyToStart() {
+    return this.seats.length === 2;
   }
 }
 
