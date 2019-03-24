@@ -8,6 +8,7 @@ import TopNav from './Common/TopNav';
 import Main from './Common/Main';
 
 import Play from './Pages/Play';
+import Home from './Pages/Home';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -30,8 +31,8 @@ const App = () => (
       <TopNav />
     </header>
     <Main>
-      <Route exact path="/" component={null} />
-      <Route path="/play" component={Play} />
+      <Route exact path="/" component={Home} />
+      <Route path="/play/:id?" component={Play} />
     </Main>
   </>
 );

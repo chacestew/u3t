@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 /* eslint-disable */
@@ -52,12 +52,32 @@ const Board = ({ data, boardIndex, onClick, activeBoard }) => {
   );
 };
 
-const GameView = ({ state, playTurn }) => {
+const Timer = ({ turnStartTime }) => {
+  const [time, setTime] = useState(null);
+  useEffect(
+    () => {
+      setTime(Math.floor((turnStartTime - new Date().getTime() + 60000) / 1000));
+
+      const interval = setInterval(() => {
+        setTime(t => t - 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    },
+    [turnStartTime]
+  );
+  return <div>Turn: {time}</div>;
+};
+
+const GameView = ({ state, playTurn, turnStartTime }) => {
   const { turn, boards, activeBoard, winner } = state;
 
   return (
     <>
-      {`Turn: ${turn}`}
+      <div>Turn: {turn}</div>
+      <Timer turnStartTime={turnStartTime} />
       <Grid style={{ width: '600px', height: '600px' }}>
         {boards.map((b, i) => (
           <Board

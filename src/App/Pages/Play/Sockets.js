@@ -3,37 +3,31 @@ import io from 'socket.io-client';
 import playTurn, { initialState } from '../../../game';
 import GameBoard from './GameBoard';
 
-const socket = io();
+const socket = io('/game');
 
-const Sockets = () => {
-  const [room, setRoom] = useState(null);
+const Sockets = ({
+  match: {
+    params: { id: room },
+  },
+}) => {
   const [playerSeat, setPlayerSeat] = useState(null);
   const [gameState, setGameState] = useState(initialState);
+  const [turnStartTime, setTurnStartTime] = useState(null);
 
   useEffect(() => {
-    socket.open();
-
-    socket.emit('join-queue');
-
-    socket.on('found-match', data => {
-      setRoom(data.room);
-      socket.emit('join', { room: data.room });
-    });
-
-    // Both players ready
-    socket.on('start', data => {
-      console.log('I am started!', gameState);
+    socket.on('game-started', data => {
+      console.log('Got game-started', data);
+      setPlayerSeat(data.seat);
+      setGameState(data.state);
+      setTurnStartTime(data.time);
     });
 
     socket.on('sync', data => {
-      console.log('got sync request!', data);
+      console.log('Got sync', data);
       setGameState(data.state);
     });
 
-    socket.on('joined', data => {
-      setPlayerSeat(data.seat);
-      console.log('I am joined!', data.seat);
-    });
+    socket.emit('join-lobby', { room });
 
     return () => {
       socket.close();
@@ -46,12 +40,23 @@ const Sockets = () => {
     const nextState = playTurn(gameState, { player, board, cell });
 
     setGameState(nextState.state);
-    socket.emit('play', { room, player, board, cell });
+    socket.emit('play-turn', { room, player, board, cell });
   };
 
-  if (playerSeat === null) return 'Loading...';
+  if (playerSeat === null) {
+    if (room) {
+      return `Share this to your friend: ${room}`;
+    }
+  }
 
-  return <GameBoard seat={playerSeat} state={gameState} playTurn={play} />;
+  return (
+    <GameBoard
+      seat={playerSeat}
+      state={gameState}
+      playTurn={play}
+      turnStartTime={turnStartTime}
+    />
+  );
 };
 
 export default Sockets;
