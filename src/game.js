@@ -27,7 +27,7 @@ const didWinBoard = (state, payload) => {
   const board = state.boards[payload.board];
 
   return getWinnableSets(payload.cell).some(([p1, p2, p3]) =>
-    [board[p1], board[p2], board[p3]].every(e => e === payload.player)
+    [board.cells[p1], board.cells[p2], board.cells[p3]].every(e => e === payload.player)
   );
 };
 
@@ -43,7 +43,11 @@ const didWinGame = (state, payload) => {
 export const initialState = {
   turn: 0,
   currentPlayer: 1,
-  boards: Array.from({ length: 9 }, () => ({ winner: null, cells: Array(9).fill(null) })),
+  boards: Array.from({ length: 9 }, () => ({
+    winner: null,
+    cells: Array(9).fill(null),
+    cellsOpen: 9,
+  })),
   activeBoard: 4,
   winner: null,
 };
@@ -72,9 +76,10 @@ export default (state, payload) => {
   }
 
   nextState.boards[board].cells[cell] = player;
+  nextState.boards[board].cellsOpen -= 1;
   nextState.turn += 1;
   nextState.currentPlayer = nextState.currentPlayer === 1 ? 2 : 1;
-  nextState.activeBoard = nextState.boards[cell].cells.includes(null) ? cell : null;
+  nextState.activeBoard = nextState.boards[cell].cellsOpen ? cell : null;
 
   if (!didWinBoard(nextState, payload)) {
     console.log('Normal turn complete.');
