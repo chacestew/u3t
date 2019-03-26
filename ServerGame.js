@@ -1,6 +1,5 @@
 import play, { initialState } from './src/game';
 
-const gameLength = 60 * 1000;
 const noop = () => {
   console.log('noop called?!');
 };
@@ -29,10 +28,10 @@ const generateRandomMove = state => {
 };
 
 class ServerGame {
-  constructor() {
+  constructor(turnDuration) {
     this.players = [];
     this.gameState = { ...initialState };
-    this.turnDuration = null;
+    this.turnDuration = turnDuration;
   }
 
   joinPlayer(id) {
