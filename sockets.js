@@ -7,9 +7,9 @@ const isEven = num => num !== 0 && !(num % 2);
 const games = new Map();
 const queue = new Set();
 
-const createNewGame = playerId => {
+const createNewGame = turnDuration => {
   const id = nanoid(5);
-  const game = new Game();
+  const game = new Game(turnDuration);
   games.set(id, game);
   return [game, id];
 };
@@ -32,7 +32,7 @@ export default server => {
         const otherSocket = [...queue].pop();
         queue.delete(otherSocket);
 
-        const [game, id] = createNewGame();
+        const [game, id] = createNewGame(60);
         coordinatorSocket
           .to(socket.id)
           .to(otherSocket.id)
