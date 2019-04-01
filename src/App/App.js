@@ -7,7 +7,7 @@ import styledNormalize from 'styled-normalize';
 import TopNav from './Common/TopNav';
 import Main from './Common/Main';
 
-import Play from './Pages/Play';
+import Play from './Pages/Play/Play';
 import Home from './Pages/Home';
 
 const GlobalStyle = createGlobalStyle`

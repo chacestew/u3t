@@ -1,15 +1,7 @@
 module.exports = api => {
   api.cache(true);
 
-  const presets = [
-    '@babel/preset-react',
-    [
-      '@babel/preset-env',
-      {
-        useBuiltIns: 'usage',
-      },
-    ],
-  ];
+  const presets = ['@babel/preset-react', '@babel/preset-env'];
 
   const plugins = [
     'react-hot-loader/babel',
