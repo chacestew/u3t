@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
 const socket = io('/coordinator');
@@ -24,6 +25,9 @@ export default ({ history }) => {
 
   return (
     <div>
+      <Link to="/hotseat">
+        <button type="button">Play hot seat</button>
+      </Link>
       <button type="button" onClick={makeLobby}>
         Make lobby
       </button>

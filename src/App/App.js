@@ -1,14 +1,12 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import styledNormalize from 'styled-normalize';
-
-import TopNav from './Common/TopNav';
-import Main from './Common/Main';
 
 import Play from './Pages/Play/Play';
 import Home from './Pages/Home';
+import HotSeat from './Pages/Play/HotSeat';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -24,15 +22,19 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const Main = styled.main`
+  display: flex;
+  justify-content: center;
+`;
+
 const App = () => (
   <>
     <GlobalStyle />
-    <header>
-      <TopNav />
-    </header>
+    <header />
     <Main>
       <Route exact path="/" component={Home} />
       <Route path="/play/:id?" component={Play} />
+      <Route path="/hotseat" component={HotSeat} />
     </Main>
   </>
 );
