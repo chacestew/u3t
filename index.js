@@ -1,13 +1,4 @@
 /* eslint-disable global-require */
-// import express from 'express';
-// import http from 'http';
-// import socketIO from 'socket.io';
-// import ignoreFavicon from 'express-no-favicons';
-// import history from 'connect-history-api-fallback';
-// import attachSockets from './sockets.mjs';
-// const express = require('express');
-// const http = require('http');
-// const socketIO = require('socket.io');
 const app = require('express')();
 const server = require('http').createServer(app);
 const ignoreFavicon = require('express-no-favicons');
@@ -15,10 +6,6 @@ const history = require('connect-history-api-fallback');
 
 // Attach sockets
 require('./sockets').default(server);
-
-// const app = express();
-// const server = http.createServer(app);
-// const io = socketIO(server);
 
 app.use(ignoreFavicon());
 app.use(history({ index: '/public/index.html' }));
