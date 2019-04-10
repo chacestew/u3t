@@ -1,96 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import Grid from './Grid';
 
-/* eslint-disable */
-const startingState = [
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-  [null, null, null, null, null, null, null, null, null],
-];
-/* eslint-enable */
+import Board from './Board/Board';
+import Timer from './Board/Timer';
 
-const Grid = styled.div`
-  display: grid;
-  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-
-  .cell {
-    border: 1px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+const Bar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: hotpink;
+  padding: 1em;
+  color: white;
+  margin-bottom: 10px;
+  border-radius: 0 0 10px 10px;
 `;
 
-const Cell = ({ cellType, cellIndex, onClick }) => (
-  <button
-    type="button"
-    onClick={() => {
-      onClick(cellIndex);
-    }}
-    className="cell"
-  >
-    {cellType || ' '}
-  </button>
-);
-
-const Board = ({ data, boardIndex, onClick, activeBoard }) => {
-  const _onClick = cellIndex => {
-    onClick({ board: boardIndex, cell: cellIndex });
-  };
+const Header = ({ turn, turnStartTime }) => {
+  const a = 'a';
   return (
-    <Grid style={{ border: `2px solid ${activeBoard === boardIndex ? 'red' : 'blue'}` }}>
-      {data.cells.map((cell, i) => (
-        <Cell onClick={_onClick} cellType={cell} cellIndex={i} key={i} />
-      ))}
-    </Grid>
+    <Bar>
+      <span>
+        <b>Player X's turn</b>
+      </span>
+      <span>
+        <b>#</b> {turn}
+      </span>
+      <Timer turnStartTime={turnStartTime} />
+    </Bar>
   );
 };
 
-const Timer = ({ turnStartTime }) => {
-  const [time, setTime] = useState(null);
-  useEffect(
-    () => {
-      setTime(Math.floor((turnStartTime - new Date().getTime() + 60000) / 1000));
-
-      const interval = setInterval(() => {
-        setTime(t => t - 1);
-      }, 1000);
-
-      return () => {
-        clearInterval(interval);
-      };
-    },
-    [turnStartTime]
+const Status = ({ error = 'Chose wrong board.' }) => {
+  const a = 'a';
+  return (
+    <div>
+      <b>Status:</b> {error}
+    </div>
   );
-  return <div>Turn: {time}</div>;
 };
 
 const GameView = ({ state, playTurn, turnStartTime }) => {
-  const { turn, boards, activeBoard, winner } = state;
-
+  const { turn, boards, activeBoard, winner, error } = state;
   return (
-    <>
-      <div>Turn: {turn}</div>
-      <Timer turnStartTime={turnStartTime} />
-      <Grid style={{ width: '600px', height: '600px' }}>
+    <div>
+      <Header turn={turn} turnStartTime={turnStartTime} />
+      <Grid>
         {boards.map((b, i) => (
           <Board
             data={b}
             boardIndex={i}
             activeBoard={activeBoard}
-            key={i}
+            key={i} // eslint-disable-line react/no-array-index-key
             onClick={playTurn}
           />
         ))}
       </Grid>
-      {winner && `Winner: ${winner}`}
-    </>
+      <Status error={error} />
+    </div>
   );
 };
 
