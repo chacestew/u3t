@@ -2,11 +2,11 @@ const getWinnableSets = cell => {
   // TO DO: WHY IS THIS ESRULE COMPLAINING?
   switch (cell) {
     case 0:
-      return [[0, 1, 2], [0, 3, 6]];
+      return [[0, 1, 2], [0, 3, 6], [0, 4, 9]];
     case 1:
       return [[0, 1, 2], [1, 4, 7]];
     case 2:
-      return [[0, 1, 2], [2, 5, 8]];
+      return [[0, 1, 2], [2, 5, 8], [2, 4, 6]];
     case 3:
       return [[0, 3, 6], [3, 4, 5]];
     case 4:
@@ -14,11 +14,11 @@ const getWinnableSets = cell => {
     case 5:
       return [[2, 5, 8], [3, 4, 5]];
     case 6:
-      return [[0, 3, 6], [6, 7, 8]];
+      return [[0, 3, 6], [6, 7, 8], [6, 4, 2]];
     case 7:
       return [[1, 4, 7], [6, 7, 8]];
     case 8:
-      return [[2, 5, 8], [6, 7, 8]];
+      return [[2, 5, 8], [6, 7, 8], [8, 4, 0]];
   }
 };
 
@@ -79,7 +79,8 @@ export default (state, payload) => {
   nextState.boards[board].cellsOpen -= 1;
   nextState.turn += 1;
   nextState.currentPlayer = nextState.currentPlayer === 1 ? 2 : 1;
-  nextState.activeBoard = nextState.boards[cell].cellsOpen ? cell : null;
+  nextState.activeBoard =
+    nextState.boards[cell].cellsOpen && !nextState.boards[cell].winner ? cell : null;
 
   if (!didWinBoard(nextState, payload)) {
     console.log('Normal turn complete.');
