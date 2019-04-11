@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '../../shared/theme';
 
 const Grid = styled.div`
   display: grid;
@@ -7,7 +8,7 @@ const Grid = styled.div`
   grid-gap: 6px;
   position: relative;
   color: #fff;
-  background-color: #7e57c2;
+  background-color: ${theme.cellBackground};
   border-radius: 10px;
 `;
 

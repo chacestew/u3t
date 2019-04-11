@@ -21,7 +21,7 @@ const StyledCell = styled.button`
   }
 
   &:hover {
-    outline: 1px solid;
+    background-color: ${theme.cellHoverBackground};
   }
 `;
 
