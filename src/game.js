@@ -1,3 +1,5 @@
+import cloneDeep from 'clone-deep';
+
 const getWinnableSets = cell => {
   // TO DO: WHY IS THIS ESRULE COMPLAINING?
   switch (cell) {
@@ -55,22 +57,22 @@ export const initialState = {
 // payload = { player: id, board: Integer, cell: Integer }
 export default (state, payload) => {
   const { player, board, cell } = payload;
-  const nextState = { ...state };
+  const nextState = cloneDeep(state);
   console.log('\n\n---playTurn called---');
   console.log('State:', state);
   console.log('Payload:', payload);
 
-  if (state.currentPlayer !== player) {
+  if (nextState.currentPlayer !== player) {
     console.log('Play out of turn.');
     return { state: nextState, error: 'Play out of turn.' };
   }
 
-  if (state.activeBoard && state.activeBoard !== board) {
+  if (nextState.activeBoard && state.activeBoard !== board) {
     console.log('Chose wrong board.');
     return { state: nextState, error: 'Chose wrong board.' };
   }
 
-  if (state.boards[board].cells[cell] !== null) {
+  if (nextState.boards[board].cells[cell] !== null) {
     console.log('Cell is occupied.');
     return { state: nextState, error: 'Cell is occupied.' };
   }
