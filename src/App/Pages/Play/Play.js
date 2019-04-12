@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import playTurn, { initialState } from '../../../game';
+import playTurn, { initialState } from '../../../shared/game';
 import GameBoard from './GameBoard';
 
 const socket = io('/game');
@@ -13,6 +13,7 @@ const Sockets = ({
   const [playerSeat, setPlayerSeat] = useState(null);
   const [gameState, setGameState] = useState(initialState);
   const [turnStartTime, setTurnStartTime] = useState(null);
+  const [status, setStatus] = useState();
 
   useEffect(() => {
     socket.on('game-started', data => {
@@ -27,6 +28,10 @@ const Sockets = ({
       setGameState(data.state);
     });
 
+    socket.on('invalid-turn', data => {
+      setStatus(data);
+    });
+
     socket.emit('join-lobby', { room });
 
     return () => {
@@ -37,9 +42,9 @@ const Sockets = ({
   const play = ({ board, cell }) => {
     const player = playerSeat;
 
-    const nextState = playTurn(gameState, { player, board, cell });
+    const { error, state } = playTurn(gameState, { player, board, cell });
 
-    setGameState(nextState.state);
+    setGameState(state);
     socket.emit('play-turn', { room, player, board, cell });
   };
 
@@ -55,6 +60,7 @@ const Sockets = ({
       state={gameState}
       playTurn={play}
       turnStartTime={turnStartTime}
+      status={status}
     />
   );
 };

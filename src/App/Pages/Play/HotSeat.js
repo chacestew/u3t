@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import playTurn, { initialState } from '../../../game';
+import playTurn, { initialState } from '../../../shared/game';
 import GameBoard from './GameBoard';
 
 const HotSeat = () => {
@@ -8,9 +8,9 @@ const HotSeat = () => {
   const play = ({ board, cell }) => {
     const { currentPlayer: player } = gameState;
 
-    const nextState = playTurn(gameState, { player, board, cell });
+    const { error, state } = playTurn(gameState, { player, board, cell });
 
-    setGameState(nextState.state);
+    setGameState(state);
   };
 
   return <GameBoard state={gameState} playTurn={play} />;

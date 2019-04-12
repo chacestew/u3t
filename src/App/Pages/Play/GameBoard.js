@@ -30,19 +30,19 @@ const Header = ({ turn, turnStartTime }) => {
   );
 };
 
-const Status = ({ error = 'Chose wrong board.' }) => {
+const Status = ({ status = 'Chose wrong board.' }) => {
   const a = 'a';
   return (
     <div css="margin-top: 10px">
-      <b>Status:</b> {error}
+      <b>Status:</b> {status}
     </div>
   );
 };
 
 const Container = styled.div``;
 
-const GameView = ({ state, playTurn, turnStartTime }) => {
-  const { turn, boards, activeBoard, winner, error } = state;
+const GameView = ({ state, playTurn, turnStartTime, status }) => {
+  const { turn, boards, activeBoard, winner } = state;
   return (
     <Container>
       <Header turn={turn} turnStartTime={turnStartTime} />
@@ -57,7 +57,7 @@ const GameView = ({ state, playTurn, turnStartTime }) => {
           />
         ))}
       </Grid>
-      <Status error={error} />
+      <Status status={status} />
     </Container>
   );
 };
