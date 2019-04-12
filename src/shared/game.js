@@ -1,7 +1,6 @@
 import cloneDeep from 'clone-deep';
 
 const getWinnableSets = cell => {
-  // TO DO: WHY IS THIS ESRULE COMPLAINING?
   switch (cell) {
     case 0:
       return [[0, 1, 2], [0, 3, 6], [0, 4, 9]];
@@ -21,6 +20,8 @@ const getWinnableSets = cell => {
       return [[1, 4, 7], [6, 7, 8]];
     case 8:
       return [[2, 5, 8], [6, 7, 8], [8, 4, 0]];
+    default:
+      return [];
   }
 };
 

@@ -4,7 +4,7 @@
   "description": "Ultimate Tic-Tac-Toe",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon --watch ./index.js -r esm index.js",
+    "start": "cross-env NODE_ENV=development nodemon --watch ./src/server -r esm ./src/server/index.js",
     "build": "rimraf dist && cross-env NODE_ENV=production webpack --progress --config webpack/config.prod.js",
     "serve": "cross-env NODE_ENV=production node index.js",
     "analyze": "cross-env NODE_ENV=production webpack --profile --json > stats.json --config webpack/config.prod.js && webpack-bundle-analyzer stats.json"
