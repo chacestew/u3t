@@ -1,63 +1,93 @@
-import play, { initialState } from '../shared/game';
+import play, { initialState, generateRandomMove } from '../shared/game';
 
 const noop = () => {};
 
-const generateRandomMove = state => {
-  const { boards, currentPlayer: player, activeBoard } = state;
+class PlayerManager {
+  constructor(id, playRandomTurn, removePlayerFromGame) {
+    this.id = id;
+    this.seat = null;
+    this.turnTimer = null;
+    this.disconnectedTime = 120;
+    this.disconnectedTimer = null;
+    this.disconnectedAtTimestamp = null;
+    this.playRandomTurn = playRandomTurn;
+    this.removePlayerFromGame = removePlayerFromGame;
+  }
 
-  const randomElement = arr => arr[Math.floor(Math.random() * arr.length)];
+  beginTurn() {
+    this.turnTimer = setTimeout(() => {
+      this.playRandomTurn(this.id);
+    }, 60 * 1000);
+  }
 
-  // optimise if reasonable
-  const filteredBoards = boards.reduce((all, current, i) => {
-    if (current.cellsOpen === 0) return all;
+  disconnect() {
+    this.disconnectedAtTimestamp = new Date().getTime();
+    this.disconnectTimer = setTimeout(() => {
+      this.removePlayer(this.id);
+    }, 45 * 1000);
+  }
 
-    return [...all, i];
-  }, []);
-  const board = activeBoard || randomElement(filteredBoards);
+  removePlayer() {
+    this.clearInterval(this.disconnectTimer);
+    this.clearInterval(this.turnTimer);
+    this.removePlayerFromGame(this.id);
+  }
 
-  const filteredCells = boards[board].cells.reduce((all, current, i) => {
-    if (current !== null) return all;
+  reconnect() {
+    const now = new Date().getTime();
+    this.disconnectedTime -= Math.ceil((now - this.disconnectedAtTimestamp) / 1000);
+    this.disconnectedAtTimestamp = null;
+    clearInterval(this.removePlayerFromGame);
+  }
+}
 
-    return [...all, i];
-  }, []);
-  const cell = randomElement(filteredCells);
-
-  return { player, board, cell };
-};
-
-class ServerGame {
+class GameManager {
   constructor(turnDuration) {
-    this.players = [];
-    this.gameState = { ...initialState };
+    this.seats = [];
+    this.players = new Map();
+    this.gameState = initialState;
     this.turnDuration = turnDuration;
   }
 
   joinPlayer(id) {
-    if (this.players.length >= 2) {
-      return new Error('Too many players?');
+    if (this.seats.length >= 2) {
+      throw new Error('Too many players');
     }
 
-    return this.players.push(id) - 1;
+    if (this.players.has(id)) {
+      throw new Error('Player already connected');
+    }
+
+    this.players.set(id, new PlayerManager(id));
+    this.seats.push(id);
+
+    return this.seats.length - 1;
+  }
+
+  disconnectPlayer(id) {
+    if (!this.players.has(id)) throw new Error(`No player by ID "${id}" found`);
+    this.players.get(id).removePlayer();
+  }
+
+  endGame(id) {
+    const [winner] = this.seats.filter(seat !== id);
+    const state = { ...this.gameState, winner };
+    return { state };
   }
 
   assignSeats() {
-    if (Math.floor(Math.random() * 2)) this.players.reverse();
+    if (Math.floor(Math.random() * 2)) this.seats.reverse();
 
-    return this.players;
+    return this.seats;
   }
 
-  playTurn(payload, emitter = noop) {
+  async playTurn(payload, emitter = noop) {
     const nextState = play(this.gameState, payload);
 
     if (!nextState.error) {
-      clearTimeout(this.interval);
       this.gameState = nextState.state;
 
-      if (this.turnDuration) {
-        this.interval = setTimeout(() => {
-          emitter(this.playTurn(generateRandomMove(nextState.state), emitter));
-        }, this.turnDuration);
-      }
+      // Handle turn duration
     }
 
     return nextState;
@@ -67,13 +97,9 @@ class ServerGame {
     return this.gameState;
   }
 
-  getPlayers() {
-    return this.players;
-  }
-
   isReadyToStart() {
-    return this.players.length === 2;
+    return this.seats.length === 2;
   }
 }
 
-export default ServerGame;
+export default GameManager;

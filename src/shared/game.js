@@ -43,6 +43,29 @@ const didWinGame = (state, payload) => {
 };
 
 // Public
+export const generateRandomMove = state => {
+  const { boards, currentPlayer: player, activeBoard } = state;
+
+  const randomElement = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  // optimise if reasonable
+  const filteredBoards = boards.reduce((all, current, i) => {
+    if (current.cellsOpen === 0) return all;
+
+    return [...all, i];
+  }, []);
+  const board = activeBoard || randomElement(filteredBoards);
+
+  const filteredCells = boards[board].cells.reduce((all, current, i) => {
+    if (current !== null) return all;
+
+    return [...all, i];
+  }, []);
+  const cell = randomElement(filteredCells);
+
+  return { player, board, cell };
+};
+
 export const initialState = {
   turn: 0,
   currentPlayer: 1,
