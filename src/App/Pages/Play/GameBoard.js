@@ -42,13 +42,15 @@ const Status = ({ status = 'Chose wrong board.' }) => {
 const Container = styled.div``;
 
 const GameView = ({ state, playTurn, turnStartTime, status }) => {
-  const { turn, boards, activeBoard, winner } = state;
+  const { turn, boards, activeBoard, winner, winningSet } = state;
   return (
     <Container>
       <Header turn={turn} turnStartTime={turnStartTime} />
       <Grid>
         {boards.map((b, i) => (
           <Board
+            gameWinner={winner}
+            winningSet={winningSet}
             data={b}
             boardIndex={i}
             activeBoard={activeBoard}

@@ -29,7 +29,7 @@ const getWinnableSets = cell => {
 const didWinBoard = (state, payload) => {
   const board = state.boards[payload.board];
 
-  return getWinnableSets(payload.cell).some(([p1, p2, p3]) =>
+  return getWinnableSets(payload.cell).find(([p1, p2, p3]) =>
     [board.cells[p1], board.cells[p2], board.cells[p3]].every(e => e === payload.player)
   );
 };
@@ -108,8 +108,11 @@ export default (state, payload) => {
   nextState.activeBoard =
     nextState.boards[cell].cellsOpen && !nextState.boards[cell].winner ? cell : null;
 
-  if (!didWinBoard(nextState, payload)) {
+  const winningSet = didWinBoard(nextState, payload);
+
+  if (!winningSet) {
     console.log('Normal turn complete.');
+    nextState.winningSet = winningSet;
     return { state: { ...nextState } };
   }
 
