@@ -13,7 +13,7 @@ export default ({ history }) => {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [history]);
 
   const makeLobby = () => {
     socket.emit('create-lobby');
@@ -24,16 +24,24 @@ export default ({ history }) => {
   };
 
   return (
-    <div>
-      <Link to="/hotseat">
-        <button type="button">Play hot seat</button>
-      </Link>
-      <button type="button" onClick={makeLobby}>
-        Make lobby
-      </button>
-      <button type="button" onClick={findGame}>
-        Find game
-      </button>
-    </div>
+    <article
+      css="
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+      "
+    >
+      <section>
+        <Link to="/hotseat">
+          <button type="button">Play a friend</button>
+        </Link>
+        <button type="button" onClick={makeLobby}>
+          Make lobby
+        </button>
+        <button type="button" onClick={findGame}>
+          Find game
+        </button>
+      </section>
+    </article>
   );
 };

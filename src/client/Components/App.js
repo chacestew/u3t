@@ -4,9 +4,10 @@ import { hot } from 'react-hot-loader/root';
 import styled, { createGlobalStyle } from 'styled-components';
 import styledNormalize from 'styled-normalize';
 
-import Play from './Pages/Play/Play';
-import Home from './Pages/Home';
-import HotSeat from './Pages/Play/HotSeat';
+import Play from './Lobby';
+import Home from './Home';
+import HotSeat from './HotSeat';
+import PlayAI from './PlayAI';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -70,6 +71,7 @@ const App = () => (
       <Route exact path="/" component={Home} />
       <Route path="/play/:id?" component={Play} />
       <Route path="/hotseat" component={HotSeat} />
+      <Route path="/playai" component={PlayAI} />
     </Main>
   </>
 );

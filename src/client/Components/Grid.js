@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import theme from '../../shared/theme';
+import theme from '../utils/theme';
 
 const Grid = styled.div`
   display: grid;

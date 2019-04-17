@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import playTurn, { initialState } from '../../../shared/game';
-import GameBoard from './GameBoard';
+import Board from '../GameArea/GlobalBoard';
 
 const socket = io('/game');
 
-const Sockets = ({
+const OnlineGame = ({
   match: {
     params: { id: room },
   },
@@ -55,7 +55,7 @@ const Sockets = ({
   }
 
   return (
-    <GameBoard
+    <Board
       seat={playerSeat}
       state={gameState}
       playTurn={play}
@@ -65,4 +65,4 @@ const Sockets = ({
   );
 };
 
-export default Sockets;
+export default OnlineGame;
