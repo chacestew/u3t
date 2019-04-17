@@ -3,7 +3,7 @@ import cloneDeep from 'clone-deep';
 const getWinnableSets = cell => {
   switch (cell) {
     case 0:
-      return [[0, 1, 2], [0, 3, 6], [0, 4, 9]];
+      return [[0, 1, 2], [0, 3, 6], [0, 4, 8]];
     case 1:
       return [[0, 1, 2], [1, 4, 7]];
     case 2:
@@ -21,7 +21,7 @@ const getWinnableSets = cell => {
     case 8:
       return [[2, 5, 8], [6, 7, 8], [8, 4, 0]];
     default:
-      return [];
+      return [[], [], []];
   }
 };
 
@@ -29,7 +29,7 @@ const getWinnableSets = cell => {
 const didWinBoard = (state, payload) => {
   const board = state.boards[payload.board];
 
-  return getWinnableSets(payload.cell).find(([p1, p2, p3]) =>
+  return getWinnableSets(payload.cell).some(([p1, p2, p3]) =>
     [board.cells[p1], board.cells[p2], board.cells[p3]].every(e => e === payload.player)
   );
 };
@@ -37,7 +37,7 @@ const didWinBoard = (state, payload) => {
 const didWinGame = (state, payload) => {
   const { boards } = state;
 
-  return getWinnableSets(payload.board).some(([p1, p2, p3]) =>
+  return getWinnableSets(payload.board).find(([p1, p2, p3]) =>
     [boards[p1], boards[p2], boards[p3]].every(({ winner }) => winner === payload.player)
   );
 };
@@ -54,7 +54,7 @@ export const generateRandomMove = state => {
 
     return [...all, i];
   }, []);
-  const board = activeBoard || randomElement(filteredBoards);
+  const board = activeBoard !== null ? activeBoard : randomElement(filteredBoards);
 
   const filteredCells = boards[board].cells.reduce((all, current, i) => {
     if (current !== null) return all;
@@ -74,7 +74,7 @@ export const initialState = {
     cells: Array(9).fill(null),
     cellsOpen: 9,
   })),
-  activeBoard: 4,
+  activeBoard: null,
   winner: null,
 };
 
@@ -108,21 +108,21 @@ export default (state, payload) => {
   nextState.activeBoard =
     nextState.boards[cell].cellsOpen && !nextState.boards[cell].winner ? cell : null;
 
-  const winningSet = didWinBoard(nextState, payload);
-
-  if (!winningSet) {
+  if (!didWinBoard(nextState, payload)) {
     console.log('Normal turn complete.');
-    nextState.winningSet = winningSet;
     return { state: { ...nextState } };
   }
 
   nextState.boards[board].winner = player;
+
+  const winningSet = didWinGame(nextState, payload);
 
   if (!didWinGame(nextState, payload)) {
     console.log('Won board!.');
     return { state: nextState };
   }
 
+  nextState.winningSet = winningSet;
   nextState.winner = player;
   console.log('Won game!.');
   return { state: nextState };
