@@ -48,7 +48,14 @@ const GameView = ({ state, playTurn, turnStartTime, status }) => {
   return (
     <Container>
       <Header turn={turn} turnStartTime={turnStartTime} />
-      <Grid>
+      <Grid
+        css={`
+          width: 100vw;
+          height: 100vw;
+          max-width: 640px;
+          max-height: 640px;
+        `}
+      >
         {boards.map((b, i) => (
           <Board
             gameWinner={winner}

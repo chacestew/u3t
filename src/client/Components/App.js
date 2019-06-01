@@ -11,14 +11,24 @@ import PlayAI from './PlayAI';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
+  html {
+    box-sizing: border-box;
+  }
+  
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+
   body {
     background-color: lavender;
-    height: 100vh;
     font-family: 'Open Sans', sans-serif;
 
     #root {
-    display: flex;
-    flex-direction: column;
+     max-width: 960px;
+     display: flex;
+     flex-direction: column;
     }
   }
 `;
@@ -26,6 +36,8 @@ const GlobalStyle = createGlobalStyle`
 const Main = styled.main`
   display: flex;
   justify-content: center;
+  margin: 0 auto;
+  background-color: lightgreen;
 `;
 
 const Header = styled.header`

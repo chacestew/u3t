@@ -12,8 +12,6 @@ const StyledCell = styled.button`
   justify-content: center;
   align-items: center;
   background-color: ${theme.cellBackground};
-  min-width: 2em;
-  min-height: 2em;
   cursor: pointer;
 
   &:focus {
