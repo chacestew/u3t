@@ -52,8 +52,8 @@ const GameView = ({ state, playTurn, turnStartTime, status }) => {
         css={`
           width: 100vw;
           height: 100vw;
-          max-width: 640px;
-          max-height: 640px;
+          max-width: 800px;
+          max-height: 800px;
         `}
       >
         {boards.map((b, i) => (

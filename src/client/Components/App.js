@@ -26,7 +26,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Open Sans', sans-serif;
 
     #root {
-     max-width: 960px;
+     max-width: 800px;
+     margin: 0 auto;
      display: flex;
      flex-direction: column;
     }
