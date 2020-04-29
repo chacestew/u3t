@@ -4,6 +4,9 @@ const { paths, loaders } = require('./helpers');
 
 module.exports = {
   name: 'client',
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+  },
   entry: { main: ['webpack-hot-middleware/client?name=client', paths.client] },
   mode: 'development',
   devtool: 'eval',

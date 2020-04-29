@@ -2,14 +2,20 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import styled from 'styled-components';
-
-const socket = io('/coordinator');
+import {
+  faRobot,
+  faGlobe,
+  faPerson,
+  faUserFriends,
+} from '@fortawesome/free-solid-svg-icons';
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import palette from '../../utils/palette';
+import MenuItem from './MenuItem';
 
 const Article = styled.article`
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 `;
 
 const LineTitle = styled.h2`
@@ -32,45 +38,76 @@ const LineTitle = styled.h2`
   }
 `;
 
-export default ({ history }) => {
-  useEffect(() => {
-    socket.on('lobby-ready', ({ id }) => {
-      history.replace(`/play/${id}`);
-    });
+const NavItem = styled(Link)`
+  text-decoration: none;
+  padding: 10px;
+  background: ${palette.menuButtonBg};
+  color: ${palette.textColor2};
+  width: 100%;
+  font-weight: bold;
+  justify-content: center;
+  border: 1px solid ${palette.menuButtonBr};
+  display: flex;
+`;
 
-    return () => {
-      socket.close();
-    };
-  }, [history]);
+const NavContainer = styled.div`
+  line-height: 1.15;
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: inherit;
+  width: 100%;
+  border: 1px solid silver;
+  border-radius: 4px;
+  padding: 1em 1em;
+  display: flex;
+  background: #594b5c;
+  flex-direction: column;
 
-  const makeLobby = () => {
-    socket.emit('create-lobby');
-  };
+  p {
+    margin-bottom: 0;
+    color: ${palette.textColor};
+  }
+`;
 
-  const findGame = () => {
-    socket.emit('join-queue');
-  };
-
+export default () => {
   return (
     <Article
       css={`
+        padding: 1em;
         width: 100%;
         display: flex;
         flex-direction: column;
       `}
     >
-      <h1>Ultimate Tic-Tac-Toe</h1>
-      <LineTitle>Test</LineTitle>
-      <section>
-        <Link to="/hotseat">
-          <button type="button">Play a friend</button>
-        </Link>
-        <button type="button" onClick={makeLobby}>
-          Make lobby
-        </button>
-        <button type="button" onClick={findGame}>
-          Find game
-        </button>
+      <h2>Welcome to U3T!</h2>
+      <p>The ultimate way to play the 9 board variant of tic-tac-toe.</p>
+      <section
+        css={`
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        `}
+      >
+        <MenuItem
+          url="/play"
+          text="PLAY ONLINE"
+          icon={faGlobe}
+          description="Compete against a friend anywhere in the world on any device with a browser."
+        />
+
+        <MenuItem
+          url="/hotseat"
+          text="PLAY ON DEVICE"
+          icon={faUserFriends}
+          description="Take turns playing on your device."
+        />
+
+        <MenuItem
+          url="/ai"
+          text="PLAY THE AI"
+          icon={faRobot}
+          description="Test your strength against the computer."
+        />
       </section>
     </Article>
   );

@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import playTurn, { initialState, generateRandomMove } from '../../../shared/game';
+import playTurn, { getInitialState, generateRandomMove } from '../../../shared/game.ts';
 import Board from '../GameArea/GlobalBoard';
 
 const HotSeat = () => {
-  const [gameState, setGameState] = useState(initialState);
+  const [gameState, setGameState] = useState(getInitialState());
+  const [status, setStatus] = useState('');
+  const [flashing, setFlashing] = useState(false);
 
   const play = ({ board, cell }) => {
     const { currentPlayer: player } = gameState;
 
     const { error, state } = playTurn(gameState, { player, board, cell });
+    console.log('???', error && error.startsWith('Chose wrong board'));
+    if (error && error.startsWith('Chose wrong board')) {
+      setFlashing(state.activeBoard);
+      console.log('ayo', error[error.length - 1]);
+      setTimeout(() => {
+        setFlashing(false);
+      }, 500);
+    }
 
+    setStatus(error);
     setGameState(state);
   };
 
@@ -22,7 +33,15 @@ const HotSeat = () => {
   //   return play(nextState);
   // };
 
-  return <Board state={gameState} playTurn={play} />;
+  return (
+    <Board
+      onFinish={() => console.log('ALLO')}
+      flashing={flashing}
+      state={gameState}
+      playTurn={play}
+      status={status}
+    />
+  );
 };
 
 export default HotSeat;

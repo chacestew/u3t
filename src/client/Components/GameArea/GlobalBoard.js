@@ -1,36 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Grid from '../Grid';
 
 import Board from './LocalBoard/LocalBoard';
 import Timer from './TurnTimer';
+import { Cello } from './LocalBoard/Cell';
+import palette from '../../utils/palette';
 
 const Bar = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: hotpink;
+  background-color: ${palette.gameBarBg};
   padding: 1em;
-  color: white;
+  color: ${palette.textColor};
   margin-bottom: 10px;
-  border-radius: 0 0 10px 10px;
 `;
 
-const Header = ({ turn, turnStartTime }) => {
-  const a = 'a';
+const Header = ({ turn, turnStartTime, seat }) => {
   return (
     <Bar>
       <span>
-        <b>Player X's turn</b>
+        You are {console.log('UGH', seat)}
+        <Cello type={seat} />
       </span>
       <span>
-        <b>#</b> {turn}
+        <b>Player {turn % 2 ? 'X' : 'O'}'s turn</b>
       </span>
-      <Timer turnStartTime={turnStartTime} />
+      {/* <Timer turnStartTime={turnStartTime} /> */}
     </Bar>
   );
 };
 
-const Status = ({ status = 'Chose wrong board.' }) => {
+const Status = ({ status = '' }) => {
   const a = 'a';
   return (
     <div css="margin-top: 10px">
@@ -41,23 +42,38 @@ const Status = ({ status = 'Chose wrong board.' }) => {
 
 const Container = styled.div``;
 
-const GameView = ({ state, playTurn, turnStartTime, status }) => {
+const GameView = ({
+  flashing,
+  state,
+  playTurn,
+  turnStartTime,
+  status,
+  seat,
+  onFinish = () => {},
+}) => {
   const { turn, boards, activeBoard, winner, winningSet } = state;
   const [nextBoardHover, setNextBoardHover] = useState(null);
+  useEffect(() => {
+    if (state.winner || state.tied) {
+      onFinish();
+    }
+  }, [state.winner, state.tied]);
   const onHover = cellIndex => setNextBoardHover(cellIndex);
+
   return (
     <Container>
-      <Header turn={turn} turnStartTime={turnStartTime} />
+      <Header seat={seat} turn={turn} turnStartTime={turnStartTime} />
       <Grid
         css={`
           width: 100vw;
           height: 100vw;
-          max-width: 800px;
-          max-height: 800px;
+          max-width: 640px;
+          max-height: 640px;
         `}
       >
         {boards.map((b, i) => (
           <Board
+            flashing={i === flashing}
             gameWinner={winner}
             winningSet={winningSet}
             data={b}

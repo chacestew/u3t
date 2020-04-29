@@ -10,12 +10,12 @@ const paths = {
 
 const loaders = {
   JS: options => ({
-    test: /\.jsx?$/,
+    test: /\.(ts|js)x?$/,
     exclude: /node_modules/,
     use: [{ loader: 'babel-loader', options }],
   }),
   RHL: () => ({
-    test: /\.jsx?$/,
+    test: /\.(ts|js)x?$/,
     include: /node_modules/,
     use: ['react-hot-loader/webpack'],
   }),

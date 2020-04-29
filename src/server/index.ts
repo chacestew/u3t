@@ -2,13 +2,13 @@
 const app = require('express')();
 const server = require('http').createServer(app);
 const ignoreFavicon = require('express-no-favicons');
-const history = require('connect-history-api-fallback');
+const historyFallback = require('connect-history-api-fallback');
 
 // Attach sockets
 require('./sockets').default(server);
 
 app.use(ignoreFavicon());
-app.use(history({ index: '/public/index.html' }));
+app.use(historyFallback({ index: '/public/index.html' }));
 
 const start = () => {
   const mode = process.env.NODE_ENV;
