@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import * as T from '../../../../shared/types';
 
 import palette from '../../../utils/palette';
 
-const bgColor = cellType => {
+const bgColor = (cellType: null | T.Player) => {
   switch (cellType) {
     case 1:
       return palette.p1CellBg;
@@ -17,7 +18,14 @@ const bgColor = cellType => {
   }
 };
 
-const StyledCell = styled.div`
+interface Props {
+  cellType: null | T.Player;
+  inPlayableArea: boolean;
+  cellIndex?: T.Cell;
+  onClick: any;
+}
+
+const StyledCell = styled.div<StaticProps>`
   border-radius: 4px;
   font-weight: bold;
   color: darkslategrey;
@@ -27,7 +35,7 @@ const StyledCell = styled.div`
   cursor: pointer;
   box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
   ${({ cellType, inPlayableArea }) =>
-    `background-color: ${bgColor(cellType, inPlayableArea)}
+    `background-color: ${bgColor(cellType)}
     ${
       !cellType && inPlayableArea
         ? `&:hover {
@@ -43,33 +51,28 @@ const StyledCell = styled.div`
   }
 `;
 
-export const Cello = ({ type, ...rest }) => (
-  <StyledCell cellType={type} {...rest}>
-    {type && <FontAwesomeIcon icon={type === 1 ? faTimes : faCircle} />}
+interface StaticProps {
+  cellType: null | T.Player;
+  inPlayableArea?: boolean;
+  className?: string;
+  onClick?: any;
+}
+
+export const StaticCell = ({ ...rest }: StaticProps) => (
+  <StyledCell {...rest}>
+    {rest.cellType && <FontAwesomeIcon icon={rest.cellType === 1 ? faTimes : faCircle} />}
   </StyledCell>
 );
 
-const Cell = ({ cellType, inPlayableArea, cellIndex, onClick, onHover }) => {
+const Cell = ({ cellType, inPlayableArea, cellIndex, onClick }: Props) => {
   const handleClick = () => onClick(cellIndex);
-  const handleHover = () => onHover(cellIndex);
   return (
-    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-    <Cello
+    <StaticCell
       inPlayableArea={inPlayableArea}
       className="cell"
       onClick={handleClick}
-      onMouseOver={handleHover}
-      type={cellType}
+      cellType={cellType}
     />
-    // <StyledCell
-    //   inPlayableArea={inPlayableArea}
-    //   className="cell"
-    //   onClick={handleClick}
-    //   onMouseOver={handleHover}
-    //   cellType={cellType}
-    // >
-    //   {cellType && <FontAwesomeIcon icon={cellType === 1 ? faTimes : faCircle} />}
-    // </StyledCell>
   );
 };
 

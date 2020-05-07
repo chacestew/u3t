@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../../../shared/game.ts';
-import Board from '../GameArea/GlobalBoard';
+import Board from '../../Components/GameArea/GlobalBoard';
 
 const PlayAI = () => {
   const [gameState, setGameState] = useState(getInitialState());
@@ -29,7 +29,7 @@ const PlayAI = () => {
     }
   };
 
-  return <Board state={gameState} playTurn={play} />;
+  return <Board state={gameState} onValidTurn={play} />;
 };
 
 export default PlayAI;

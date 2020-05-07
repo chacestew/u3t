@@ -1,21 +1,20 @@
-export type Cell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type Cell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Board = Cell;
 export type Player = 1 | 2;
 
 export interface IBoardState {
   winner: null | Player;
-  cells: Array<number | null>;
-  cellsOpen: Cell;
-  tied: boolean;
+  cells: Array<Player | null>;
+  cellsOpen: number;
 }
 
 export interface IGameState {
   turn: number;
   currentPlayer: Player;
   boards: Array<IBoardState>;
-  activeBoard: null | number;
+  activeBoard: Board[];
   winner: null | Player;
-  winningSet: null | number[];
+  winningSet: number[];
   totalCellsOpen: number;
   tied: boolean;
   finished: boolean;
@@ -36,9 +35,28 @@ export enum Errors {
 export enum Events {
   CreateLobby = 'create-lobby',
   LobbyReady = 'lobby-ready',
+  StartGame = 'start-game',
   JoinLobby = 'join-lobby',
   PlayTurn = 'play-turn',
   InvalidTurn = 'invalid-turn',
   Sync = 'sync',
   Restart = 'restart-game',
+}
+
+export interface EventParams {
+  [Events.CreateLobby]: {
+    id: string;
+  };
+  [Events.StartGame]: {
+    id: string;
+    seat: Player;
+    state: IGameState;
+  };
+  [Events.Sync]: {
+    state: IGameState;
+  };
+  [Events.InvalidTurn]: {
+    state: IGameState;
+    error: Errors;
+  };
 }

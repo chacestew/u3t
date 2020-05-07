@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import palette from '../../utils/palette';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const NavItem = styled(Link)`
   text-decoration: none;
@@ -44,7 +45,14 @@ const Description = styled.p`
   color: ${palette.textColor};
 `;
 
-export default ({ url, text, icon, description }) => {
+interface Props {
+  url: string;
+  text: string;
+  icon: IconProp;
+  description: string;
+}
+
+export default ({ url, text, icon, description }: Props) => {
   return (
     <NavContainer>
       <NavItem to={url}>

@@ -1,7 +1,7 @@
 import cloneDeep from 'clone-deep';
-import * as types from './types';
+import * as T from './types';
 
-const getWinnableSets = (cell: types.Cell) => {
+const getWinnableSets = (cell: T.Cell) => {
   switch (cell) {
     case 0:
       return [[0, 1, 2], [0, 3, 6], [0, 4, 8]];
@@ -27,7 +27,7 @@ const getWinnableSets = (cell: types.Cell) => {
 };
 
 // Private
-const didWinBoard = (state: types.IGameState, payload: types.ITurnInput) => {
+const didWinBoard = (state: T.IGameState, payload: T.ITurnInput) => {
   const board = state.boards[payload.board];
 
   return getWinnableSets(payload.cell).some(([p1, p2, p3]) =>
@@ -35,7 +35,7 @@ const didWinBoard = (state: types.IGameState, payload: types.ITurnInput) => {
   );
 };
 
-const didWinGame = (state: types.IGameState, payload: types.ITurnInput) => {
+const didWinGame = (state: T.IGameState, payload: T.ITurnInput) => {
   const { boards } = state;
 
   return getWinnableSets(payload.board).find(([p1, p2, p3]) =>
@@ -44,7 +44,7 @@ const didWinGame = (state: types.IGameState, payload: types.ITurnInput) => {
 };
 
 // Public
-export const generateRandomMove = (state: types.IGameState) => {
+export const generateRandomMove = (state: T.IGameState) => {
   const { boards, currentPlayer: player, activeBoard } = state;
 
   const randomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
@@ -68,7 +68,7 @@ export const generateRandomMove = (state: types.IGameState) => {
   return { player, board, cell };
 };
 
-export function getInitialState(): types.IGameState {
+export function getInitialState(): T.IGameState {
   return {
     turn: 1,
     currentPlayer: 1,
@@ -76,66 +76,67 @@ export function getInitialState(): types.IGameState {
       winner: null,
       cells: Array(9).fill(null),
       cellsOpen: 9,
-      tied: false,
+      open: true,
     })),
-    activeBoard: null,
+    activeBoard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     winner: null,
     totalCellsOpen: 81,
     tied: false,
     finished: false,
-    winningSet: null,
+    winningSet: [],
   };
 }
 
-function isInvalidTurn(state: types.IGameState, turn: types.ITurnInput) {
+const isOpenBoard = (board: T.IBoardState) => !board.winner && board.cellsOpen > 0;
+
+export function isInvalidTurn(state: T.IGameState, turn: T.ITurnInput) {
   const { player, board, cell } = turn;
-  console.log('HERE WE GO', { turn, state });
+
   if (state.currentPlayer !== player) {
     console.log('Play out of turn.');
-    return types.Errors.WrongTurn;
+    return T.Errors.WrongTurn;
   }
 
-  if (state.activeBoard !== null && state.activeBoard !== board) {
-    console.log('Chose wrong board.');
-    return types.Errors.BoardNotPlayable;
-  }
-
-  if (state.boards[board].winner || state.boards[board].tied) {
+  if (!state.activeBoard.includes(board)) {
     console.log('Board not playable');
-    return types.Errors.BoardNotPlayable;
+    return T.Errors.BoardNotPlayable;
   }
 
   if (state.boards[board].cells[cell] !== null) {
     console.log('Cell is occupied.');
-    return types.Errors.CellOccupied;
+    return T.Errors.CellOccupied;
   }
 }
-// payload = { player: id, board: Integer, cell: Integer }
+
 export default function(
-  state: types.IGameState,
-  payload: types.ITurnInput
-): { error?: types.Errors; state: types.IGameState } {
+  state: T.IGameState,
+  payload: T.ITurnInput,
+  validate?: boolean
+): { error?: T.Errors; state: T.IGameState } {
   const { player, board, cell } = payload;
 
   console.log('\n\n---playTurn called---');
   console.log('State:', state);
   console.log('Payload:', payload);
 
-  const error = isInvalidTurn(state, payload);
-  if (error) {
-    return { error, state };
+  if (validate) {
+    const error = isInvalidTurn(state, payload);
+    if (error) {
+      return { error, state };
+    }
   }
 
   // Turn is valid, proceed to clone state
   const nextState = cloneDeep(state);
 
   // Capture cell
-  nextState.boards[board].cells[cell] = player;
-  nextState.boards[board].cellsOpen -= 1;
+  const currentBoard = nextState.boards[board];
+  currentBoard.cells[cell] = player;
+  currentBoard.cellsOpen -= 1;
   nextState.totalCellsOpen -= 1;
 
   if (didWinBoard(nextState, payload)) {
-    nextState.boards[board].winner = player;
+    currentBoard.winner = player;
 
     const winningSet = didWinGame(nextState, payload);
 
@@ -157,8 +158,15 @@ export default function(
 
   nextState.turn += 1;
   nextState.currentPlayer = nextState.currentPlayer === 1 ? 2 : 1;
-  nextState.activeBoard =
-    nextState.boards[cell].cellsOpen && !nextState.boards[cell].winner ? cell : null;
+  nextState.activeBoard = isOpenBoard(nextState.boards[cell])
+    ? [cell]
+    : nextState.boards.reduce(
+        (all, b, i) => {
+          if (isOpenBoard(b)) all.push(i);
+          return all;
+        },
+        [] as T.Cell[]
+      );
 
   return { state: nextState };
 }

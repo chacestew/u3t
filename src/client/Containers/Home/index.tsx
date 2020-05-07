@@ -2,12 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 import styled from 'styled-components';
-import {
-  faRobot,
-  faGlobe,
-  faPerson,
-  faUserFriends,
-} from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import palette from '../../utils/palette';
 import MenuItem from './MenuItem';
@@ -103,7 +98,7 @@ export default () => {
         />
 
         <MenuItem
-          url="/ai"
+          url="/playai"
           text="PLAY THE AI"
           icon={faRobot}
           description="Test your strength against the computer."

@@ -102,6 +102,7 @@ const App = () => (
   <>
     <GlobalStyle />
     <Header>
+      <div />
       <nav css="overflow: hidden">
         <div>
           <span className="logo">U3T</span>
@@ -119,6 +120,7 @@ const App = () => (
           </li>
         </ul>
       </nav>
+      <div />
     </Header>
     <Main>
       <Route exact path="/" component={Home} />

@@ -5,11 +5,15 @@ import Grid from '../../Grid';
 import Cell from './Cell';
 import palette from '../../../utils/palette';
 import toSymbol from '../../../utils/toSymbol';
+import * as T from '../../../../shared/types';
 
-//   ${({ active }) => active && `box-shadow: 0 0 0 2px ${palette.boardActiveOutline};`}
-// ${({ potentialBoard }) => potentialBoard && `box-shadow: 0 0 0 2px yellow;`}
+interface StyledProps {
+  shouldDim: boolean;
+  boardWinner: null | T.Player;
+  shouldFlash: boolean;
+}
 
-const NewGrid = styled(Grid)`
+const NewGrid = styled(Grid)<StyledProps>`
   grid-gap: 4px;
   border-style: solid;
   border-color: ${palette.localGridBorder};
@@ -38,43 +42,37 @@ const NewGrid = styled(Grid)`
   background-color: skyblue;`}
 `;
 
+interface Props {
+  flashing: boolean;
+  gameWinner: null | T.Player;
+  winningSet: Array<null | number>;
+  data: T.IBoardState;
+  boardIndex: T.Board;
+  onClick: any;
+  activeBoard: T.Board[];
+}
+
 const Board = ({
   flashing,
   gameWinner,
-  winningSet = [1, 4, 7],
+  winningSet,
   data: { cells, cellsOpen, winner: boardWinner },
   boardIndex,
   onClick,
   activeBoard,
-  onHover,
-  potentialBoard,
-}) => {
-  const _onClick = cellIndex => {
+}: Props) => {
+  const _onClick = (cellIndex: T.Cell) => {
     onClick({ board: boardIndex, cell: cellIndex });
   };
-  const active =
-    !gameWinner &&
-    ((cellsOpen && !boardWinner && activeBoard === null) || activeBoard === boardIndex);
+  const active = !gameWinner && activeBoard.includes(boardIndex);
   const shouldDim = useMemo(
-    () =>
-      // {
-      //   if (gameWinner) {
-      //     if (winningSet.includes(boardIndex)) return false;
-      //     return true
-      //   }
-      //   if (activeBoard) return false;
-      //   if (boardWinner) return true;
-      // }
-      gameWinner ? !winningSet.includes(boardIndex) : !active,
+    () => (gameWinner ? !winningSet.includes(boardIndex) : !active),
     [gameWinner, winningSet, boardIndex, active]
   );
   return (
     <NewGrid
-      onMouseLeave={() => onHover(null)}
-      potentialBoard={potentialBoard}
-      active={active}
       shouldDim={shouldDim}
-      shouldFlash={flashing}
+      shouldFlash={active && flashing}
       boardWinner={boardWinner}
     >
       {cells.map((cell, i) => (
@@ -82,7 +80,7 @@ const Board = ({
           inPlayableArea={active}
           onClick={_onClick}
           cellType={cell}
-          cellIndex={i}
+          cellIndex={i as T.Cell}
           key={i}
         />
       ))}

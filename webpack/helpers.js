@@ -4,7 +4,7 @@ const currentDir = process.cwd();
 const resolvePath = p => path.resolve(currentDir, p);
 
 const paths = {
-  client: resolvePath('src/client/index.js'),
+  client: resolvePath('src/client/index.tsx'),
   dist: resolvePath('dist'),
 };
 

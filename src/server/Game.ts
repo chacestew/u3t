@@ -39,7 +39,7 @@ export default class Game {
   }
 
   public playTurn(payload: ITurnInput): { error?: Errors; state: IGameState } {
-    const nextState = play(this.gameState, payload);
+    const nextState = play(this.gameState, payload, true);
 
     if (!nextState.error) {
       this.gameState = nextState.state;
