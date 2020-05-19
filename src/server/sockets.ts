@@ -4,127 +4,59 @@ import Game, { Status } from './Game';
 import { Application } from 'express';
 
 import { Events } from '../shared/types';
+import { createLobby, games, createId, connections, getGame } from './entities';
+import { JoinLobby, PlayTurn } from './handlers';
+import { BadRequestError, NotAuthenticatedError } from './errors';
+import { Server } from 'http';
 
-const games = new Map<string, Game>();
-const connections = new Map<string, string>();
+const io = socketIO();
 
-const createId = (size: number) =>
-  nanoid('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', size);
-
-function getGame(id: string) {
-  console.log('getGame called. All connections:', connections, id);
-  const room = connections.get(id);
-  if (!room) {
-    // handle no room
+const errorHandler = (
+  err: BadRequestError | NotAuthenticatedError,
+  socket: socketIO.Socket
+) => {
+  switch (err.code) {
+    case 401: {
+      return socket.error(err);
+    }
+    default: {
+      return socket.error(err);
+    }
   }
-  const game = games.get(room);
-  if (!game) {
-    // handle no game
-  }
-  console.log({ room, game });
-  return { room, game };
-}
+};
 
-function createNewGame(): { id: string; game: Game } {
-  const id = createId(4);
-  if (games.has(id)) return createNewGame();
-  const game = new Game();
-  return { id, game };
-}
-
-function createLobby() {
-  const { id, game } = createNewGame();
-  games.set(id, game);
-  return id;
-}
-
-export default (server: Application) => {
-  const io = socketIO(server);
-
-  io.on('connection', socket => {
-    socket.on(Events.CreateLobby, () => {
-      const id = createLobby();
-      console.log('emitting lobby', id);
-      socket.emit(Events.LobbyReady, { id });
-    });
-
-    socket.on(Events.JoinLobby, data => {
-      try {
-        const { room } = data;
-        const game = games.get(room);
-        console.log('join-lobby called', data);
-
-        if (!game) throw new Error(`No game found by that ID: ${room}`); // emit an error back here so clients with old or incorrect links can recover
-
-        socket.join(room, err => {
-          if (err) throw new Error(err);
-          const id = createId(4);
-
-          game.addPlayer(socket.id, id);
-          connections.set(id, room);
-
-          if (game.status === Status.Started) {
-            const state = game.gameState;
-            const players = game.players;
-            io.to(players[0].socket).emit(Events.StartGame, {
-              seat: 1,
-              id: players[0].id,
-              state,
-            });
-            io.to(players[1].socket).emit(Events.StartGame, {
-              seat: 2,
-              id: players[1].id,
-              state,
-            });
-          }
-        });
-      } catch (e) {
-        console.error(e);
-        socket.emit('lobby-join-failed', { error: e.message });
-      }
-    });
-
-    socket.on(Events.PlayTurn, async data => {
-      const { room, game } = getGame(data.id);
-
-      if (!game || !room) throw new Error('No Game or Room');
-
-      const payload = {
-        id: socket.id,
-        player: data.player,
-        board: data.board,
-        cell: data.cell,
-      };
-
-      const nextState = await game.playTurn(payload);
-
-      if (nextState.error) {
-        socket.emit(Events.InvalidTurn, {
-          state: game.gameState,
-          error: nextState.error,
-        });
-      } else {
-        io.to(room).emit(Events.Sync, {
-          state: nextState.state,
-        });
-      }
-    });
-
-    socket.on(Events.Restart, () => {
-      const { room, game } = getGame(socket.id);
-
-      if (!game || !room) return;
-
-      if (game.restartRequested) {
-        const id = createLobby();
-        io.to(room).emit(Events.LobbyReady, { id });
-      } else {
-        game.restartRequested = true;
-      }
-    });
-
-    socket.on('disconnect', () => {
-      console.log('disconnected from GAME!', socket.id);
-    });
+io.on('connection', socket => {
+  socket.on(Events.CreateLobby, () => {
+    const id = createLobby();
+    socket.emit(Events.LobbyReady, { id });
   });
+
+  socket.on(Events.JoinLobby, data =>
+    JoinLobby(data, socket, io).catch((e: string) => {})
+  );
+
+  socket.on(Events.PlayTurn, data => {
+    PlayTurn(data, socket, io).catch(err => errorHandler(err, socket));
+  });
+
+  socket.on(Events.Restart, () => {
+    const { room, game } = getGame(socket.id);
+
+    if (!game || !room) return;
+
+    if (game.restartRequested) {
+      const id = createLobby();
+      io.to(room).emit(Events.LobbyReady, { id });
+    } else {
+      game.restartRequested = true;
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('disconnected from GAME!', socket.id);
+  });
+});
+
+export default (server: Server) => {
+  io.attach(server);
 };

@@ -44,8 +44,17 @@ export enum Events {
 }
 
 export interface EventParams {
+  [Events.JoinLobby]: {
+    room: string;
+  };
   [Events.CreateLobby]: {
     id: string;
+  };
+  [Events.PlayTurn]: {
+    id: string;
+    player: Player;
+    board: Board;
+    cell: Cell;
   };
   [Events.StartGame]: {
     id: string;

@@ -25,7 +25,8 @@ export default class Game {
 
   public addPlayer(socket: string, id: string) {
     if (this.status !== Status.Pending || this.players.length > 2) {
-      throw new Error('Game already started');
+      console.error('Game already started');
+      return;
     }
 
     const numPlayers = this.players.push({ socket, id });

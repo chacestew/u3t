@@ -1,13 +1,15 @@
 /* eslint-disable global-require */
-const app = require('express')();
-const server = require('http').createServer(app);
-const ignoreFavicon = require('express-no-favicons');
-const historyFallback = require('connect-history-api-fallback');
+import express = require('express');
+import http = require('http');
+import historyFallback = require('connect-history-api-fallback');
 
-// Attach sockets
-require('./sockets').default(server);
+import attachSockets from './sockets';
 
-app.use(ignoreFavicon());
+const app = express();
+const server = http.createServer(app);
+
+attachSockets(server);
+
 app.use(historyFallback({ index: '/public/index.html' }));
 
 const start = () => {
