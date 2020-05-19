@@ -5,20 +5,17 @@ import * as T from '../../shared/types';
 const last = (array: any[]) => array[array.length - 1];
 
 function reducer(
-  state: T.IGameState[],
+  state: T.IGameState,
   action: { type: string; payload: T.IGameState | T.ITurnInput }
 ) {
   switch (action.type) {
     case 'PLAY-TURN': {
-      const player = 1;
-      const { board, cell } = action.payload as T.ITurnInput;
-      const { state: nextState } = playTurn(last(state), { player, board, cell });
-      return state.concat(nextState);
+      const { player, board, cell } = action.payload as T.ITurnInput;
+      const { state: nextState } = playTurn(state, { player, board, cell });
+      return nextState;
     }
     case 'SET-STATE': {
-      const next = [...state];
-      state[state.length - 1] = action.payload as T.IGameState;
-      return next;
+      return action.payload as T.IGameState;
     }
     default:
       return state;
@@ -30,8 +27,8 @@ interface Dispatchers {
   setState: (payload: T.IGameState) => void;
 }
 
-export default function(): [T.IGameState[], Dispatchers] {
-  const [state, dispatch] = useReducer(reducer, [getInitialState()]);
+export default function(): [T.IGameState, Dispatchers] {
+  const [state, dispatch] = useReducer(reducer, getInitialState());
   const dispatchers = {
     playTurn: (payload: T.ITurnInput) => {
       dispatch({ type: 'PLAY-TURN', payload });

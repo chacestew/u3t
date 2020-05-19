@@ -8,10 +8,9 @@ const HotSeat = () => {
   const [state, { playTurn }] = useGameReducer();
   const [status, setStatus] = useState('');
   const [flashing, setFlashing] = useState(false);
-  const gameState = state[state.length - 1];
 
   const onValidTurn = ({ board, cell }: T.ITurnInput) => {
-    const player = gameState.currentPlayer;
+    const player = state.currentPlayer;
 
     playTurn({ player, board, cell });
   };
@@ -24,9 +23,9 @@ const HotSeat = () => {
     <>
       <Board
         onFinish={() => window.alert('Game finished!')}
-        state={gameState}
+        state={state}
         status={status}
-        seat={gameState.currentPlayer}
+        seat={state.currentPlayer}
         onValidTurn={onValidTurn}
         onInvalidTurn={onInvalidTurn}
       />

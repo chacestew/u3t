@@ -13,23 +13,9 @@ import {
   Errors,
 } from '../../../shared/types';
 
-const socket = io();
+import useGameReducer from '../../hooks/useGameReducer';
 
-function gameReducer(state: IGameState, action: { type: string; payload: any }) {
-  switch (action.type) {
-    case 'PLAY-TURN': {
-      const player = 1;
-      const { board, cell } = action.payload;
-      const nextState = playTurn(state, { player, board, cell });
-      return nextState.state;
-    }
-    case 'SET': {
-      return action.payload;
-    }
-    default:
-      return state;
-  }
-}
+const socket = io();
 
 const OnlineGame = ({
   history,
@@ -39,9 +25,8 @@ const OnlineGame = ({
 }: RouteComponentProps<{ id: string }>) => {
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
-  // const [gameState, setGameState] = useState(getInitialState());
   const [status, setStatus] = useState<string | undefined>('');
-  const [state, dispatch] = useReducer(gameReducer, getInitialState());
+  const [state, { playTurn, setState }] = useGameReducer();
 
   useEffect(() => {
     socket.on(Events.LobbyReady, ({ id }: { id: string }) => {
@@ -52,18 +37,15 @@ const OnlineGame = ({
     socket.on(Events.StartGame, (data: EventParams[Events.StartGame]) => {
       setPlayerId(data.id);
       setPlayerSeat(data.seat);
-      dispatch({ type: 'SET', payload: data.state });
-      // setGameState(data.state);
+      setState(data.state);
     });
 
     socket.on(Events.Sync, (data: EventParams[Events.Sync]) => {
-      dispatch({ type: 'SET', payload: data.state });
-      // setGameState(data.state);
+      setState(data.state);
     });
 
     socket.on(Events.InvalidTurn, (data: EventParams[Events.InvalidTurn]) => {
-      // setGameState(data.state);
-      dispatch({ type: 'SET', payload: data.state });
+      setState(data.state);
       setStatus(data.error);
     });
 
@@ -87,9 +69,7 @@ const OnlineGame = ({
     const player = playerSeat as Player;
     const id = playerId;
 
-    // const { state } = playTurn(gameState, { player, board, cell });
-
-    dispatch({ type: 'PLAY-TURN', payload: { player, board, cell } });
+    playTurn({ player, board, cell });
     socket.emit('play-turn', { room, id, player, board, cell });
   };
 
@@ -110,7 +90,7 @@ const OnlineGame = ({
       seat={playerSeat}
       state={state}
       onValidTurn={onValidTurn}
-      doNotValidate
+      // doNotValidate
       onInvalidTurn={onInvalidTurn}
       status={status}
     />
