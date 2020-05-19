@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import io from 'socket.io-client';
 import playTurn, { getInitialState } from '../../../shared/game';
 import Board from '../../Components/GameArea/GlobalBoard';
@@ -15,6 +15,22 @@ import {
 
 const socket = io();
 
+function gameReducer(state: IGameState, action: { type: string; payload: any }) {
+  switch (action.type) {
+    case 'PLAY-TURN': {
+      const player = 1;
+      const { board, cell } = action.payload;
+      const nextState = playTurn(state, { player, board, cell });
+      return nextState.state;
+    }
+    case 'SET': {
+      return action.payload;
+    }
+    default:
+      return state;
+  }
+}
+
 const OnlineGame = ({
   history,
   match: {
@@ -23,8 +39,9 @@ const OnlineGame = ({
 }: RouteComponentProps<{ id: string }>) => {
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
-  const [gameState, setGameState] = useState(getInitialState());
+  // const [gameState, setGameState] = useState(getInitialState());
   const [status, setStatus] = useState<string | undefined>('');
+  const [state, dispatch] = useReducer(gameReducer, getInitialState());
 
   useEffect(() => {
     socket.on(Events.LobbyReady, ({ id }: { id: string }) => {
@@ -35,15 +52,18 @@ const OnlineGame = ({
     socket.on(Events.StartGame, (data: EventParams[Events.StartGame]) => {
       setPlayerId(data.id);
       setPlayerSeat(data.seat);
-      setGameState(data.state);
+      dispatch({ type: 'SET', payload: data.state });
+      // setGameState(data.state);
     });
 
     socket.on(Events.Sync, (data: EventParams[Events.Sync]) => {
-      setGameState(data.state);
+      dispatch({ type: 'SET', payload: data.state });
+      // setGameState(data.state);
     });
 
     socket.on(Events.InvalidTurn, (data: EventParams[Events.InvalidTurn]) => {
-      setGameState(data.state);
+      // setGameState(data.state);
+      dispatch({ type: 'SET', payload: data.state });
       setStatus(data.error);
     });
 
@@ -67,9 +87,9 @@ const OnlineGame = ({
     const player = playerSeat as Player;
     const id = playerId;
 
-    const { state } = playTurn(gameState, { player, board, cell });
+    // const { state } = playTurn(gameState, { player, board, cell });
 
-    setGameState(state);
+    dispatch({ type: 'PLAY-TURN', payload: { player, board, cell } });
     socket.emit('play-turn', { room, id, player, board, cell });
   };
 
@@ -83,15 +103,12 @@ const OnlineGame = ({
     }, 1000);
   };
 
-  if (playerSeat === null && room) {
-    return `Share this to your friend: ${room}`;
-  }
-
   return (
     <Board
+      shareLink={playerSeat === null && room}
       onFinish={onFinish}
       seat={playerSeat}
-      state={gameState}
+      state={state}
       onValidTurn={onValidTurn}
       doNotValidate
       onInvalidTurn={onInvalidTurn}

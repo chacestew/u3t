@@ -88,13 +88,13 @@ const Header = styled.header`
     li {
       padding: 0 2em;
       display: inline;
-
-      a {
-        font-weight: bold;
-        text-decoration: none;
-        color: ${palette.textColor};
-      }
     }
+  }
+
+  a {
+    font-weight: bold;
+    text-decoration: none;
+    color: ${palette.textColor};
   }
 `;
 
@@ -105,8 +105,9 @@ const App = () => (
       <div />
       <nav css="overflow: hidden">
         <div>
-          <span className="logo">U3T</span>
-          {/* <span className="sub-logo">Ultimate Tic Tac Toe</span> */}
+          <Link className="logo" to="/">
+            U3T
+          </Link>
         </div>
         <ul>
           <li>

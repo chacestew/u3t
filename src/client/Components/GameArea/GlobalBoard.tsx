@@ -7,6 +7,8 @@ import { StaticCell } from './LocalBoard/Cell';
 import palette from '../../utils/palette';
 import { isInvalidTurn } from '../../../shared/game';
 import * as T from '../../../shared/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 const Bar = styled.div`
   display: flex;
@@ -51,6 +53,51 @@ const Header = ({ turn, seat }: { turn: number; seat: null | T.Player }) => {
   );
 };
 
+const ShareHeader = () => {
+  const handleCopy = () => {
+    const el = document.createElement('textarea');
+    el.value = window.location.href;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
+  return (
+    <Bar>
+      <div
+        css={`
+          font-size: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: baseline;
+          cursor: pointer;
+        `}
+        onClick={handleCopy}
+      >
+        <div>
+          <b>Share link to your opponent:</b>{' '}
+          {window.location.host + window.location.pathname}{' '}
+          <FontAwesomeIcon icon={faCopy} />
+        </div>
+      </div>
+      {/* <div
+        css={`
+          font-size: 16px;
+          font-weight: bold;
+          display: flex;
+          align-items: baseline;
+        `}
+      >
+        Waiting for opponent...
+      </div> */}
+    </Bar>
+  );
+};
+
 const Status = ({ status = '' }) => {
   const a = 'a';
   return (
@@ -72,6 +119,7 @@ interface Props {
 }
 
 const GameView = ({
+  shareLink,
   state,
   status,
   seat,
@@ -107,7 +155,7 @@ const GameView = ({
 
   return (
     <Container>
-      <Header seat={seat} turn={turn} />
+      {shareLink ? <ShareHeader /> : <Header seat={seat} turn={turn} />}
       <Grid
         css={`
           width: 100vw;
