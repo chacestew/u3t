@@ -34,16 +34,16 @@ const StyledCell = styled.div<StaticProps>`
   align-items: center;
   cursor: pointer;
   box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
+  background-color: ${({ cellType }) => bgColor(cellType)};
   ${({ cellType, inPlayableArea }) =>
-    `background-color: ${bgColor(cellType)}
-    ${
-      !cellType && inPlayableArea
-        ? `&:hover {
-      background-color: ${palette.cellHoverBg}
-    }`
-        : ''
+    !cellType &&
+    inPlayableArea &&
+    `@media (hover: hover) {
+      &:hover {
+       background-color: ${palette.cellHoverBg}
+      }
     }
-    `}
+  `}
   svg {
     width: 50% !important;
     height: 50% !important;
