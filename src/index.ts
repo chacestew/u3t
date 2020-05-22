@@ -3,7 +3,7 @@ import express = require('express');
 import http = require('http');
 import historyFallback = require('connect-history-api-fallback');
 
-import attachSockets from './sockets';
+import attachSockets from './server/sockets';
 
 const app = express();
 const server = http.createServer(app);
@@ -24,14 +24,14 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
-  const config = require('../../webpack/config.dev');
+  const config = require('../webpack/config.dev');
   const compiler = webpack(config);
 
   const webpackDevServer = webpackDevMiddleware(compiler, {
     overlay: true,
     hot: true,
     stats: {
-      warnings: false,
+      warnings: true,
       colors: true,
       timings: true,
     },
