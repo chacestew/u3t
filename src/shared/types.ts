@@ -36,6 +36,8 @@ export enum Events {
   CreateLobby = 'create-lobby',
   LobbyReady = 'lobby-ready',
   StartGame = 'start-game',
+  RejoinGame = 'rejoin-game',
+  RejoinedGame = 'rejoined-game',
   JoinLobby = 'join-lobby',
   PlayTurn = 'play-turn',
   InvalidTurn = 'invalid-turn',
@@ -58,6 +60,13 @@ export interface EventParams {
   };
   [Events.StartGame]: {
     id: string;
+    seat: Player;
+    state: IGameState;
+  };
+  [Events.RejoinGame]: {
+    id: string;
+  };
+  [Events.RejoinedGame]: {
     seat: Player;
     state: IGameState;
   };

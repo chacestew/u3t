@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import io from 'socket.io-client';
 import playTurn, { getInitialState } from '../../../shared/game';
-import Board from '../../Components/GameArea/GlobalBoard';
+import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import { match, RouteComponentProps } from 'react-router-dom';
 import {
   IGameState,
@@ -15,18 +15,29 @@ import {
 
 import useGameReducer from '../../hooks/useGameReducer';
 
-const socket = io();
+const useSocket = () => {
+  const socketRef = useRef<SocketIOClient.Socket>();
+  console.log('[useSocket]: Called');
 
-const OnlineGame = ({
-  history,
-  match: {
-    params: { id: room },
-  },
-}: RouteComponentProps<{ id: string }>) => {
+  if (!socketRef.current) {
+    console.log('[useSocket]: Creating new socket');
+    socketRef.current = io();
+  }
+
+  return socketRef.current;
+};
+
+const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => {
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
   const [status, setStatus] = useState<string | undefined>('');
   const [state, { playTurn, setState }] = useGameReducer();
+  const {
+    params: { id: room },
+  } = match;
+
+  const socket = useSocket();
+  console.log('rendering with room:', room);
 
   useEffect(() => {
     socket.on(Events.LobbyReady, ({ id }: { id: string }) => {
@@ -34,33 +45,47 @@ const OnlineGame = ({
       history.replace(`/play/${id}`);
     });
 
-    socket.on(Events.StartGame, (data: EventParams[Events.StartGame]) => {
-      setPlayerId(data.id);
-      setPlayerSeat(data.seat);
-      setState(data.state);
+    socket.on(Events.StartGame, ({ id, seat, state }: EventParams[Events.StartGame]) => {
+      console.log('room here', room);
+      localStorage.setItem(room, id);
+      setPlayerId(id);
+      setPlayerSeat(seat);
+      setState(state);
     });
 
-    socket.on(Events.Sync, (data: EventParams[Events.Sync]) => {
-      setState(data.state);
+    socket.on(Events.Sync, ({ state }: EventParams[Events.Sync]) => {
+      setState(state);
     });
 
-    socket.on(Events.InvalidTurn, (data: EventParams[Events.InvalidTurn]) => {
-      setState(data.state);
-      setStatus(data.error);
+    socket.on(Events.InvalidTurn, ({ state, error }: EventParams[Events.InvalidTurn]) => {
+      setState(state);
+      setStatus(error);
     });
+
+    socket.on(
+      Events.RejoinedGame,
+      ({ state, seat }: EventParams[Events.RejoinedGame]) => {
+        setState(state);
+        setPlayerSeat(seat);
+      }
+    );
 
     return () => {
       console.log('Closing socket');
       socket.close();
     };
-  }, [history]);
+  }, []);
 
   useEffect(() => {
     if (room) {
-      console.log('Joining lobby...', room);
-      socket.emit(Events.JoinLobby, { room });
+      const savedId = localStorage.getItem(room);
+      if (savedId) {
+        setPlayerId(savedId);
+        socket.emit(Events.RejoinGame, { id: savedId });
+      } else {
+        socket.emit(Events.JoinLobby, { room });
+      }
     } else {
-      console.log('Creating lobby');
       socket.emit(Events.CreateLobby);
     }
   }, [room]);
@@ -85,6 +110,7 @@ const OnlineGame = ({
 
   return (
     <Board
+      loading={playerId && !playerSeat}
       shareLink={playerSeat === null && room}
       onFinish={onFinish}
       seat={playerSeat}
@@ -93,6 +119,9 @@ const OnlineGame = ({
       // doNotValidate
       onInvalidTurn={onInvalidTurn}
       status={status}
+      onPlayAgainConfirm={() => {
+        socket.emit('restart-game', { room, playerId });
+      }}
     />
   );
 };

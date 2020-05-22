@@ -5,7 +5,14 @@ import { Application } from 'express';
 
 import io from './sockets';
 import { Events, EventParams } from '../shared/types';
-import { createLobby, games, createId, connections, getGame } from './entities';
+import {
+  createLobby,
+  games,
+  createId,
+  connections,
+  getGameById,
+  getGameByRoom,
+} from './entities';
 
 export const JoinLobby = async (
   data: EventParams[Events.JoinLobby],
@@ -13,7 +20,7 @@ export const JoinLobby = async (
   io: socketIO.Server
 ) => {
   const { room } = data;
-  const game = games.get(room) as Game;
+  const { game } = getGameByRoom(room);
 
   socket.join(room, err => {
     if (err) throw new Error(err);
@@ -39,14 +46,28 @@ export const JoinLobby = async (
   });
 };
 
+export const Reconnect = async (
+  data: any,
+  socket: socketIO.Socket,
+  io: socketIO.Server
+) => {
+  const { room, game } = getGameById(data.id);
+
+  socket.join(room, err => {
+    if (err) throw new Error(err);
+    socket.emit(Events.RejoinedGame, {
+      seat: game.players.findIndex(e => e.id === data.id) + 1,
+      state: game.gameState,
+    });
+  });
+};
+
 export const PlayTurn = async (
   data: EventParams[Events.PlayTurn],
   socket: socketIO.Socket,
   io: socketIO.Server
 ) => {
-  const { room, game } = getGame(data.id);
-
-  if (!game || !room) throw new Error('No Game or Room');
+  const { room, game } = getGameById(data.id);
 
   const payload = {
     id: socket.id,

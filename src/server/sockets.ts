@@ -1,11 +1,8 @@
-import nanoid = require('nanoid/generate');
 import socketIO = require('socket.io');
-import Game, { Status } from './Game';
-import { Application } from 'express';
 
 import { Events } from '../shared/types';
-import { createLobby, games, createId, connections, getGame } from './entities';
-import { JoinLobby, PlayTurn } from './handlers';
+import { createLobby, getGameById } from './entities';
+import { JoinLobby, PlayTurn, Reconnect } from './handlers';
 import { BadRequestError, NotAuthenticatedError } from './errors';
 import { Server } from 'http';
 
@@ -35,12 +32,16 @@ io.on('connection', socket => {
     JoinLobby(data, socket, io).catch((e: string) => {})
   );
 
+  socket.on(Events.RejoinGame, data =>
+    Reconnect(data, socket, io).catch(e => console.error(e))
+  );
+
   socket.on(Events.PlayTurn, data => {
     PlayTurn(data, socket, io).catch(err => errorHandler(err, socket));
   });
 
-  socket.on(Events.Restart, () => {
-    const { room, game } = getGame(socket.id);
+  socket.on(Events.Restart, data => {
+    const { room, game } = getGameById(data.playerId);
 
     if (!game || !room) return;
 

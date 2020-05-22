@@ -8,7 +8,7 @@ export const connections = new Map<string, string>();
 export const createId = (size: number) =>
   nanoid('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', size);
 
-export function getGame(id: string) {
+export function getGameById(id: string) {
   const room = connections.get(id);
   if (!room) {
     throw new NotAuthenticatedError(`No room for ID: ${id}`);
@@ -16,6 +16,14 @@ export function getGame(id: string) {
   const game = games.get(room);
   if (!game) {
     throw new NotAuthenticatedError(`No game for ID: ${id}`);
+  }
+  return { room, game };
+}
+
+export function getGameByRoom(room: string) {
+  const game = games.get(room);
+  if (!game) {
+    throw new NotAuthenticatedError(`No game for ID: ${room}`);
   }
   return { room, game };
 }
