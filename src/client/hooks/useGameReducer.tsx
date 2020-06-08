@@ -2,20 +2,27 @@ import { useReducer } from 'react';
 import playTurn, { getInitialState } from '../../shared/game';
 import * as T from '../../shared/types';
 
-const last = (array: any[]) => array[array.length - 1];
+interface State {
+  turnList: T.ITurnInput[];
+  gameState: T.IGameState;
+}
 
 function reducer(
-  state: T.IGameState,
+  state: State,
   action: { type: string; payload: T.IGameState | T.ITurnInput }
-) {
+): State {
   switch (action.type) {
     case 'PLAY-TURN': {
-      const { player, board, cell } = action.payload as T.ITurnInput;
-      const { state: nextState } = playTurn(state, { player, board, cell });
-      return nextState;
+      const turnInput = action.payload as T.ITurnInput;
+      const { turnList, gameState } = state;
+
+      return {
+        turnList: turnList.concat(turnInput),
+        gameState: playTurn(gameState, turnInput).state,
+      };
     }
     case 'SET-STATE': {
-      return action.payload as T.IGameState;
+      return { ...state, gameState: action.payload as T.IGameState };
     }
     default:
       return state;
@@ -27,8 +34,11 @@ interface Dispatchers {
   setState: (payload: T.IGameState) => void;
 }
 
-export default function(): [T.IGameState, Dispatchers] {
-  const [state, dispatch] = useReducer(reducer, getInitialState());
+export default function(): [State, Dispatchers] {
+  const [state, dispatch] = useReducer(reducer, {
+    turnList: [],
+    gameState: getInitialState(),
+  });
   const dispatchers = {
     playTurn: (payload: T.ITurnInput) => {
       dispatch({ type: 'PLAY-TURN', payload });

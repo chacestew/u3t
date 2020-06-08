@@ -9,7 +9,8 @@ import Home from './Home';
 import HotSeat from './HotSeat';
 import PlayAI from './PlayAI';
 import Rules from './Rules';
-import palette from '../utils/palette';
+import palette, { gridSize } from '../utils/palette';
+import { media } from '../styles/mixins';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -28,20 +29,28 @@ const GlobalStyle = createGlobalStyle`
 
     #root {
       background-color: ${palette.mainBg};
+      height: 100vh;
     min-height: 100vh;
      margin: 0 auto;
      display: flex;
      flex-direction: column;
+
+     ${media.aboveMobile`height: auto`}
     }
   }
 `;
 
 const Main = styled.main`
   display: flex;
+  flex-direction: column;
   flex: 1;
   margin: 0 auto;
-  max-width: 640px;
+  max-width: ${gridSize};
   width: 100%;
+
+  overflow: hidden;
+
+  ${media.aboveMobile`overflow: auto`}
 `;
 
 const Header = styled.header`
@@ -53,7 +62,8 @@ const Header = styled.header`
   font-weight: bold;
 
   nav {
-    max-width: 640px;
+    padding: 1em;
+    max-width: ${gridSize};
     width: 100%;
     margin-right: auto;
     margin-left: auto;
@@ -134,9 +144,10 @@ const App = () => (
       css={`
         padding: 1em;
         background-color: ${palette.header};
+        color: white;
       `}
     >
-      Copyright Chace Stewart
+      Copyright Chace Stewart - About - Contact
     </footer>
   </>
 );

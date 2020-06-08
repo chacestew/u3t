@@ -31,7 +31,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
   const [status, setStatus] = useState<string | undefined>('');
-  const [state, { playTurn, setState }] = useGameReducer();
+  const [{ gameState, turnList }, { playTurn, setState }] = useGameReducer();
   const {
     params: { id: room },
   } = match;
@@ -95,33 +95,30 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     const id = playerId;
 
     playTurn({ player, board, cell });
-    socket.emit('play-turn', { room, id, player, board, cell });
+    socket.emit(Events.PlayTurn, { room, id, player, board, cell });
   };
 
   const onInvalidTurn = (error: Errors) => {
     setStatus(error);
   };
 
-  const onFinish = () => {
-    setTimeout(() => {
-      true && socket.emit('restart-game', { room, playerId });
-    }, 1000);
+  const restartGame = () => {
+    socket.emit(Events.Restart, { id: playerId });
   };
 
   return (
     <Board
       loading={playerId && !playerSeat}
       shareLink={playerSeat === null && room}
-      onFinish={onFinish}
+      // onFinish={onFinish}
+      turnList={turnList}
       seat={playerSeat}
-      state={state}
+      state={gameState}
       onValidTurn={onValidTurn}
       // doNotValidate
       onInvalidTurn={onInvalidTurn}
       status={status}
-      onPlayAgainConfirm={() => {
-        socket.emit('restart-game', { room, playerId });
-      }}
+      onRestartGame={restartGame}
     />
   );
 };

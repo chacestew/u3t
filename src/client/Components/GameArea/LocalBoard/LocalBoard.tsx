@@ -4,19 +4,15 @@ import styled, { css } from 'styled-components';
 import Grid from '../../Grid';
 import Cell from './Cell';
 import palette from '../../../utils/palette';
-import toSymbol from '../../../utils/toSymbol';
 import * as T from '../../../../shared/types';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface StyledProps {
-  shouldDim: boolean;
-  boardWinner: null | T.Player;
-  shouldFlash: boolean;
-}
-
-const NewGrid = styled(Grid)<StyledProps>`
-  grid-gap: 4px;
+const InnerGrid = styled(Grid)`
+  grid-gap: 6px;
   border-style: solid;
-  border-color: ${palette.localGridBorder};
+  border-color: ${palette.boardBorder};
   border-width: 0 4px 4px 0;
   padding: 8px;
   &:nth-child(3n) {
@@ -25,21 +21,9 @@ const NewGrid = styled(Grid)<StyledProps>`
   &:nth-child(n + 7) {
     border-bottom: 0;
   }
-  ${({ shouldDim }) => shouldDim && 'opacity: 0.6;'}
-  ${({ boardWinner }) =>
-    boardWinner &&
-    css`&:before {
-      content: '${toSymbol(boardWinner)}';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 7.1em;
-    }`}
-  ${({ shouldFlash }) =>
-    shouldFlash &&
-    `
-  background-color: skyblue;`}
+  &.flashing {
+    background-color: skyblue;
+  }
 `;
 
 interface Props {
@@ -70,13 +54,26 @@ const Board = ({
     [gameWinner, winningSet, boardIndex, active]
   );
   return (
-    <NewGrid
-      shouldDim={shouldDim}
-      shouldFlash={active && flashing}
-      boardWinner={boardWinner}
-    >
+    <InnerGrid className={active && flashing ? 'flashing' : undefined}>
+      {boardWinner && (
+        <FontAwesomeIcon
+          color={palette.gameBarBg}
+          style={{
+            position: 'absolute',
+            width: '80%',
+            height: '80%',
+            top: '50%',
+            left: '50%',
+            marginTop: '-40%',
+            marginLeft: '-40%',
+            zIndex: 1,
+          }}
+          icon={boardWinner === 1 ? faTimes : faCircle}
+        />
+      )}
       {cells.map((cell, i) => (
         <Cell
+          shouldDim={shouldDim}
           inPlayableArea={active}
           onClick={_onClick}
           cellType={cell}
@@ -84,7 +81,7 @@ const Board = ({
           key={i}
         />
       ))}
-    </NewGrid>
+    </InnerGrid>
   );
 };
 

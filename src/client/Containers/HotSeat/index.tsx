@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import playTurn, { getInitialState, generateRandomMove } from '../../../shared/game';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import * as T from '../../../shared/types';
 import useGameReducer from '../../hooks/useGameReducer';
 
 const HotSeat = () => {
-  const [state, { playTurn }] = useGameReducer();
+  const [{ gameState, turnList }, { playTurn }] = useGameReducer();
   const [status, setStatus] = useState('');
-  const [flashing, setFlashing] = useState(false);
 
   const onValidTurn = ({ board, cell }: T.ITurnInput) => {
-    const player = state.currentPlayer;
+    const player = gameState.currentPlayer;
 
     playTurn({ player, board, cell });
   };
@@ -21,10 +19,11 @@ const HotSeat = () => {
 
   return (
     <Board
-      onFinish={() => window.alert('Game finished!')}
-      state={state}
+      onFinish={() => false && window.alert('Game finished!')}
+      state={gameState}
+      turnList={turnList}
       status={status}
-      seat={state.currentPlayer}
+      seat={gameState.currentPlayer}
       onValidTurn={onValidTurn}
       onInvalidTurn={onInvalidTurn}
     />
