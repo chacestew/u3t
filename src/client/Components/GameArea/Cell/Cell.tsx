@@ -41,10 +41,14 @@ const CellContainer = styled.div<Props>`
   }
 `;
 
-const Cell = ({ ...rest }: Props) => (
-  <CellContainer {...rest}>
-    {rest.cellType && <FontAwesomeIcon icon={rest.cellType === 1 ? faTimes : faCircle} />}
-  </CellContainer>
-);
+const Cell = ({ ...rest }: Props) => {
+  return (
+    <CellContainer {...rest}>
+      {rest.cellType && (
+        <FontAwesomeIcon icon={rest.cellType === 1 ? faTimes : faCircle} />
+      )}
+    </CellContainer>
+  );
+};
 
 export default Cell;

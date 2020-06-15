@@ -8,13 +8,17 @@ import * as T from '../../../../shared/types';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { media } from '../../../styles/mixins';
 
 const InnerGrid = styled(Grid)`
-  grid-gap: 6px;
+  grid-gap: 4px;
   border-style: solid;
   border-color: ${palette.boardBorder};
   border-width: 0 4px 4px 0;
-  padding: 8px;
+  padding: 6px;
+
+  ${media.aboveMobileS`grid-gap: 6px; padding: 8px;`}
+
   &:nth-child(3n) {
     border-right: 0;
   }
@@ -40,7 +44,7 @@ const Board = ({
   flashing,
   gameWinner,
   winningSet,
-  data: { cells, cellsOpen, winner: boardWinner },
+  data: { cells, winner: boardWinner },
   boardIndex,
   onClick,
   activeBoard,

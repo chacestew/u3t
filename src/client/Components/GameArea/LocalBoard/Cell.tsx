@@ -32,7 +32,10 @@ const InteractiveCell = ({
   onClick,
   shouldDim,
 }: Props) => {
-  const handleClick = () => onClick(cellIndex);
+  const handleClick = () => {
+    console.log('clicked!');
+    onClick(cellIndex);
+  };
   return (
     <DimmableHoverableCell
       shouldDim={shouldDim}

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import * as T from '../../../../shared/types';
 import BaseCell from '../Cell/Cell';
-import BoardSVG from '../Header/BoardSVG';
+import BoardSVG from '../BoardSVG';
 import styled from 'styled-components';
 
 const Cell = styled(BaseCell)`

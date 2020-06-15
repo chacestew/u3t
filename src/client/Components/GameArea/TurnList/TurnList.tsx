@@ -9,7 +9,7 @@ import RestartButton from './RestartButton';
 
 const bgColor = '#f8f8ff'; //'#594b5c';
 
-const StyledTurnList = styled.div`
+const StyledTurnList = styled.div<{ expanded: boolean }>`
   ${flexColumns}
   flex: 1;
   justify-content: flex-end;
@@ -17,6 +17,20 @@ const StyledTurnList = styled.div`
   font-weight: bold;
   font-size: 16px;
   color: #594b5c;
+  margin-top: 0.5em;
+  z-index: 1;
+
+  ${({ expanded }) =>
+    expanded &&
+    `height: 100%; 
+     position: absolute;
+     bottom: 0;
+     width: 100%;`}
+
+  @media (min-height: 700px) {
+    position: relative;
+    bottom: 0;
+  }
 
   .log-header {
     display: flex;
@@ -46,10 +60,9 @@ const StyledTurnList = styled.div`
     flex: 1;
     width: 100%;
     overflow-y: scroll;
-    font-size: 18px;
     color: white;
 
-    // ${media.aboveMobile`max-height: 150px;`}
+    // ${media.aboveMobileL`max-height: 150px;`}
 `;
 
 const useStickyExpandedState = () => {
@@ -75,7 +88,7 @@ const TurnList = ({ turnList }: { turnList: T.ITurnInput[] }) => {
   };
 
   return (
-    <StyledTurnList>
+    <StyledTurnList expanded={expanded}>
       <div className="log-header">
         <button className="expand-button" onClick={onClick}>
           Turn Log

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
-import io from 'socket.io-client';
-import playTurn, { getInitialState } from '../../../shared/game';
+import React, { useState, useEffect } from 'react';
+
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import { match, RouteComponentProps } from 'react-router-dom';
 import {
@@ -14,30 +13,23 @@ import {
 } from '../../../shared/types';
 
 import useGameReducer from '../../hooks/useGameReducer';
-
-const useSocket = () => {
-  const socketRef = useRef<SocketIOClient.Socket>();
-  console.log('[useSocket]: Called');
-
-  if (!socketRef.current) {
-    console.log('[useSocket]: Creating new socket');
-    socketRef.current = io();
-  }
-
-  return socketRef.current;
-};
+import { Header } from '../../Components/GameArea/Header/Header';
+import useSocket from '../../hooks/useSocket';
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import { RelativeBox } from '../../styles/Utils';
 
 const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => {
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
-  const [status, setStatus] = useState<string | undefined>('');
+  const [isSpectator, setIsSpectator] = useState(false);
+  const [restartRequested, setRestartRequested] = useState(false);
   const [{ gameState, turnList }, { playTurn, setState }] = useGameReducer();
+
+  const socket = useSocket();
+
   const {
     params: { id: room },
   } = match;
-
-  const socket = useSocket();
-  console.log('rendering with room:', room);
 
   useEffect(() => {
     socket.on(Events.LobbyReady, ({ id }: { id: string }) => {
@@ -51,6 +43,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
       setPlayerId(id);
       setPlayerSeat(seat);
       setState(state);
+      setRestartRequested(false);
     });
 
     socket.on(Events.Sync, ({ state }: EventParams[Events.Sync]) => {
@@ -59,8 +52,15 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
 
     socket.on(Events.InvalidTurn, ({ state, error }: EventParams[Events.InvalidTurn]) => {
       setState(state);
-      setStatus(error);
     });
+
+    socket.on(
+      Events.JoinedAsSpectator,
+      ({ state }: EventParams[Events.JoinedAsSpectator]) => {
+        setIsSpectator(true);
+        setState(state);
+      }
+    );
 
     socket.on(
       Events.RejoinedGame,
@@ -69,6 +69,10 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
         setPlayerSeat(seat);
       }
     );
+
+    socket.on(Events.RestartRequested, () => {
+      setRestartRequested(true);
+    });
 
     return () => {
       console.log('Closing socket');
@@ -95,31 +99,36 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     const id = playerId;
 
     playTurn({ player, board, cell });
-    socket.emit(Events.PlayTurn, { room, id, player, board, cell });
-  };
-
-  const onInvalidTurn = (error: Errors) => {
-    setStatus(error);
+    socket.emit(Events.PlayTurn, { room, id, player, board, cell, dev: window.dev });
   };
 
   const restartGame = () => {
     socket.emit(Events.Restart, { id: playerId });
   };
 
+  const headerMode = isSpectator
+    ? 'spectator'
+    : room && !playerSeat
+    ? 'share'
+    : playerSeat
+    ? 'online'
+    : 'loading';
+
   return (
-    <Board
-      loading={playerId && !playerSeat}
-      shareLink={playerSeat === null && room}
-      // onFinish={onFinish}
-      turnList={turnList}
-      seat={playerSeat}
-      state={gameState}
-      onValidTurn={onValidTurn}
-      // doNotValidate
-      onInvalidTurn={onInvalidTurn}
-      status={status}
-      onRestartGame={restartGame}
-    />
+    <>
+      <Header
+        room={room}
+        state={gameState}
+        seat={playerSeat!}
+        mode={headerMode}
+        onPlayAgainConfirm={restartGame}
+        restartRequested={restartRequested}
+      />
+      <RelativeBox>
+        <Board seat={playerSeat} state={gameState} onValidTurn={onValidTurn} />
+        <TurnList turnList={turnList} />
+      </RelativeBox>
+    </>
   );
 };
 

@@ -6,7 +6,12 @@ export const flexColumns = `
 `;
 
 export const media = {
-  aboveMobile: (styles: TemplateStringsArray) => css`
+  aboveMobileS: (styles: TemplateStringsArray) => css`
+    @media (min-width: 321px) {
+      ${css(styles)}
+    }
+  `,
+  aboveMobileL: (styles: TemplateStringsArray) => css`
     @media (min-width: 426px) {
       ${css(styles)}
     }

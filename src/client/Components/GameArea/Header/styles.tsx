@@ -8,11 +8,9 @@ export const Text = styled.div<{
   justify?: string;
   opacity?: number;
 }>`
-  font-size: ${props => props.fontSize || '18px'};
   font-weight: bold;
   display: flex;
   align-items: center;
-  // width: 24%;
   opacity: ${({ opacity }) => opacity || 1};
   justify-content: ${({ justify }) => justify};
 `;
@@ -23,7 +21,8 @@ export const Bar = styled.div`
   background-color: ${palette.gameBarBg};
   padding: 1em;
   color: ${palette.textColor};
-  margin-bottom: 10px;
+  margin-bottom: 0.5em;
+  font-size: 18px;
 `;
 
 export const Cell = styled(BaseCell)`

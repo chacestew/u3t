@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import * as T from '../../../shared/types';
 import useGameReducer from '../../hooks/useGameReducer';
+import { Header } from '../../Components/GameArea/Header/Header';
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import { RelativeBox } from '../../styles/Utils';
 
 const HotSeat = () => {
-  const [{ gameState, turnList }, { playTurn }] = useGameReducer();
-  const [status, setStatus] = useState('');
+  const [{ gameState, turnList }, { playTurn, restart }] = useGameReducer();
 
   const onValidTurn = ({ board, cell }: T.ITurnInput) => {
     const player = gameState.currentPlayer;
@@ -13,20 +15,23 @@ const HotSeat = () => {
     playTurn({ player, board, cell });
   };
 
-  const onInvalidTurn = (error: T.Errors) => {
-    setStatus(error);
-  };
-
   return (
-    <Board
-      onFinish={() => false && window.alert('Game finished!')}
-      state={gameState}
-      turnList={turnList}
-      status={status}
-      seat={gameState.currentPlayer}
-      onValidTurn={onValidTurn}
-      onInvalidTurn={onInvalidTurn}
-    />
+    <>
+      <Header
+        seat={gameState.currentPlayer}
+        state={gameState}
+        mode="local"
+        onPlayAgainConfirm={restart}
+      />
+      <RelativeBox>
+        <Board
+          state={gameState}
+          seat={gameState.currentPlayer}
+          onValidTurn={onValidTurn}
+        />
+        <TurnList turnList={turnList} />
+      </RelativeBox>
+    </>
   );
 };
 

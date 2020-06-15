@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
      display: flex;
      flex-direction: column;
 
-     ${media.aboveMobile`height: auto`}
+     ${media.aboveMobileL`height: auto`}
     }
   }
 `;
@@ -50,7 +50,7 @@ const Main = styled.main`
 
   overflow: hidden;
 
-  ${media.aboveMobile`overflow: auto`}
+  ${media.aboveMobileL`overflow: auto`}
 `;
 
 const Header = styled.header`
