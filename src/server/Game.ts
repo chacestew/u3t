@@ -1,4 +1,4 @@
-import play, { getInitialState } from '../shared/game';
+import play, { getInitialState, generateRandomMove } from '../shared/game';
 import { ITurnInput, IGameState, Errors } from '../shared/types';
 
 export enum Status {
@@ -7,36 +7,30 @@ export enum Status {
   Finished = 'Finished',
 }
 
-export default class Game {
-  // Status of the game lobby (pending, started, or finished)
-  status: Status = Status.Pending;
+function instantEnd(state: IGameState): IGameState {
+  const turn = generateRandomMove(state);
 
+  const nextState = play(state, turn).state;
+
+  if (nextState.finished) {
+    console.log('Final state:', nextState);
+    return nextState;
+  }
+  return instantEnd(nextState);
+}
+
+export default class Game {
   // The internal game state
   gameState: IGameState = getInitialState();
-
-  // Connected players (socket IDs)
-  players: Array<{ socket: string; id: string }> = [];
-
-  // Two requests confirm a restart
-  restartRequested: boolean = false;
-
+  // Seats
+  seats: string[];
   // Last updated timestamp
   updated: number = new Date().getTime();
 
-  public addPlayer(socket: string, id: string) {
-    if (this.status !== Status.Pending || this.players.length > 2) {
-      console.error('Game already started');
-      return;
-    }
-
-    const numPlayers = this.players.push({ socket, id });
-
-    if (numPlayers === 2) {
-      if (Math.floor(Math.random() * 2)) this.players.reverse();
-      this.status = Status.Started;
-    }
-
-    this.updated = new Date().getTime();
+  constructor(players: string[]) {
+    console.log('players?', players);
+    this.seats = [...players];
+    if (Math.floor(Math.random() * 2)) this.seats.reverse();
   }
 
   public playTurn(payload: ITurnInput): { error?: Errors; state: IGameState } {
@@ -46,12 +40,13 @@ export default class Game {
       this.gameState = nextState.state;
     }
 
-    if (nextState.state.winner || nextState.state.tied) {
-      this.status = Status.Finished;
-    }
-
     this.updated = new Date().getTime();
 
     return nextState;
+  }
+
+  public instantEnd() {
+    const nextState = instantEnd(this.gameState);
+    this.gameState = nextState;
   }
 }

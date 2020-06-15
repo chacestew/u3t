@@ -3,13 +3,19 @@ import Game from './Game';
 import { NotAuthenticatedError } from './errors';
 
 export const games = new Map<string, Game>();
-export const connections = new Map<string, string>();
+export const playersToRooms = new Map<string, string>();
+export const socketsToPlayers = new Map<string, string>();
 
-export const createId = (size: number) =>
-  nanoid('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', size);
+export function createId({ notIn }: { notIn?: string[] } = {}): string {
+  const id = nanoid('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+  if (notIn && notIn.includes(id)) return createId({ notIn });
+  return id;
+}
+
+//0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 
 export function getGameById(id: string) {
-  const room = connections.get(id);
+  const room = playersToRooms.get(id);
   if (!room) {
     throw new NotAuthenticatedError(`No room for ID: ${id}`);
   }
@@ -40,3 +46,99 @@ export function createLobby() {
   games.set(id, game);
   return id;
 }
+
+// New below
+
+class Connection {
+  socket: string;
+  lobby: string | null = null;
+  player: string | null = null;
+
+  constructor(socket: string) {
+    this.socket = socket;
+  }
+}
+
+class ConnectionManager {
+  connections: Map<string, Connection> = new Map();
+
+  public add(id: string) {
+    this.connections.set(id, new Connection(id));
+  }
+
+  public remove(id: string) {
+    return this.connections.delete(id);
+  }
+}
+
+export const Connections = new ConnectionManager();
+export type SocketConnection = string;
+class Lobby {
+  id: string;
+  players: Map<string, string[]> = new Map();
+  game?: Game;
+  restartVotes: Set<string> = new Set();
+
+  constructor() {
+    this.id = createId();
+  }
+
+  public addPlayer(connection: SocketConnection) {
+    if (this.players.size > 1) throw new Error('Too many players in game.');
+    const playerId = createId({ notIn: [...this.players.keys()] });
+    this.players.set(playerId, [connection]);
+    return playerId;
+  }
+
+  public requestRestart(id: string) {
+    if (!this.players.has(id)) throw new Error(`No player by ID: ${id}`);
+
+    this.restartVotes.add(id);
+
+    return this.restartVotes.size === 2;
+  }
+
+  public initGame() {
+    if (this.players.size < 2) throw new Error('Not enough players.');
+
+    this.game = new Game([...this.players.keys()]);
+  }
+
+  public getGame(): Game {
+    if (!this.game) throw new Error('No game started for this lobby');
+    return this.game;
+  }
+}
+
+class LobbyManager {
+  lobbies: Map<string, Lobby> = new Map();
+
+  public create() {
+    const lobby = new Lobby();
+    this.lobbies.set(lobby.id, lobby);
+    return lobby;
+  }
+
+  public remove(id: string) {
+    return this.lobbies.delete(id);
+  }
+
+  public get(id: string): Lobby {
+    const lobby = this.lobbies.get(id);
+    if (!lobby) throw new Error(`No lobby by ID: ${id}`);
+    return lobby;
+  }
+
+  public getByPlayer(id: string): Lobby {
+    for (const [_, lobby] of this.lobbies) {
+      if (lobby.players.has(id)) return lobby;
+    }
+    throw new Error(`No lobby with player ${id}`);
+  }
+}
+
+const relations = {
+  playersToLobbies: new Map<string, string>(),
+};
+
+export const Lobbies = new LobbyManager();

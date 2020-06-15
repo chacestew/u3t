@@ -43,6 +43,8 @@ export enum Events {
   InvalidTurn = 'invalid-turn',
   Sync = 'sync',
   Restart = 'restart-game',
+  RestartRequested = 'restart-requested',
+  JoinedAsSpectator = 'joined-as-spectator',
 }
 
 export interface EventParams {
@@ -76,5 +78,11 @@ export interface EventParams {
   [Events.InvalidTurn]: {
     state: IGameState;
     error: Errors;
+  };
+  [Events.Restart]: {
+    id: string;
+  };
+  [Events.JoinedAsSpectator]: {
+    state: IGameState;
   };
 }

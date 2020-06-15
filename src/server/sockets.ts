@@ -1,10 +1,11 @@
 import socketIO = require('socket.io');
 
 import { Events } from '../shared/types';
-import { createLobby, getGameById } from './entities';
-import { JoinLobby, PlayTurn, Reconnect } from './handlers';
+import { createLobby, getGameById, Connections } from './entities';
+import { JoinLobby, PlayTurn, Reconnect, RequestRestart, CreateLobby } from './handlers';
 import { BadRequestError, NotAuthenticatedError } from './errors';
 import { Server } from 'http';
+import Cron from './cron';
 
 const io = socketIO();
 
@@ -23,13 +24,12 @@ const errorHandler = (
 };
 
 io.on('connection', socket => {
-  socket.on(Events.CreateLobby, () => {
-    const id = createLobby();
-    socket.emit(Events.LobbyReady, { id });
-  });
+  Connections.add(socket.id);
+
+  socket.on(Events.CreateLobby, data => CreateLobby(socket));
 
   socket.on(Events.JoinLobby, data =>
-    JoinLobby(data, socket, io).catch((e: string) => {})
+    JoinLobby(data, socket, io).catch(e => console.error(e))
   );
 
   socket.on(Events.RejoinGame, data =>
@@ -41,19 +41,11 @@ io.on('connection', socket => {
   });
 
   socket.on(Events.Restart, data => {
-    const { room, game } = getGameById(data.playerId);
-
-    if (!game || !room) return;
-
-    if (game.restartRequested) {
-      const id = createLobby();
-      io.to(room).emit(Events.LobbyReady, { id });
-    } else {
-      game.restartRequested = true;
-    }
+    RequestRestart(data, io).catch(err => errorHandler(err, socket));
   });
 
   socket.on('disconnect', () => {
+    Connections.remove(socket.id);
     console.log('disconnected from GAME!', socket.id);
   });
 });

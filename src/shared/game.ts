@@ -4,23 +4,56 @@ import * as T from './types';
 const getWinnableSets = (cell: T.Cell) => {
   switch (cell) {
     case 0:
-      return [[0, 1, 2], [0, 3, 6], [0, 4, 8]];
+      return [
+        [0, 1, 2],
+        [0, 3, 6],
+        [0, 4, 8],
+      ];
     case 1:
-      return [[0, 1, 2], [1, 4, 7]];
+      return [
+        [0, 1, 2],
+        [1, 4, 7],
+      ];
     case 2:
-      return [[0, 1, 2], [2, 5, 8], [2, 4, 6]];
+      return [
+        [0, 1, 2],
+        [2, 5, 8],
+        [2, 4, 6],
+      ];
     case 3:
-      return [[0, 3, 6], [3, 4, 5]];
+      return [
+        [0, 3, 6],
+        [3, 4, 5],
+      ];
     case 4:
-      return [[0, 4, 8], [1, 4, 7], [2, 4, 6], [3, 4, 5]];
+      return [
+        [0, 4, 8],
+        [1, 4, 7],
+        [2, 4, 6],
+        [3, 4, 5],
+      ];
     case 5:
-      return [[2, 5, 8], [3, 4, 5]];
+      return [
+        [2, 5, 8],
+        [3, 4, 5],
+      ];
     case 6:
-      return [[0, 3, 6], [6, 7, 8], [6, 4, 2]];
+      return [
+        [0, 3, 6],
+        [6, 7, 8],
+        [6, 4, 2],
+      ];
     case 7:
-      return [[1, 4, 7], [6, 7, 8]];
+      return [
+        [1, 4, 7],
+        [6, 7, 8],
+      ];
     case 8:
-      return [[2, 5, 8], [6, 7, 8], [8, 4, 0]];
+      return [
+        [2, 5, 8],
+        [6, 7, 8],
+        [8, 4, 0],
+      ];
     default:
       return [];
   }
@@ -51,11 +84,16 @@ export const generateRandomMove = (state: T.IGameState) => {
 
   // optimise if reasonable
   const filteredBoards = boards.reduce((all: any, current, i) => {
-    if (current.cellsOpen === 0) return all;
+    if (
+      !activeBoard.includes(i as T.Cell) ||
+      current.cellsOpen === 0 ||
+      current.winner !== null
+    )
+      return all;
 
     return [...all, i];
   }, []);
-  const board = activeBoard !== null ? activeBoard : randomElement(filteredBoards);
+  const board = randomElement(filteredBoards);
 
   if (!boards[board]) console.error('PROBLEM BOARD:', board);
   const filteredCells = boards[board].cells.reduce((all: any, current, i) => {
@@ -72,12 +110,12 @@ export function getInitialState(): T.IGameState {
   return {
     turn: 1,
     currentPlayer: 1,
-    boards: Array.from({ length: 9 }, () => ({
+    boards: Array(9).fill({
       winner: null,
       cells: Array(9).fill(null),
       cellsOpen: 9,
       open: true,
-    })),
+    }),
     activeBoard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     winner: null,
     totalCellsOpen: 81,
@@ -137,6 +175,7 @@ export default function(
 
   if (didWinBoard(nextState, payload)) {
     currentBoard.winner = player;
+    nextState.totalCellsOpen -= currentBoard.cellsOpen;
 
     const winningSet = didWinGame(nextState, payload);
 
@@ -160,13 +199,10 @@ export default function(
   nextState.currentPlayer = nextState.currentPlayer === 1 ? 2 : 1;
   nextState.activeBoard = isOpenBoard(nextState.boards[cell])
     ? [cell]
-    : nextState.boards.reduce(
-        (all, b, i) => {
-          if (isOpenBoard(b)) all.push(i);
-          return all;
-        },
-        [] as T.Cell[]
-      );
+    : nextState.boards.reduce((all, b, i) => {
+        if (isOpenBoard(b)) all.push(i);
+        return all;
+      }, [] as T.Cell[]);
 
   return { state: nextState };
 }
