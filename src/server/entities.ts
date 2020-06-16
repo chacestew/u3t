@@ -14,38 +14,38 @@ export function createId({ notIn }: { notIn?: string[] } = {}): string {
 
 //0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 
-export function getGameById(id: string) {
-  const room = playersToRooms.get(id);
-  if (!room) {
-    throw new NotAuthenticatedError(`No room for ID: ${id}`);
-  }
-  const game = games.get(room);
-  if (!game) {
-    throw new NotAuthenticatedError(`No game for ID: ${id}`);
-  }
-  return { room, game };
-}
+// export function getGameById(id: string) {
+//   const room = playersToRooms.get(id);
+//   if (!room) {
+//     throw new NotAuthenticatedError(`No room for ID: ${id}`);
+//   }
+//   const game = games.get(room);
+//   if (!game) {
+//     throw new NotAuthenticatedError(`No game for ID: ${id}`);
+//   }
+//   return { room, game };
+// }
 
-export function getGameByRoom(room: string) {
-  const game = games.get(room);
-  if (!game) {
-    throw new NotAuthenticatedError(`No game for ID: ${room}`);
-  }
-  return { room, game };
-}
+// export function getGameByRoom(room: string) {
+//   const game = games.get(room);
+//   if (!game) {
+//     throw new NotAuthenticatedError(`No game for ID: ${room}`);
+//   }
+//   return { room, game };
+// }
 
-export function createNewGame(): { id: string; game: Game } {
-  const id = createId(4);
-  if (games.has(id)) return createNewGame();
-  const game = new Game();
-  return { id, game };
-}
+// export function createNewGame(): { id: string; game: Game } {
+//   const id = createId(4);
+//   if (games.has(id)) return createNewGame();
+//   const game = new Game();
+//   return { id, game };
+// }
 
-export function createLobby() {
-  const { id, game } = createNewGame();
-  games.set(id, game);
-  return id;
-}
+// export function createLobby() {
+//   const { id, game } = createNewGame();
+//   games.set(id, game);
+//   return id;
+// }
 
 // New below
 
@@ -73,11 +73,25 @@ class ConnectionManager {
 
 export const Connections = new ConnectionManager();
 export type SocketConnection = string;
+
+class Player {
+  id: string;
+  sockets: Set<string> = new Set();
+
+  constructor(id?: string) {
+    this.id = id || createId();
+  }
+
+  public isConnected() {
+    return !!this.sockets.size;
+  }
+}
+
 class Lobby {
   id: string;
-  players: Map<string, string[]> = new Map();
+  players: Map<string, Player> = new Map();
   game?: Game;
-  restartVotes: Set<string> = new Set();
+  restartRequests: Map<string, string> = new Map();
 
   constructor() {
     this.id = createId();
@@ -85,17 +99,24 @@ class Lobby {
 
   public addPlayer(connection: SocketConnection) {
     if (this.players.size > 1) throw new Error('Too many players in game.');
-    const playerId = createId({ notIn: [...this.players.keys()] });
-    this.players.set(playerId, [connection]);
-    return playerId;
+    const player = new Player();
+    player.sockets.add(connection);
+    this.players.set(player.id, player);
+    return player.id;
   }
 
-  public requestRestart(id: string) {
-    if (!this.players.has(id)) throw new Error(`No player by ID: ${id}`);
+  public getPlayer(id: string) {
+    const player = this.players.get(id);
 
-    this.restartVotes.add(id);
+    if (!player) throw new Error(`No player found for ID: ${id}`);
 
-    return this.restartVotes.size === 2;
+    return player;
+  }
+
+  public requestRestart(id: string, socket: string) {
+    this.restartRequests.set(id, socket);
+
+    return this.restartRequests.size === 2;
   }
 
   public initGame() {
