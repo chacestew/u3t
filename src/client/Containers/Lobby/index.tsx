@@ -23,7 +23,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
   const [isSpectator, setIsSpectator] = useState(false);
   const [restartRequested, setRestartRequested] = useState(false);
-  const [{ gameState, turnList }, { playTurn, setState }] = useGameReducer();
+  const [{ gameState, turnList }, { playTurn, setState, restart }] = useGameReducer();
 
   const socket = useSocket();
 
@@ -32,9 +32,14 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   } = match;
 
   useEffect(() => {
-    socket.on(Events.LobbyReady, ({ id }: { id: string }) => {
+    socket.on(Events.LobbyReady, ({ id, room: _room }: { id: string; room: string }) => {
       console.log('got id', id);
-      history.replace(`/play/${id}`);
+      if (room === _room) return;
+      if (id) {
+        localStorage.setItem(room, id);
+        setPlayerId(id);
+      }
+      history.replace(`/play/${_room}`);
     });
 
     socket.on(Events.StartGame, ({ id, seat, state }: EventParams[Events.StartGame]) => {
@@ -57,8 +62,10 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     socket.on(
       Events.JoinedAsSpectator,
       ({ state }: EventParams[Events.JoinedAsSpectator]) => {
+        console.log('joined as spec', true);
         setIsSpectator(true);
-        setState(state);
+        if (state) setState(state);
+        else restart();
       }
     );
 
@@ -85,9 +92,9 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
       const savedId = localStorage.getItem(room);
       if (savedId) {
         setPlayerId(savedId);
-        socket.emit(Events.RejoinGame, { id: savedId });
+        socket.emit(Events.JoinLobby, { room, id: savedId });
       } else {
-        socket.emit(Events.JoinLobby, { room });
+        socket.emit(Events.JoinLobby, { room, id: playerId });
       }
     } else {
       socket.emit(Events.CreateLobby);

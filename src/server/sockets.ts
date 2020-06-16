@@ -1,8 +1,8 @@
 import socketIO = require('socket.io');
 
 import { Events } from '../shared/types';
-import { createLobby, getGameById, Connections } from './entities';
-import { JoinLobby, PlayTurn, Reconnect, RequestRestart, CreateLobby } from './handlers';
+import { Connections } from './entities';
+import { JoinLobby, PlayTurn, RequestRestart, CreateLobby } from './handlers';
 import { BadRequestError, NotAuthenticatedError } from './errors';
 import { Server } from 'http';
 import Cron from './cron';
@@ -32,16 +32,12 @@ io.on('connection', socket => {
     JoinLobby(data, socket, io).catch(e => console.error(e))
   );
 
-  socket.on(Events.RejoinGame, data =>
-    Reconnect(data, socket, io).catch(e => console.error(e))
-  );
-
   socket.on(Events.PlayTurn, data => {
     PlayTurn(data, socket, io).catch(err => errorHandler(err, socket));
   });
 
   socket.on(Events.Restart, data => {
-    RequestRestart(data, io).catch(err => errorHandler(err, socket));
+    RequestRestart(data, socket, io).catch(err => errorHandler(err, socket));
   });
 
   socket.on('disconnect', () => {

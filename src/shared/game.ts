@@ -153,10 +153,6 @@ export default function(
 ): { error?: T.Errors; state: T.IGameState } {
   const { player, board, cell } = payload;
 
-  console.log('\n\n---playTurn called---');
-  console.log('State:', state);
-  console.log('Payload:', payload);
-
   if (validate) {
     const error = isInvalidTurn(state, payload);
     if (error) {

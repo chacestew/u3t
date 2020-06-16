@@ -1,44 +1,48 @@
-import nanoid = require('nanoid/generate');
 import socketIO = require('socket.io');
-import Game, { Status } from './Game';
-import { Application } from 'express';
 
-import io from './sockets';
 import { Events, EventParams } from '../shared/types';
-import {
-  createLobby,
-  games,
-  createId,
-  playersToRooms,
-  getGameById,
-  getGameByRoom,
-  socketsToPlayers,
-  Lobbies,
-} from './entities';
-import game from '../shared/game';
+import { socketsToPlayers, Lobbies } from './entities';
 
 export const CreateLobby = async (socket: socketIO.Socket) => {
   const { id } = Lobbies.create();
-  socket.emit(Events.LobbyReady, { id });
+  socket.emit(Events.LobbyReady, { room: id });
 };
 
 export const JoinLobby = async (
-  data: EventParams[Events.JoinLobby],
+  data: { room: string; id?: string },
   socket: socketIO.Socket,
   io: socketIO.Server
 ) => {
-  const lobby = Lobbies.get(data.room);
-  console.log('called');
+  const { room, id } = data;
+  const lobby = Lobbies.get(room);
+
   socket.join(lobby.id, err => {
     if (err) throw new Error(err);
-    console.log('someone joined');
-    if (lobby.players.size >= 2) {
-      console.log('spec joined');
-      const state = lobby.getGame().gameState;
+
+    // Handle spectator connecting
+    if (!id && lobby.players.size >= 2) {
+      const state = lobby.game ? lobby.getGame().gameState : null;
       return socket.emit(Events.JoinedAsSpectator, { state });
     }
 
-    const id = lobby.addPlayer(socket.id);
+    if (id) {
+      // Handle player reconnecting
+
+      lobby.getPlayer(id).sockets.add(socket.id);
+
+      if (lobby.game) {
+        const a = socket.emit(Events.RejoinGame, {
+          seat: lobby.game.seats.indexOf(id),
+          state: lobby.game.gameState,
+        });
+
+        return;
+      }
+    } else {
+      // Handle player connecting
+      lobby.addPlayer(socket.id);
+    }
+
     if (lobby.players.size < 2) return;
 
     lobby.initGame();
@@ -46,29 +50,14 @@ export const JoinLobby = async (
     const game = lobby.game!;
 
     game.seats.forEach((id, seat) => {
-      const sockets = lobby.players.get(id)!;
-      console.log('emitting game inits', { id, seat, sockets });
-      io.to(sockets[sockets.length - 1]).emit(Events.StartGame, {
-        seat: seat + 1,
-        id,
-        state: game.gameState,
-      });
-    });
-  });
-};
-
-export const Reconnect = async (
-  data: EventParams[Events.RejoinGame],
-  socket: socketIO.Socket,
-  io: socketIO.Server
-) => {
-  const lobby = Lobbies.getByPlayer(data.id);
-
-  socket.join(lobby.id, err => {
-    lobby.players.get(data.id).push(socket.id);
-    socket.emit(Events.RejoinGame, {
-      seat: lobby.game!.seats.indexOf(data.id),
-      state: lobby.game!.gameState,
+      const { sockets } = lobby.getPlayer(id);
+      for (const socket of sockets) {
+        io.to(socket).emit(Events.StartGame, {
+          seat: seat + 1,
+          id,
+          state: game.gameState,
+        });
+      }
     });
   });
 };
@@ -111,16 +100,28 @@ export const PlayTurn = async (
 
 export const RequestRestart = async (
   data: EventParams[Events.Restart],
+  socket: socketIO.Socket,
   io: socketIO.Server
 ) => {
   const lobby = Lobbies.getByPlayer(data.id);
 
-  const twoRequestsReceived = lobby.requestRestart(data.id);
+  const twoRequestsReceived = lobby.requestRestart(data.id, socket.id);
 
   if (twoRequestsReceived) {
-    const { id } = Lobbies.create();
-    io.to(lobby.id).emit(Events.LobbyReady, { id });
+    const nextLobby = Lobbies.create();
 
+    for (const [_, socket] of lobby.restartRequests) {
+      const id = nextLobby.addPlayer(socket);
+      io.to(socket).emit(Events.LobbyReady, { room: nextLobby.id, id });
+    }
+
+    console.log('new lobby:', nextLobby.id, 'players:', nextLobby.players.values());
+
+    io.to(lobby.id).emit(Events.LobbyReady, { room: nextLobby.id });
+
+    // for (const socket of lobby.restartRequests.values()) {
+    //   io.to(socket).emit(Events.LobbyReady, { id });
+    // }
     // Handle lobby finished here
   } else {
     io.to(lobby.id).emit(Events.RestartRequested);
