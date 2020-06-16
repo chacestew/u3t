@@ -50,6 +50,7 @@ export enum Events {
 export interface EventParams {
   [Events.JoinLobby]: {
     room: string;
+    id?: string;
   };
   [Events.CreateLobby]: {
     id: string;
@@ -84,5 +85,10 @@ export interface EventParams {
   };
   [Events.JoinedAsSpectator]: {
     state: IGameState;
+  };
+  [Events.RestartRequested]: null;
+  [Events.LobbyReady]: {
+    room: string;
+    id?: string;
   };
 }
