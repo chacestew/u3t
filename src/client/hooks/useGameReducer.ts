@@ -12,10 +12,8 @@ function instantEnd(state: T.IGameState): T.IGameState {
 
   const nextState = playTurn(state, turn).state;
 
-  if (nextState.finished) {
-    console.log('Final state:', nextState);
-    return nextState;
-  }
+  if (nextState.finished) return nextState;
+
   return instantEnd(nextState);
 }
 
