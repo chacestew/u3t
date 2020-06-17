@@ -1,10 +1,10 @@
 import socketIO = require('socket.io');
 
 import { Events } from '../shared/types';
-import { Connections } from './entities';
-import { JoinLobby, PlayTurn, RequestRestart, CreateLobby } from './handlers';
+import { connections } from './entities';
 import { BadRequestError, NotAuthenticatedError } from './errors';
 import { Server } from 'http';
+import { createLobby, joinLobby, playTurn, requestRestart, disconnect } from './handlers';
 import Cron from './cron';
 
 const io = socketIO();
@@ -13,6 +13,7 @@ const errorHandler = (
   err: BadRequestError | NotAuthenticatedError,
   socket: socketIO.Socket
 ) => {
+  console.error(err);
   switch (err.code) {
     case 401: {
       return socket.error(err);
@@ -24,26 +25,27 @@ const errorHandler = (
 };
 
 io.on('connection', socket => {
-  Connections.add(socket.id);
+  connections.add(socket.id);
 
-  socket.on(Events.CreateLobby, data => CreateLobby(socket));
-
-  socket.on(Events.JoinLobby, data =>
-    JoinLobby(data, socket, io).catch(e => console.error(e))
+  socket.on(Events.CreateLobby, () =>
+    createLobby(socket).catch(error => errorHandler(error, socket))
   );
 
-  socket.on(Events.PlayTurn, data => {
-    PlayTurn(data, socket, io).catch(err => errorHandler(err, socket));
-  });
+  socket.on(Events.JoinLobby, data =>
+    joinLobby(data, socket, io).catch(error => errorHandler(error, socket))
+  );
 
-  socket.on(Events.Restart, data => {
-    RequestRestart(data, socket, io).catch(err => errorHandler(err, socket));
-  });
+  socket.on(Events.PlayTurn, data =>
+    playTurn(data, socket, io).catch(error => errorHandler(error, socket))
+  );
 
-  socket.on('disconnect', () => {
-    Connections.remove(socket.id);
-    console.log('disconnected from GAME!', socket.id);
-  });
+  socket.on(Events.Restart, data =>
+    requestRestart(data, socket, io).catch(error => errorHandler(error, socket))
+  );
+
+  socket.on(Events.Disconnect, () =>
+    disconnect(socket).catch(error => errorHandler(error, socket))
+  );
 });
 
 export default (server: Server) => {

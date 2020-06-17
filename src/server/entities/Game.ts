@@ -1,21 +1,13 @@
-import play, { getInitialState, generateRandomMove } from '../shared/game';
-import { ITurnInput, IGameState, Errors } from '../shared/types';
-
-export enum Status {
-  Pending = 'Pending',
-  Started = 'Started',
-  Finished = 'Finished',
-}
+import play, { getInitialState, generateRandomMove } from '../../shared/game';
+import { ITurnInput, IGameState, Errors } from '../../shared/types';
 
 function instantEnd(state: IGameState): IGameState {
   const turn = generateRandomMove(state);
 
   const nextState = play(state, turn).state;
 
-  if (nextState.finished) {
-    console.log('Final state:', nextState);
-    return nextState;
-  }
+  if (nextState.finished) return nextState;
+
   return instantEnd(nextState);
 }
 

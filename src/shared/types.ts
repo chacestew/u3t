@@ -45,6 +45,7 @@ export enum Events {
   Restart = 'restart-game',
   RestartRequested = 'restart-requested',
   JoinedAsSpectator = 'joined-as-spectator',
+  Disconnect = 'disconnect',
 }
 
 export interface EventParams {
@@ -92,3 +93,13 @@ export interface EventParams {
     id?: string;
   };
 }
+
+export type On = <E>(
+  event: E & Events,
+  fn: (params: EventParams[typeof event]) => any
+) => unknown;
+
+export type Emit = <E>(
+  event: E & Events,
+  eventParams?: EventParams[typeof event]
+) => unknown;

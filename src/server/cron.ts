@@ -1,7 +1,7 @@
 import socketIO = require('socket.io');
 
 import game from '../shared/game';
-import { games, playersToRooms, socketsToPlayers } from './entities';
+import { games, playersToRooms, socketsToPlayers } from './entities/entities';
 import sockets from './sockets';
 
 const GAME_FINISHED_AGE = 1000 * 60 * 5;

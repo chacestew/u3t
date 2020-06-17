@@ -1,13 +1,6 @@
 import io from 'socket.io-client';
 import { useRef } from 'react';
-import { Events, EventParams } from '../../shared/types';
-
-type On = <E>(
-  event: E & Events,
-  fn: (params: EventParams[typeof event]) => any
-) => unknown;
-
-type Emit = <E>(event: E & Events, eventParams?: EventParams[typeof event]) => unknown;
+import { On, Emit } from '../../shared/types';
 
 const useSocket = () => {
   const socketRef = useRef<SocketIOClient.Socket>();
