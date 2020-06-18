@@ -8,7 +8,7 @@ class Player {
     this.id = id || nanoid(6);
   }
 
-  public isConnected() {
+  get isConnected() {
     return !!this.sockets.size;
   }
 }

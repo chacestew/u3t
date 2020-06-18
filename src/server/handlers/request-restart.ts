@@ -22,9 +22,6 @@ async function RequestRestart(
 
     io.to(lobby.id).emit(Events.LobbyReady, { room: nextLobby.id });
 
-    // for (const socket of lobby.restartRequests.values()) {
-    //   io.to(socket).emit(Events.LobbyReady, { id });
-    // }
     // Handle lobby finished here
   } else {
     io.to(lobby.id).emit(Events.RestartRequested);

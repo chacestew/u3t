@@ -1,7 +1,7 @@
 import socketIO = require('socket.io');
 
 import { Events, Emit } from '../../shared/types';
-import { lobbies, Lobby } from '../entities';
+import { lobbies, Lobby, connections } from '../entities';
 
 const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
   const state = lobby.game ? lobby.getGame().gameState : null;
@@ -12,6 +12,8 @@ const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
   if (id) {
     // If an exisiting player, link this socket
     lobby.getPlayer(id).sockets.add(socket.id);
+    connections.get(socket.id).setPlayer(id);
+    connections.get(socket.id).setLobby(lobby.id);
 
     // If game is ongoing (rejoin), rpro
     if (lobby.game) {
@@ -24,7 +26,9 @@ const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
     return;
   }
   // On first join, create a new player with this socket
-  lobby.addPlayer(socket.id);
+  const player = lobby.addPlayer(socket.id);
+  connections.get(socket.id).setPlayer(player);
+  connections.get(socket.id).setLobby(lobby.id);
 };
 
 const startGame = (lobby: Lobby, io: socketIO.Server) => {

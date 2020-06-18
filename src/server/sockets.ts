@@ -1,13 +1,14 @@
 import socketIO = require('socket.io');
 
 import { Events } from '../shared/types';
-import { connections } from './entities';
+import { connections, lobbies } from './entities';
 import { BadRequestError, NotAuthenticatedError } from './errors';
 import { Server } from 'http';
 import { createLobby, joinLobby, playTurn, requestRestart, disconnect } from './handlers';
 import Cron from './cron';
 
 const io = socketIO();
+export const cron = new Cron(1000 * 20);
 
 const errorHandler = (
   err: BadRequestError | NotAuthenticatedError,
@@ -26,6 +27,7 @@ const errorHandler = (
 
 io.on('connection', socket => {
   connections.add(socket.id);
+  console.log('Hello ', socket.id);
 
   socket.on(Events.CreateLobby, () =>
     createLobby(socket).catch(error => errorHandler(error, socket))
@@ -50,4 +52,5 @@ io.on('connection', socket => {
 
 export default (server: Server) => {
   io.attach(server);
+  return () => ({ connections, lobbies });
 };

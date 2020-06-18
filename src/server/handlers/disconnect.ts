@@ -1,7 +1,9 @@
 import socketIO = require('socket.io');
+import { connections } from '../entities';
 
 async function disconnect(socket: socketIO.Socket) {
-  // socketsToPlayers.delete(socket.id);
+  console.log('Goodbye', socket.id);
+  connections.remove(socket.id);
 }
 
 export default disconnect;
