@@ -11,6 +11,7 @@ import PlayAI from './PlayAI';
 import Rules from './Rules';
 import palette, { gridSize } from '../utils/palette';
 import { media } from '../styles/mixins';
+import Header from './Header';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -53,86 +54,10 @@ const Main = styled.main`
   ${media.aboveMobileL`overflow: auto`}
 `;
 
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  background-color: ${palette.header};
-  color: ${palette.textColor};
-  height: 50px;
-  font-weight: bold;
-
-  nav {
-    padding: 1em;
-    max-width: ${gridSize};
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-
-    .logo {
-      font-size: 2em;
-      margin-right: 10px;
-    }
-
-    .sub-logo {
-      font-size: 1.5em;
-      opacity: 0.7;
-    }
-  }
-
-  div {
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-
-  ul {
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-
-    li {
-      padding: 0 2em;
-      display: inline;
-    }
-  }
-
-  a {
-    font-weight: bold;
-    text-decoration: none;
-    color: ${palette.textColor};
-  }
-`;
-
 const App = () => (
   <>
     <GlobalStyle />
-    <Header>
-      <div />
-      <nav css="overflow: hidden">
-        <div>
-          <Link className="logo" to="/">
-            U3T
-          </Link>
-        </div>
-        <ul>
-          <li>
-            <Link to="/">PLAY</Link>
-          </li>
-          <li>
-            <Link to="/rules">RULES</Link>
-          </li>
-          <li>
-            <Link to="/about">ABOUT</Link>
-          </li>
-        </ul>
-      </nav>
-      <div />
-    </Header>
+    <Header />
     <Main>
       <Route exact path="/" component={Home} />
       <Route path="/play/:id?" component={Play} />
