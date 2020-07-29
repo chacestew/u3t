@@ -1,4 +1,5 @@
 import { lobbies } from '.';
+import { NotFoundError } from '../errors';
 
 class Connection {
   socket: string;
@@ -42,7 +43,7 @@ class ConnectionManager {
 
   public get(id: string) {
     const connection = this.connections.get(id);
-    if (!connection) throw new Error(`No connection for ID: ${id}`);
+    if (!connection) throw new NotFoundError(`No connection for ID: ${id}`);
     return connection;
   }
 }

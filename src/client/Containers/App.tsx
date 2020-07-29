@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 import styled, { createGlobalStyle } from 'styled-components';
 import styledNormalize from 'styled-normalize';

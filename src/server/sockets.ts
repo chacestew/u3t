@@ -2,19 +2,19 @@ import socketIO = require('socket.io');
 
 import { Events } from '../shared/types';
 import { connections, lobbies } from './entities';
-import { BadRequestError, NotAuthenticatedError } from './errors';
+import { BadRequestError, NotFoundError, SocketError } from './errors';
 import { Server } from 'http';
 import { createLobby, joinLobby, playTurn, requestRestart, disconnect } from './handlers';
 import Cron from './cron';
 
 const io = socketIO();
-export const cron = new Cron(1000 * 20);
+export const cron = new Cron(1000 * 60 * 20);
 
 const errorHandler = (
-  err: BadRequestError | NotAuthenticatedError,
+  err: BadRequestError | NotFoundError | SocketError,
   socket: socketIO.Socket
 ) => {
-  console.error(err);
+  console.error('[errorHandler]:', err);
   switch (err.code) {
     case 401: {
       return socket.error(err);

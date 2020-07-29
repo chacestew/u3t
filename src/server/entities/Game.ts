@@ -17,11 +17,12 @@ export default class Game {
   // Seats
   seats: string[];
   // Last updated timestamp
-  updated: number = new Date().getTime();
+  onUpdate: () => void;
 
-  constructor(players: string[]) {
+  constructor({ players, onUpdate }: { players: string[]; onUpdate: () => void }) {
     console.log('players?', players);
     this.seats = [...players];
+    this.onUpdate = onUpdate;
     if (Math.floor(Math.random() * 2)) this.seats.reverse();
   }
 
@@ -32,7 +33,7 @@ export default class Game {
       this.gameState = nextState.state;
     }
 
-    this.updated = new Date().getTime();
+    this.onUpdate();
 
     return nextState;
   }
@@ -40,5 +41,6 @@ export default class Game {
   public instantEnd() {
     const nextState = instantEnd(this.gameState);
     this.gameState = nextState;
+    this.onUpdate();
   }
 }

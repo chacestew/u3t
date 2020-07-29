@@ -4,7 +4,6 @@ import http = require('http');
 import historyFallback = require('connect-history-api-fallback');
 
 import attachSockets from './server/sockets';
-import LobbyManager from './server/entities/Lobby';
 
 const app = express();
 const server = http.createServer(app);

@@ -1,17 +1,26 @@
-export class NotAuthenticatedError extends Error {
-  code: number;
+enum Errors {
+  NotFoundError = 'NotFoundError',
+  BadRequestError = 'BadRequestError',
+  SocketError = 'SocketError',
+}
+
+export class NotFoundError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'NotAuthenticatedError';
-    this.code = 401;
+    this.name = Errors.NotFoundError;
   }
 }
 
 export class BadRequestError extends Error {
-  code: number;
   constructor(message: string) {
     super(message);
-    this.name = 'BadRequestError';
-    this.code = 400;
+    this.name = Errors.BadRequestError;
+  }
+}
+
+export class SocketError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = Errors.SocketError;
   }
 }

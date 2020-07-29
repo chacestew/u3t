@@ -2,6 +2,7 @@ import socketIO = require('socket.io');
 
 import { Events, Emit } from '../../shared/types';
 import { lobbies, Lobby, connections } from '../entities';
+import { SocketError } from '../errors';
 
 const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
   const state = lobby.game ? lobby.getGame().gameState : null;
@@ -9,6 +10,8 @@ const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
 };
 
 const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
+  // throw new Error('manual throw');
+  console.log('in join player');
   if (id) {
     // If an exisiting player, link this socket
     lobby.getPlayer(id).sockets.add(socket.id);
@@ -54,21 +57,25 @@ async function joinLobby(
   const { room, id } = data;
   const lobby = lobbies.get(room);
 
+  let error;
+
   socket.join(lobby.id, err => {
-    if (err) throw new Error(err);
-
-    // Handle spectator connection
-    if (!id && lobby.players.size >= 2) {
-      return joinSpectator(socket, lobby);
-    }
-
-    // Handle player connection
-    joinPlayer(socket, lobby, id);
-
-    // Start when second player joined
-    if (lobby.players.size !== 2) return;
-    startGame(lobby, io);
+    if (err) error = err;
   });
+
+  if (error) throw new SocketError(error);
+
+  // Handle spectator connection
+  if (!id && lobby.players.size >= 2) {
+    return joinSpectator(socket, lobby);
+  }
+
+  // Handle player connection
+  joinPlayer(socket, lobby, id);
+
+  // Start when second player joined
+  if (lobby.players.size !== 2) return;
+  startGame(lobby, io);
 }
 
 export default joinLobby;

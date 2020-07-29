@@ -27,6 +27,7 @@ export interface ITurnInput {
 }
 
 export enum Errors {
+  GameIsFinished = 'GameIsFinished',
   WrongTurn = 'WrongTurn',
   BoardNotPlayable = 'Board not playable',
   CellOccupied = 'Cell is occupied',

@@ -6,7 +6,7 @@ const MAX_GAME_FINISHED_AGE = 1000 * 60 * 5;
 const GAME_EXPIRATION_AGE = 1000 * 60 * 60 * 24;
 const CRON_INTERVAL = 1000 * 60 * 20;
 
-const exceedsFinisedExpirationTime = (timestamp: number) =>
+const exceedsFinishedExpirationTime = (timestamp: number) =>
   timestamp + MAX_GAME_FINISHED_AGE < new Date().getTime();
 const exceedsStaleExpirationTime = (timestamp: number) =>
   timestamp + GAME_EXPIRATION_AGE < new Date().getTime();
@@ -33,20 +33,24 @@ class Cron {
 
   private clean() {
     console.log('Running clean...');
-    for (const [id, lobby] of lobbies.lobbies) {
-      const game = lobby.getGame();
-      if (
-        (game.gameState.finished && exceedsFinisedExpirationTime(game.updated)) ||
-        exceedsStaleExpirationTime(game.updated) ||
-        allPlayersDisconnected(lobby)
-      ) {
-        console.log('Removing lobby:', id);
-        lobbies.remove(id);
+    try {
+      for (const [id, lobby] of lobbies.lobbies) {
+        const isFinished = lobby.game && lobby.getGame().gameState.finished;
+        if (
+          (isFinished && exceedsFinishedExpirationTime(lobby.updated)) ||
+          exceedsStaleExpirationTime(lobby.updated) ||
+          allPlayersDisconnected(lobby)
+        ) {
+          console.log('Removing lobby:', id);
+          lobbies.remove(id);
+        }
       }
-    }
 
-    if (lobbies.lobbies.size > 0) this.continue();
-    else this.awake = false;
+      if (lobbies.lobbies.size > 0) this.continue();
+      else this.awake = false;
+    } catch (e) {
+      console.error(`Error inside clean: ${e}`);
+    }
   }
 
   private now() {

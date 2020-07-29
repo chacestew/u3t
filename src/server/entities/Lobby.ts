@@ -2,19 +2,25 @@ import nanoid = require('nanoid/generate');
 
 import Game from './Game';
 import Player from './Player';
+import { NotFoundError, BadRequestError } from '../errors';
 
 export class Lobby {
   id: string;
   players: Map<string, Player> = new Map();
   game?: Game;
   restartRequests: Map<string, string> = new Map();
+  updated: number = new Date().getTime();
 
   constructor() {
     this.id = nanoid('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
   }
 
+  private update() {
+    this.updated = new Date().getTime();
+  }
+
   public addPlayer(connection: string) {
-    if (this.players.size > 1) throw new Error('Too many players in game.');
+    if (this.players.size > 1) throw new BadRequestError('Lobby already has two players');
     const player = new Player();
     player.sockets.add(connection);
     this.players.set(player.id, player);
@@ -24,7 +30,7 @@ export class Lobby {
   public getPlayer(id: string) {
     const player = this.players.get(id);
 
-    if (!player) throw new Error(`No player found for ID: ${id}`);
+    if (!player) throw new NotFoundError(`No player with ID: ${id}`);
 
     return player;
   }
@@ -36,14 +42,19 @@ export class Lobby {
   }
 
   public initGame() {
-    if (this.players.size < 2) throw new Error('Not enough players.');
-
-    return (this.game = new Game([...this.players.keys()]));
+    return (this.game = new Game({
+      players: [...this.players.keys()],
+      onUpdate: this.update,
+    }));
   }
 
   public getGame(): Game {
-    if (!this.game) throw new Error('No game started for this lobby');
+    if (!this.game) throw new NotFoundError(`No game started for lobby ${this.id}`);
     return this.game;
+  }
+
+  public getGameOrNull() {
+    return this.game || null;
   }
 }
 
