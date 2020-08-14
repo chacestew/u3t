@@ -10,6 +10,7 @@ export interface IBoardState {
 
 export interface IGameState {
   turn: number;
+  turnList: ITurnInput[];
   currentPlayer: Player;
   boards: Array<IBoardState>;
   activeBoard: Board[];

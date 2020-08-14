@@ -23,7 +23,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
   const [isSpectator, setIsSpectator] = useState(false);
   const [restartRequested, setRestartRequested] = useState(false);
-  const [{ gameState, turnList }, { playTurn, setState, restart }] = useGameReducer();
+  const [state, { playTurn, setState, restart }] = useGameReducer();
 
   const { socket, onEvent, emitEvent } = useSocket();
 
@@ -124,15 +124,15 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     <>
       <Header
         room={room}
-        state={gameState}
+        state={state}
         seat={playerSeat!}
         mode={headerMode}
         onPlayAgainConfirm={restartGame}
         restartRequested={restartRequested}
       />
       <RelativeBox>
-        <Board seat={playerSeat} state={gameState} onValidTurn={onValidTurn} />
-        <TurnList turnList={turnList} onRestart={() => restartGame(true)} />
+        <Board seat={playerSeat} state={state} onValidTurn={onValidTurn} />
+        <TurnList turnList={state.turnList} onRestart={() => restartGame(true)} />
       </RelativeBox>
     </>
   );

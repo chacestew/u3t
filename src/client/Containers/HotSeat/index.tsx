@@ -7,10 +7,10 @@ import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
 
 const HotSeat = () => {
-  const [{ gameState, turnList }, { playTurn, restart }] = useGameReducer();
+  const [state, { playTurn, restart }] = useGameReducer();
 
   const onValidTurn = ({ board, cell }: T.ITurnInput) => {
-    const player = gameState.currentPlayer;
+    const player = state.currentPlayer;
 
     playTurn({ player, board, cell });
   };
@@ -18,18 +18,14 @@ const HotSeat = () => {
   return (
     <>
       <Header
-        seat={gameState.currentPlayer}
-        state={gameState}
+        seat={state.currentPlayer}
+        state={state}
         mode="local"
         onPlayAgainConfirm={restart}
       />
       <RelativeBox>
-        <Board
-          state={gameState}
-          seat={gameState.currentPlayer}
-          onValidTurn={onValidTurn}
-        />
-        <TurnList turnList={turnList} onRestart={restart} />
+        <Board state={state} seat={state.currentPlayer} onValidTurn={onValidTurn} />
+        <TurnList turnList={state.turnList} onRestart={restart} />
       </RelativeBox>
     </>
   );

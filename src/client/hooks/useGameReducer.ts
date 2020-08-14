@@ -2,11 +2,6 @@ import { useReducer } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../../shared/game';
 import * as T from '../../shared/types';
 
-interface State {
-  turnList: T.ITurnInput[];
-  gameState: T.IGameState;
-}
-
 function instantEnd(state: T.IGameState): T.IGameState {
   const turn = generateRandomMove(state);
 
@@ -18,28 +13,22 @@ function instantEnd(state: T.IGameState): T.IGameState {
 }
 
 function reducer(
-  state: State,
+  state: T.IGameState,
   action: { type: string; payload?: T.IGameState | T.ITurnInput }
-): State {
+): T.IGameState {
   switch (action.type) {
     case 'PLAY-TURN': {
       if ((window as any).dev === true) {
-        const nextState = instantEnd(state.gameState);
-        return { ...state, gameState: nextState };
+        return instantEnd(state);
       }
       const turnInput = action.payload as T.ITurnInput;
-      const { turnList, gameState } = state;
-
-      return {
-        turnList: turnList.concat(turnInput),
-        gameState: playTurn(gameState, turnInput).state,
-      };
+      return playTurn(state, turnInput).state;
     }
     case 'SET-STATE': {
-      return { ...state, gameState: action.payload as T.IGameState };
+      return action.payload as T.IGameState;
     }
     case 'RESTART': {
-      return { turnList: [], gameState: getInitialState() };
+      return getInitialState();
     }
     default:
       return state;
@@ -52,11 +41,8 @@ interface Dispatchers {
   restart: () => void;
 }
 
-export default function(): [State, Dispatchers] {
-  const [state, dispatch] = useReducer(reducer, {
-    turnList: [],
-    gameState: getInitialState(),
-  });
+export default function(): [T.IGameState, Dispatchers] {
+  const [state, dispatch] = useReducer(reducer, getInitialState());
   const dispatchers = {
     playTurn: (payload: T.ITurnInput) => {
       dispatch({ type: 'PLAY-TURN', payload });

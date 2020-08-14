@@ -116,12 +116,13 @@ export function getInitialState(): T.IGameState {
       cellsOpen: 9,
       open: true,
     }),
-    activeBoard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    activeBoard: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     winner: null,
     totalCellsOpen: 81,
     tied: false,
     finished: false,
     winningSet: [],
+    turnList: [],
   };
 }
 
@@ -164,6 +165,9 @@ export default function(
 
   // Turn is valid, proceed to clone state
   const nextState = cloneDeep(state);
+
+  // Record turn input
+  nextState.turnList.push(payload);
 
   // Capture cell
   const currentBoard = nextState.boards[board];
