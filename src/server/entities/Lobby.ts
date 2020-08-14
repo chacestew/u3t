@@ -6,10 +6,10 @@ import { NotFoundError, BadRequestError } from '../errors';
 import { ITurnInput } from '../../shared/types';
 
 export class Lobby {
-  id: string;
-  players: Map<string, Player> = new Map();
-  #game?: Game;
-  restartRequests: Map<string, string> = new Map();
+  readonly id: string;
+  readonly players: Map<string, Player> = new Map();
+  readonly restartRequests: Map<string, string> = new Map();
+  private game?: Game;
   updated: number = new Date().getTime();
 
   constructor() {

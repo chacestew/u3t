@@ -29,7 +29,7 @@ const HotSeat = () => {
           seat={gameState.currentPlayer}
           onValidTurn={onValidTurn}
         />
-        <TurnList turnList={turnList} />
+        <TurnList turnList={turnList} onRestart={restart} />
       </RelativeBox>
     </>
   );

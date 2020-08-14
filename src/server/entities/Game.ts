@@ -38,6 +38,11 @@ export default class Game {
     return nextState;
   }
 
+  public restart() {
+    this.gameState = getInitialState();
+    this.onUpdate();
+  }
+
   public instantEnd() {
     const nextState = instantEnd(this.gameState);
     this.gameState = nextState;

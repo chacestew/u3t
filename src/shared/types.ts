@@ -84,6 +84,7 @@ export interface EventParams {
   };
   [Events.Restart]: {
     id: string;
+    forfeit: boolean;
   };
   [Events.JoinedAsSpectator]: {
     state: IGameState;

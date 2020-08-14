@@ -107,8 +107,9 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     });
   };
 
-  const restartGame = () => {
-    emitEvent(Events.Restart, { id: playerId });
+  const restartGame = (isForfeit = false) => {
+    if (isForfeit && !window.confirm('Are you sure you want to forfeit?')) return;
+    emitEvent(Events.Restart, { id: playerId as string, forfeit: isForfeit });
   };
 
   const headerMode = isSpectator
@@ -131,7 +132,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
       />
       <RelativeBox>
         <Board seat={playerSeat} state={gameState} onValidTurn={onValidTurn} />
-        <TurnList turnList={turnList} />
+        <TurnList turnList={turnList} onRestart={() => restartGame(true)} />
       </RelativeBox>
     </>
   );

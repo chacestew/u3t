@@ -12,8 +12,14 @@ async function RequestRestart(
 
   const twoRequestsReceived = lobby.requestRestart(data.id, socket.id);
 
-  if (twoRequestsReceived) {
+  const game = lobby.getGame();
+
+  if (twoRequestsReceived || data.forfeit) {
     const nextLobby = lobbies.create();
+
+    game.restart();
+
+    return io.to(lobby.id).emit(Events.Sync, { state: game.gameState });
 
     for (const [_, socket] of lobby.restartRequests) {
       const id = nextLobby.addPlayer(socket);

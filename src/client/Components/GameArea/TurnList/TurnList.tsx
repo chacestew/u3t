@@ -80,7 +80,13 @@ const useStickyExpandedState = () => {
   return [expanded, setExpanded];
 };
 
-const TurnList = ({ turnList }: { turnList: T.ITurnInput[] }) => {
+const TurnList = ({
+  turnList,
+  onRestart,
+}: {
+  turnList: T.ITurnInput[];
+  onRestart: () => void;
+}) => {
   const [expanded, setExpanded] = useStickyExpandedState();
 
   const onClick = () => {
@@ -94,7 +100,7 @@ const TurnList = ({ turnList }: { turnList: T.ITurnInput[] }) => {
           Turn Log
           <FontAwesomeIcon icon={expanded ? faMinusSquare : faPlusSquare} />
         </button>
-        <RestartButton onClick={() => {}} />
+        <RestartButton onClick={onRestart} />
       </div>
       {expanded && (
         <div className="log-list">
