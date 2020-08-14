@@ -15,9 +15,9 @@ export default class Game {
   // The internal game state
   gameState: IGameState = getInitialState();
   // Seats
-  seats: string[];
+  readonly seats: string[];
   // Last updated timestamp
-  onUpdate: () => void;
+  readonly onUpdate: () => void;
 
   constructor({ players, onUpdate }: { players: string[]; onUpdate: () => void }) {
     console.log('players?', players);

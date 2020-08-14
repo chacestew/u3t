@@ -9,7 +9,6 @@ async function PlayTurn(
   io: socketIO.Server
 ) {
   const lobby = lobbies.getByPlayer(data.id);
-  const game = lobby.getGame();
 
   const payload = {
     player: data.player,
@@ -17,20 +16,20 @@ async function PlayTurn(
     cell: data.cell,
   };
 
-  const { state, error } = await game.playTurn(payload);
+  const { state, error } = lobby.playTurn(payload);
 
   if (process.env.NODE_ENV === 'development' && data.dev === true) {
-    game.instantEnd();
+    lobby.endGameInstantly();
   }
 
   if (error) {
     socket.emit(Events.InvalidTurn, {
-      state: game.gameState,
-      error: error,
+      state,
+      error,
     });
   } else {
     io.to(lobby.id).emit(Events.Sync, {
-      state: game.gameState,
+      state,
     });
   }
 

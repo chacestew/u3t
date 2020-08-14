@@ -35,7 +35,7 @@ class Cron {
     console.log('Running clean...');
     try {
       for (const [id, lobby] of lobbies.lobbies) {
-        const isFinished = lobby.game && lobby.getGame().gameState.finished;
+        const isFinished = lobby.hasGame() && lobby.getGame().gameState.finished;
         if (
           (isFinished && exceedsFinishedExpirationTime(lobby.updated)) ||
           exceedsStaleExpirationTime(lobby.updated) ||

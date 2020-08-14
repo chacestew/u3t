@@ -3,11 +3,12 @@ import nanoid = require('nanoid/generate');
 import Game from './Game';
 import Player from './Player';
 import { NotFoundError, BadRequestError } from '../errors';
+import { ITurnInput } from '../../shared/types';
 
 export class Lobby {
   id: string;
   players: Map<string, Player> = new Map();
-  game?: Game;
+  #game?: Game;
   restartRequests: Map<string, string> = new Map();
   updated: number = new Date().getTime();
 
@@ -19,7 +20,7 @@ export class Lobby {
     this.updated = new Date().getTime();
   }
 
-  public addPlayer(connection: string) {
+  addPlayer(connection: string) {
     if (this.players.size > 1) throw new BadRequestError('Lobby already has two players');
     const player = new Player();
     player.sockets.add(connection);
@@ -27,7 +28,7 @@ export class Lobby {
     return player.id;
   }
 
-  public getPlayer(id: string) {
+  getPlayer(id: string) {
     const player = this.players.get(id);
 
     if (!player) throw new NotFoundError(`No player with ID: ${id}`);
@@ -35,26 +36,35 @@ export class Lobby {
     return player;
   }
 
-  public requestRestart(id: string, socket: string) {
+  requestRestart(id: string, socket: string) {
     this.restartRequests.set(id, socket);
 
     return this.restartRequests.size === 2;
   }
 
-  public initGame() {
+  initGame() {
     return (this.game = new Game({
       players: [...this.players.keys()],
       onUpdate: this.update,
     }));
   }
 
-  public getGame(): Game {
-    if (!this.game) throw new NotFoundError(`No game started for lobby ${this.id}`);
+  hasGame() {
+    return !!this.game;
+  }
+
+  getGame() {
+    if (!this.game) throw new Error('Game not started');
+
     return this.game;
   }
 
-  public getGameOrNull() {
-    return this.game || null;
+  playTurn(turnInput: ITurnInput) {
+    return this.getGame().playTurn(turnInput);
+  }
+
+  endGameInstantly() {
+    return this.getGame().instantEnd();
   }
 }
 
