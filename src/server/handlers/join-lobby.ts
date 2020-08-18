@@ -5,7 +5,7 @@ import { lobbies, Lobby } from '../entities';
 import { SocketError } from '../errors';
 
 const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
-  const state = lobby.hasGame() ? lobby.getGame().gameState : null;
+  const state = lobby.hasGame() ? lobby.getGame().getState() : null;
   socket.emit(Events.JoinedAsSpectator, { state });
 };
 
@@ -14,7 +14,7 @@ const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
     const game = lobby.getGame();
     (socket.emit as Emit)(Events.RejoinedGame, {
       seat: game.getSeat(id),
-      state: game.gameState,
+      state: game.getState(),
     });
     return;
   }
@@ -28,7 +28,7 @@ const startGame = (lobby: Lobby, io: socketIO.Server) => {
     io.to(id).emit(Events.StartGame, {
       seat: game.getSeat(id),
       id,
-      state: game.gameState,
+      state: game.getState(),
     });
   });
 };

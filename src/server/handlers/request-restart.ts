@@ -18,11 +18,11 @@ async function RequestRestart(
 
   // Send the game state and seat to players individually
   lobby.players.forEach(id => {
-    io.to(id).emit(Events.Sync, { state: game.gameState, seat: game.getSeat(id) });
+    io.to(id).emit(Events.Sync, { state: game.getState(), seat: game.getSeat(id) });
   });
 
   // Send the game state to the whole room (for spectators)
-  io.to(lobby.id).emit(Events.Sync, { state: game.gameState });
+  io.to(lobby.id).emit(Events.Sync, { state: game.getState() });
 }
 
 export default RequestRestart;

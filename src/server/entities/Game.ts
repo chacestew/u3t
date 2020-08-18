@@ -14,7 +14,7 @@ function instantEnd(state: IGameState): IGameState {
 
 export default class Game {
   // The internal game state
-  gameState: IGameState = getInitialState();
+  private state: IGameState = getInitialState();
   // Seats
   readonly seats: string[] = [];
   // Last updated timestamp
@@ -28,10 +28,10 @@ export default class Game {
   }
 
   playTurn(payload: ITurnInput): { error?: Errors; state: IGameState } {
-    const nextState = play(this.gameState, payload, true);
+    const nextState = play(this.state, payload, true);
 
     if (!nextState.error) {
-      this.gameState = nextState.state;
+      this.state = nextState.state;
     }
 
     this.onUpdate();
@@ -46,19 +46,23 @@ export default class Game {
     return (seat + 1) as Player;
   }
 
+  getState() {
+    return this.state;
+  }
+
   forfeit(player: string) {
     const seat = this.getSeat(player);
-    return (this.gameState = forfeit(this.gameState, seat));
+    return (this.state = forfeit(this.state, seat));
   }
 
   restart() {
-    this.gameState = getInitialState();
+    this.state = getInitialState();
     this.onUpdate();
   }
 
   instantEnd = () => {
-    const nextState = instantEnd(this.gameState);
-    this.gameState = nextState;
+    const nextState = instantEnd(this.state);
+    this.state = nextState;
     this.onUpdate();
   };
 }
