@@ -17,11 +17,15 @@ async function PlayTurn(
     cell: data.cell,
   };
 
-  const { state, error } = lobby.playTurn(payload);
+  let error;
 
   if (process.env.NODE_ENV === 'development' && data.dev === true) {
     lobby.endGameInstantly();
+  } else {
+    error = lobby.playTurn(payload).error;
   }
+
+  const state = lobby.getGame().getState();
 
   if (error) {
     socket.emit(Events.InvalidTurn, {
@@ -32,10 +36,6 @@ async function PlayTurn(
     io.to(lobby.id).emit(Events.Sync, {
       state,
     });
-  }
-
-  if (state.finished) {
-    // Handle game finished here
   }
 }
 
