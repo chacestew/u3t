@@ -1,5 +1,6 @@
-import play, { getInitialState, generateRandomMove } from '../../shared/game';
-import { ITurnInput, IGameState, Errors } from '../../shared/types';
+import play, { getInitialState, generateRandomMove, forfeit } from '../../shared/game';
+import { ITurnInput, IGameState, Errors, Player } from '../../shared/types';
+import { BadRequestError } from '../errors';
 
 function instantEnd(state: IGameState): IGameState {
   const turn = generateRandomMove(state);
@@ -15,18 +16,18 @@ export default class Game {
   // The internal game state
   gameState: IGameState = getInitialState();
   // Seats
-  readonly seats: string[];
+  readonly seats: string[] = [];
   // Last updated timestamp
   readonly onUpdate: () => void;
 
   constructor({ players, onUpdate }: { players: string[]; onUpdate: () => void }) {
     console.log('players?', players);
     this.seats = [...players];
-    this.onUpdate = onUpdate;
     if (Math.floor(Math.random() * 2)) this.seats.reverse();
+    this.onUpdate = onUpdate;
   }
 
-  public playTurn(payload: ITurnInput): { error?: Errors; state: IGameState } {
+  playTurn(payload: ITurnInput): { error?: Errors; state: IGameState } {
     const nextState = play(this.gameState, payload, true);
 
     if (!nextState.error) {
@@ -38,14 +39,26 @@ export default class Game {
     return nextState;
   }
 
-  public restart() {
+  getSeat(id: string) {
+    console.log('Seats:', this.seats);
+    const seat = this.seats.indexOf(id);
+    if (seat === -1) throw new Error(`No seat for player: ${id}`);
+    return (seat + 1) as Player;
+  }
+
+  forfeit(player: string) {
+    const seat = this.getSeat(player);
+    return (this.gameState = forfeit(this.gameState, seat));
+  }
+
+  restart() {
     this.gameState = getInitialState();
     this.onUpdate();
   }
 
-  public instantEnd() {
+  instantEnd = () => {
     const nextState = instantEnd(this.gameState);
     this.gameState = nextState;
     this.onUpdate();
-  }
+  };
 }

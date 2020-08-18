@@ -1,51 +1,57 @@
-import nanoid = require('nanoid/generate');
+import nanoidGen = require('nanoid/generate');
+import nanoid = require('nanoid');
 
 import Game from './Game';
-import Player from './Player';
 import { NotFoundError, BadRequestError } from '../errors';
 import { ITurnInput } from '../../shared/types';
 
+const LOBBY_EXPIRATION_TIME = 1000 * 60 * 1;
+
 export class Lobby {
   readonly id: string;
-  readonly players: Map<string, Player> = new Map();
+  readonly players: Set<string> = new Set();
   readonly restartRequests: Map<string, string> = new Map();
   private game?: Game;
+  readonly timer: NodeJS.Timeout;
   updated: number = new Date().getTime();
 
-  constructor() {
-    this.id = nanoid('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+  constructor(destroy: (id: string) => boolean) {
+    this.id = nanoidGen('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+    this.timer = global.setTimeout(() => {
+      destroy(this.id);
+      global.clearInterval(this.timer);
+    }, LOBBY_EXPIRATION_TIME);
+    console.log('this.timer', this.timer);
   }
 
-  private update() {
-    this.updated = new Date().getTime();
-  }
+  private refresh = () => {
+    console.log('this', this);
+    this.timer.refresh();
+  };
 
   addPlayer(connection: string) {
     if (this.players.size > 1) throw new BadRequestError('Lobby already has two players');
-    const player = new Player();
-    player.sockets.add(connection);
-    this.players.set(player.id, player);
-    return player.id;
-  }
-
-  getPlayer(id: string) {
-    const player = this.players.get(id);
-
-    if (!player) throw new NotFoundError(`No player with ID: ${id}`);
-
-    return player;
+    const id = `${this.id}_${nanoid(4)}`;
+    this.players.add(id);
+    return id;
   }
 
   requestRestart(id: string, socket: string) {
     this.restartRequests.set(id, socket);
 
-    return this.restartRequests.size === 2;
+    if (this.restartRequests.size !== 2) return false;
+
+    this.initGame();
+
+    this.restartRequests.clear();
+
+    return true;
   }
 
   initGame() {
     return (this.game = new Game({
-      players: [...this.players.keys()],
-      onUpdate: this.update,
+      players: [...this.players.values()],
+      onUpdate: this.refresh,
     }));
   }
 
@@ -63,6 +69,10 @@ export class Lobby {
     return this.getGame().playTurn(turnInput);
   }
 
+  forfeit(player: string) {
+    return this.getGame().forfeit(player);
+  }
+
   endGameInstantly() {
     return this.getGame().instantEnd();
   }
@@ -71,27 +81,21 @@ export class Lobby {
 class LobbyManager {
   lobbies: Map<string, Lobby> = new Map();
 
-  public create() {
-    const lobby = new Lobby();
+  create() {
+    const lobby = new Lobby(this.remove);
     this.lobbies.set(lobby.id, lobby);
     return lobby;
   }
 
-  public remove(id: string) {
+  remove = (id: string) => {
+    console.log('Removing lobby', id);
     return this.lobbies.delete(id);
-  }
+  };
 
-  public get(id: string): Lobby {
+  get(id: string): Lobby {
     const lobby = this.lobbies.get(id);
-    if (!lobby) throw new Error(`No lobby by ID: ${id}`);
+    if (!lobby) throw new NotFoundError(`No lobby by ID: ${id}`);
     return lobby;
-  }
-
-  public getByPlayer(id: string): Lobby {
-    for (const [_, lobby] of this.lobbies) {
-      if (lobby.players.has(id)) return lobby;
-    }
-    throw new Error(`No lobby with player ${id}`);
   }
 }
 

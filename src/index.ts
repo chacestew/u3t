@@ -8,30 +8,7 @@ import attachSockets from './server/sockets';
 const app = express();
 const server = http.createServer(app);
 
-const info = attachSockets(server);
-
-app.get('/connections', (req, res) => {
-  const { connections } = info();
-  const cons = [...connections.connections.entries()];
-  res.json(cons);
-});
-
-app.get('/lobbies', (req, res) => {
-  const { lobbies } = info();
-  // const lobs = transform(lobbies);
-  const lobs = [...lobbies.lobbies.entries()].map(e => {
-    for (const piece in e[1]) {
-      if ((e[1][piece] as any) instanceof Map) {
-      }
-    }
-    const players = [...e[1].players.entries()].map(o => {
-      const sockets = [...o[1].sockets.entries()];
-      return [o[0], { ...o[1], sockets }];
-    });
-    return [e[0], { ...e[1], players }];
-  });
-  res.json(lobs);
-});
+attachSockets(server);
 
 app.use(historyFallback({ index: '/public/index.html' }));
 

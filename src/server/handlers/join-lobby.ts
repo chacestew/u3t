@@ -1,7 +1,7 @@
 import socketIO = require('socket.io');
 
 import { Events, Emit } from '../../shared/types';
-import { lobbies, Lobby, connections } from '../entities';
+import { lobbies, Lobby } from '../entities';
 import { SocketError } from '../errors';
 
 const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
@@ -10,43 +10,26 @@ const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
 };
 
 const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
-  // throw new Error('manual throw');
-  console.log('in join player');
   if (id) {
-    // If an exisiting player, link this socket
-    lobby.getPlayer(id).sockets.add(socket.id);
-    connections.get(socket.id).setPlayer(id);
-    connections.get(socket.id).setLobby(lobby.id);
-
-    // If game is ongoing (rejoin), rpro
-    if (lobby.hasGame()) {
-      const game = lobby.getGame();
-      (socket.emit as Emit)(Events.RejoinedGame, {
-        seat: game.seats.indexOf(id) as 1 | 2,
-        state: game.gameState,
-      });
-    }
-
+    const game = lobby.getGame();
+    (socket.emit as Emit)(Events.RejoinedGame, {
+      seat: game.getSeat(id),
+      state: game.gameState,
+    });
     return;
   }
   // On first join, create a new player with this socket
-  const player = lobby.addPlayer(socket.id);
-  connections.get(socket.id).setPlayer(player);
-  connections.get(socket.id).setLobby(lobby.id);
+  return lobby.addPlayer(socket.id);
 };
 
 const startGame = (lobby: Lobby, io: socketIO.Server) => {
   const game = lobby.initGame();
-
-  game.seats.forEach((id, seat) => {
-    const { sockets } = lobby.getPlayer(id);
-    for (const socket of sockets) {
-      io.to(socket).emit(Events.StartGame, {
-        seat: seat + 1,
-        id,
-        state: game.gameState,
-      });
-    }
+  lobby.players.forEach(id => {
+    io.to(id).emit(Events.StartGame, {
+      seat: game.getSeat(id),
+      id,
+      state: game.gameState,
+    });
   });
 };
 
@@ -58,21 +41,18 @@ async function joinLobby(
   const { room, id } = data;
   const lobby = lobbies.get(room);
 
-  let error;
-
-  socket.join(lobby.id, err => {
-    if (err) error = err;
-  });
-
-  if (error) throw new SocketError(error);
-
   // Handle spectator connection
   if (!id && lobby.players.size >= 2) {
     return joinSpectator(socket, lobby);
   }
 
   // Handle player connection
-  joinPlayer(socket, lobby, id);
+  const playerId = joinPlayer(socket, lobby, id);
+
+  if (playerId) {
+    socket.join(playerId);
+    socket.emit(Events.JoinedLobby, { id: playerId });
+  }
 
   // Start when second player joined
   if (lobby.players.size !== 2) return;

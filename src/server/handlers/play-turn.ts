@@ -8,10 +8,11 @@ async function PlayTurn(
   socket: socketIO.Socket,
   io: socketIO.Server
 ) {
-  const lobby = lobbies.getByPlayer(data.id);
+  const lobby = lobbies.get(data.room);
+  const seat = lobby.getGame().getSeat(data.id);
 
   const payload = {
-    player: data.player,
+    player: seat,
     board: data.board,
     cell: data.cell,
   };

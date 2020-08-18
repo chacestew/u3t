@@ -19,7 +19,7 @@ import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
 
 const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => {
-  const [playerId, setPlayerId] = useState<string | null>(null);
+  const [playerId, setPlayerId] = useState('');
   const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
   const [isSpectator, setIsSpectator] = useState(false);
   const [restartRequested, setRestartRequested] = useState(false);
@@ -49,7 +49,13 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
       setRestartRequested(false);
     });
 
-    onEvent(Events.Sync, ({ state }) => {
+    onEvent(Events.JoinedLobby, ({ id }) => {
+      setPlayerId(id);
+    });
+
+    onEvent(Events.Sync, ({ state, seat }) => {
+      if (seat) setPlayerSeat(seat);
+      if (state.turn === 1) setRestartRequested(false);
       setState(state);
     });
 
@@ -71,6 +77,8 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
     onEvent(Events.RestartRequested, () => {
       setRestartRequested(true);
     });
+
+    onEvent(Events.Error, d => console.log('Error!', d));
 
     return () => {
       console.log('Closing socket');
@@ -94,22 +102,25 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
     const player = playerSeat as Player;
-    const id = playerId;
+    const id = playerId as string;
 
     playTurn({ player, board, cell });
     emitEvent(Events.PlayTurn, {
       room,
       id,
-      player,
       board,
       cell,
       dev: (window as any).dev,
     });
   };
 
-  const restartGame = (isForfeit = false) => {
-    if (isForfeit && !window.confirm('Are you sure you want to forfeit?')) return;
-    emitEvent(Events.Restart, { id: playerId as string, forfeit: isForfeit });
+  const restartGame = () => {
+    emitEvent(Events.Restart, { id: playerId, room });
+  };
+
+  const forfeitGame = () => {
+    if (!window.confirm('Are you sure you want to forfeit?')) return;
+    emitEvent(Events.Forfeit, { id: playerId, room });
   };
 
   const headerMode = isSpectator
@@ -132,7 +143,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
       />
       <RelativeBox>
         <Board seat={playerSeat} state={state} onValidTurn={onValidTurn} />
-        <TurnList turnList={state.turnList} onRestart={() => restartGame(true)} />
+        <TurnList turnList={state.turnList} onRestart={forfeitGame} />
       </RelativeBox>
     </>
   );

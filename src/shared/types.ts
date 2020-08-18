@@ -48,6 +48,9 @@ export enum Events {
   RestartRequested = 'restart-requested',
   JoinedAsSpectator = 'joined-as-spectator',
   Disconnect = 'disconnect',
+  Error = 'error',
+  Forfeit = 'forfeit',
+  JoinedLobby = 'joined-lobby',
 }
 
 export interface EventParams {
@@ -60,9 +63,10 @@ export interface EventParams {
   };
   [Events.PlayTurn]: {
     id: string;
-    player: Player;
+    room: string;
     board: Board;
     cell: Cell;
+    dev: boolean;
   };
   [Events.StartGame]: {
     id: string;
@@ -78,6 +82,7 @@ export interface EventParams {
   };
   [Events.Sync]: {
     state: IGameState;
+    seat: Player;
   };
   [Events.InvalidTurn]: {
     state: IGameState;
@@ -85,7 +90,7 @@ export interface EventParams {
   };
   [Events.Restart]: {
     id: string;
-    forfeit: boolean;
+    room: string;
   };
   [Events.JoinedAsSpectator]: {
     state: IGameState;
@@ -94,6 +99,16 @@ export interface EventParams {
   [Events.LobbyReady]: {
     room: string;
     id?: string;
+  };
+  [Events.Error]: {
+    code: number;
+  };
+  [Events.Forfeit]: {
+    room: string;
+    id: string;
+  };
+  [Events.JoinedLobby]: {
+    id: string;
   };
 }
 

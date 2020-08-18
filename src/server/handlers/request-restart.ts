@@ -8,30 +8,21 @@ async function RequestRestart(
   socket: socketIO.Socket,
   io: socketIO.Server
 ) {
-  const lobby = lobbies.getByPlayer(data.id);
+  const lobby = lobbies.get(data.room);
 
-  const twoRequestsReceived = lobby.requestRestart(data.id, socket.id);
+  const hasRestarted = lobby.requestRestart(data.id, socket.id);
+
+  if (!hasRestarted) return io.to(lobby.id).emit(Events.RestartRequested);
 
   const game = lobby.getGame();
 
-  if (twoRequestsReceived || data.forfeit) {
-    const nextLobby = lobbies.create();
+  // Send the game state and seat to players individually
+  lobby.players.forEach(id => {
+    io.to(id).emit(Events.Sync, { state: game.gameState, seat: game.getSeat(id) });
+  });
 
-    game.restart();
-
-    return io.to(lobby.id).emit(Events.Sync, { state: game.gameState });
-
-    for (const [_, socket] of lobby.restartRequests) {
-      const id = nextLobby.addPlayer(socket);
-      io.to(socket).emit(Events.LobbyReady, { room: nextLobby.id, id });
-    }
-
-    io.to(lobby.id).emit(Events.LobbyReady, { room: nextLobby.id });
-
-    // Handle lobby finished here
-  } else {
-    io.to(lobby.id).emit(Events.RestartRequested);
-  }
+  // Send the game state to the whole room (for spectators)
+  io.to(lobby.id).emit(Events.Sync, { state: game.gameState });
 }
 
 export default RequestRestart;

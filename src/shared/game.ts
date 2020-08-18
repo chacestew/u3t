@@ -79,6 +79,7 @@ const didWinGame = (state: T.IGameState, payload: T.ITurnInput) => {
 // Public
 export const generateRandomMove = (state: T.IGameState) => {
   const { boards, currentPlayer: player, activeBoard } = state;
+  console.log('state?', state);
 
   const randomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -147,6 +148,21 @@ export function isInvalidTurn(state: T.IGameState, turn: T.ITurnInput) {
     console.log('Cell is occupied.');
     return T.Errors.CellOccupied;
   }
+}
+
+export function forfeit(state: T.IGameState, player: T.Player) {
+  const nextState = cloneDeep(state);
+
+  switch (player) {
+    case 1:
+      nextState.winner = 2;
+    case 2:
+      nextState.winner = 1;
+  }
+
+  nextState.finished = true;
+
+  return nextState;
 }
 
 export default function(
