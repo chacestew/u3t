@@ -21,7 +21,6 @@ export default class Game {
   readonly onUpdate: () => void;
 
   constructor({ players, onUpdate }: { players: string[]; onUpdate: () => void }) {
-    console.log('players?', players);
     this.seats = [...players];
     if (Math.floor(Math.random() * 2)) this.seats.reverse();
     this.onUpdate = onUpdate;
@@ -40,7 +39,6 @@ export default class Game {
   }
 
   getSeat(id: string) {
-    console.log('Seats:', this.seats);
     const seat = this.seats.indexOf(id);
     if (seat === -1) throw new Error(`No seat for player: ${id}`);
     return (seat + 1) as Player;

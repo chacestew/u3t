@@ -18,14 +18,15 @@ export class Lobby {
   constructor(destroy: (id: string) => boolean) {
     this.id = nanoidGen('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
     this.timer = global.setTimeout(() => {
+      console.log('about to destroy');
       destroy(this.id);
+      console.log('done destroy');
       global.clearInterval(this.timer);
     }, LOBBY_EXPIRATION_TIME);
     console.log('this.timer', this.timer);
   }
 
   private refresh = () => {
-    console.log('this', this);
     this.timer.refresh();
   };
 
