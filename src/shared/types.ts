@@ -53,6 +53,13 @@ export enum Events {
   JoinedLobby = 'joined-lobby',
 }
 
+export type ServerError = 'not-found' | 'will-expire';
+
+export type ErrorParams = {
+  code: ServerError;
+  errorData?: { [key: string]: string };
+};
+
 export interface EventParams {
   [Events.JoinLobby]: {
     room: string;
@@ -69,6 +76,7 @@ export interface EventParams {
     dev: boolean;
   };
   [Events.StartGame]: {
+    room: string;
     id: string;
     seat: Player;
     state: IGameState;
@@ -77,6 +85,7 @@ export interface EventParams {
     id: string;
   };
   [Events.RejoinedGame]: {
+    room: string;
     seat: Player;
     state: IGameState;
   };
@@ -98,17 +107,15 @@ export interface EventParams {
   [Events.RestartRequested]: null;
   [Events.LobbyReady]: {
     room: string;
-    id?: string;
   };
-  [Events.Error]: {
-    code: number;
-  };
+  [Events.Error]: ErrorParams;
   [Events.Forfeit]: {
     room: string;
     id: string;
   };
   [Events.JoinedLobby]: {
     id: string;
+    room: string;
   };
 }
 

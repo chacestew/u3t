@@ -10,6 +10,12 @@ const server = http.createServer(app);
 
 attachSockets(server);
 
+app.get('/mem', (req, res) => {
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(`The script uses approximately ${used} MB`);
+  res.end();
+});
+
 app.use(historyFallback({ index: '/public/index.html' }));
 
 const start = () => {

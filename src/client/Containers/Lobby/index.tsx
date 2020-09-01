@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import { match, RouteComponentProps } from 'react-router-dom';
@@ -10,6 +10,7 @@ import {
   Board as BoardType,
   Board as CellType,
   Errors,
+  ErrorParams,
 } from '../../../shared/types';
 
 import useGameReducer from '../../hooks/useGameReducer';
@@ -17,68 +18,85 @@ import { Header } from '../../Components/GameArea/Header/Header';
 import useSocket from '../../hooks/useSocket';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
+import useMultiplerState from '../../hooks/useLobbyReducer';
 
-const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => {
-  const [playerId, setPlayerId] = useState('');
-  const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
-  const [isSpectator, setIsSpectator] = useState(false);
-  const [restartRequested, setRestartRequested] = useState(false);
+const useErrorManager = () => {
+  const [error, setError] = useState<ErrorParams | null>(null);
+
+  const dismissError = () => setError(null);
+
+  return { error, setError, dismissError };
+};
+
+const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) => {
+  // const [playerId, setPlayerId] = useState('');
+  // const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
+  // const [isSpectator, setIsSpectator] = useState(false);
+  // const [restartRequested, setRestartRequested] = useState(false);
   const [state, { playTurn, setState, restart }] = useGameReducer();
+  const { error, setError, dismissError } = useErrorManager();
+  // const [room, setRoom] = useState('');
+  const {
+    lobbyState,
+    dispatchers: {
+      onLobbyReady,
+      onStartGame,
+      onJoinedAsSpectator,
+      onJoinedLobby,
+      onRejoinedGame,
+      onRestartRequested,
+      onSync,
+      set,
+      reset,
+    },
+  } = useMultiplerState();
 
   const { socket, onEvent, emitEvent } = useSocket();
 
-  const {
-    params: { id: room },
-  } = match;
-
   useEffect(() => {
-    onEvent(Events.LobbyReady, ({ id, room: _room }) => {
-      if (room === _room) return;
-      if (id) {
-        localStorage.setItem(room, id);
-        setPlayerId(id);
-      }
-      history.replace(`/play/${_room}`);
+    onEvent(Events.LobbyReady, data => {
+      onLobbyReady(data);
+      history.replace(`/play/${data.room}`);
     });
 
-    onEvent(Events.StartGame, ({ id, seat, state }) => {
-      localStorage.setItem(room, id);
-      setPlayerId(id);
-      setPlayerSeat(seat);
-      setState(state);
-      setRestartRequested(false);
+    onEvent(Events.StartGame, data => {
+      sessionStorage.setItem(data.room, data.id);
+      onStartGame(data);
+      setState(data.state);
     });
 
-    onEvent(Events.JoinedLobby, ({ id }) => {
-      setPlayerId(id);
+    onEvent(Events.JoinedLobby, data => {
+      onJoinedLobby(data);
     });
 
-    onEvent(Events.Sync, ({ state, seat }) => {
-      if (seat) setPlayerSeat(seat);
-      if (state.turn === 1) setRestartRequested(false);
-      setState(state);
+    onEvent(Events.Sync, data => {
+      onSync(data);
+      setState(data.state);
     });
 
     onEvent(Events.InvalidTurn, ({ state, error }) => {
       setState(state);
     });
 
-    onEvent(Events.JoinedAsSpectator, ({ state }) => {
-      setIsSpectator(true);
-      if (state) setState(state);
-      else restart();
+    onEvent(Events.JoinedAsSpectator, data => {
+      onJoinedAsSpectator(data);
+      if (data.state) {
+        setState(data.state);
+      } else restart();
     });
 
-    onEvent(Events.RejoinedGame, ({ state, seat }) => {
-      setState(state);
-      setPlayerSeat(seat);
+    onEvent(Events.RejoinedGame, data => {
+      onRejoinedGame(data);
+      setState(data.state);
     });
 
-    onEvent(Events.RestartRequested, () => {
-      setRestartRequested(true);
+    onEvent(Events.RestartRequested, data => {
+      onRestartRequested(data);
     });
 
-    onEvent(Events.Error, d => console.log('Error!', d));
+    onEvent(Events.Error, error => {
+      setError(error);
+    });
 
     return () => {
       console.log('Closing socket');
@@ -87,22 +105,24 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   }, []);
 
   useEffect(() => {
-    if (room) {
-      const savedId = localStorage.getItem(room);
-      if (savedId) {
-        setPlayerId(savedId);
-        emitEvent(Events.JoinLobby, { room, id: savedId });
-      } else {
-        emitEvent(Events.JoinLobby, { room, id: playerId });
-      }
-    } else {
+    if (!match.params.room) {
+      reset();
       emitEvent(Events.CreateLobby);
+    } else {
+      const savedId = sessionStorage.getItem(match.params.room);
+      if (savedId) {
+        set({ playerId: savedId });
+        emitEvent(Events.JoinLobby, { room: match.params.room, id: savedId });
+      } else {
+        emitEvent(Events.JoinLobby, { room: match.params.room });
+      }
     }
-  }, [room]);
+  }, [match.params.room]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
-    const player = playerSeat as Player;
-    const id = playerId as string;
+    const player = lobbyState.playerSeat as Player;
+    const id = lobbyState.playerId as string;
+    const room = lobbyState.roomId as string;
 
     playTurn({ player, board, cell });
     emitEvent(Events.PlayTurn, {
@@ -115,34 +135,42 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ id: string }>) => 
   };
 
   const restartGame = () => {
-    emitEvent(Events.Restart, { id: playerId, room });
+    emitEvent(Events.Restart, { id: lobbyState.playerId!, room: lobbyState.roomId! });
   };
 
   const forfeitGame = () => {
     if (!window.confirm('Are you sure you want to forfeit?')) return;
-    emitEvent(Events.Forfeit, { id: playerId, room });
+    emitEvent(Events.Forfeit, { id: lobbyState.playerId!, room: lobbyState.roomId! });
   };
 
-  const headerMode = isSpectator
+  const headerMode = lobbyState.isSpectator
     ? 'spectator'
-    : room && !playerSeat
+    : lobbyState.roomId && !lobbyState.playerSeat
     ? 'share'
-    : playerSeat
+    : lobbyState.playerSeat
     ? 'online'
     : 'loading';
+
+  console.log(lobbyState);
 
   return (
     <>
       <Header
-        room={room}
+        room={lobbyState.roomId!}
         state={state}
-        seat={playerSeat!}
+        seat={lobbyState.playerSeat!}
         mode={headerMode}
         onPlayAgainConfirm={restartGame}
-        restartRequested={restartRequested}
+        restartRequested={lobbyState.restartRequested}
       />
       <RelativeBox>
-        <Board seat={playerSeat} state={state} onValidTurn={onValidTurn} />
+        <Board
+          seat={lobbyState.playerSeat}
+          state={state}
+          onValidTurn={onValidTurn}
+          error={error}
+          dismissError={dismissError}
+        />
         <TurnList turnList={state.turnList} onRestart={forfeitGame} />
       </RelativeBox>
     </>
