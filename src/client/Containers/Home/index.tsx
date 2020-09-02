@@ -6,6 +6,9 @@ import { faRobot, faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-ico
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import palette from '../../utils/palette';
 import MenuItem from './MenuItem';
+import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
+import { getInitialState } from '../../../shared/game';
+import { Header } from '../../Components/GameArea/Header/Header';
 
 const Article = styled.article`
   width: 100%;
@@ -67,43 +70,64 @@ export default () => {
   return (
     <Article
       css={`
-        padding: 1em;
-        width: 100%;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
       `}
     >
-      <h2>Welcome to U3T!</h2>
-      <p>The ultimate way to play the 9 board variant of tic-tac-toe.</p>
-      <section
+      <Header state={getInitialState()} mode="share" />
+
+      <div
         css={`
           display: flex;
-          justify-content: center;
+          position: relative;
           align-items: center;
-          flex-direction: column;
         `}
       >
-        <MenuItem
-          url="/play"
-          text="PLAY ONLINE"
-          icon={faGlobe}
-          description="Compete against a friend anywhere in the world on any device with a browser."
-        />
+        <GameView state={getInitialState()} />
+        {/* <div
+        css={`
+          position: absolute;
+        `}
+      > */}
+        {/* <h2>Welcome to U3T!</h2>
+        <p>The ultimate way to play the 9 board variant of tic-tac-toe.</p> */}
+        <section
+          css={`
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 2em;
+            background: rgba(89, 75, 92, 0.9);
+          `}
+        >
+          <MenuItem
+            url="/play"
+            text="PLAY ONLINE"
+            icon={faGlobe}
+            description="Compete against a friend over the internet. Join our Discord to find more players."
+          />
 
-        <MenuItem
-          url="/hotseat"
-          text="PLAY ON DEVICE"
-          icon={faUserFriends}
-          description="Take turns playing on your device."
-        />
+          <MenuItem
+            url="/hotseat"
+            text="PLAY ON DEVICE"
+            icon={faUserFriends}
+            description="Take turns playing on your device."
+          />
 
-        <MenuItem
-          url="/playai"
-          text="PLAY THE AI"
-          icon={faRobot}
-          description="Test your strength against the computer."
-        />
-      </section>
+          <MenuItem
+            url="/playai"
+            text="PLAY THE AI"
+            icon={faRobot}
+            description="Test your strength against the computer."
+            lastChild
+          />
+        </section>
+      </div>
+      {/* </div> */}
     </Article>
   );
 };

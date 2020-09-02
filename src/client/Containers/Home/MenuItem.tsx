@@ -10,10 +10,11 @@ const NavItem = styled(Link)`
   padding: 10px;
   background: ${palette.menuButtonBg};
   color: ${palette.textColor2};
+  border-radius: 4px;
   width: 100%;
   font-weight: bold;
   justify-content: center;
-  border: 1px solid ${palette.menuButtonBr};
+  box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
   display: flex;
 
   svg {
@@ -26,16 +27,16 @@ const NavContainer = styled.div`
   font-family: 'Open Sans', sans-serif;
   box-sizing: inherit;
   width: 100%;
-  border: 1px solid silver;
-  border-radius: 4px;
-  padding: 1em 1em;
+  // border: 1px solid silver;
+  // border-radius: 4px;
+  // padding: 1em 1em;
   display: flex;
-  background: #594b5c;
   flex-direction: column;
-  margin-bottom: 2em;
+  ${({ lastChild }) => (!lastChild ? 'margin-bottom: 2em;' : '')}
 
   p {
     margin-bottom: 0;
+    font-weight: bold;
     color: ${palette.textColor};
   }
 `;
@@ -52,9 +53,9 @@ interface Props {
   description: string;
 }
 
-export default ({ url, text, icon, description }: Props) => {
+export default ({ url, text, icon, description, lastChild }: Props) => {
   return (
-    <NavContainer>
+    <NavContainer lastChild={lastChild}>
       <NavItem to={url}>
         <FontAwesomeIcon icon={icon} />
         {text}
