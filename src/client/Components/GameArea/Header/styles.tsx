@@ -23,6 +23,7 @@ export const Bar = styled.div`
   color: ${palette.textColor};
   margin-bottom: 0.5em;
   font-size: 18px;
+  width: 100%;
 `;
 
 export const Cell = styled(BaseCell)`
