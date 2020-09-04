@@ -21,7 +21,6 @@ const errorHandler = (
   socket: socketIO.Socket
 ) => {
   if (err instanceof NotFoundError) socket.error({ code: 'not-found' });
-  console.error(err);
   logger.error(err.message);
 };
 
@@ -30,41 +29,41 @@ const joinRooms = (data: { id?: string; room?: string }, socket: socketIO.Socket
   if (data.id) socket.join(data.id);
 };
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   console.log('Hello ', socket.id);
 
   socket.on(Events.CreateLobby, () => {
     logger.info(`CreateLobby`);
-    createLobby(socket).catch(error => errorHandler(error, socket));
+    createLobby(socket).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.JoinLobby, data => {
+  socket.on(Events.JoinLobby, (data) => {
     logger.info(`JoinLobby`, { data });
     joinRooms(data, socket);
-    joinLobby(data, socket, io).catch(error => errorHandler(error, socket));
+    joinLobby(data, socket, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.PlayTurn, data => {
+  socket.on(Events.PlayTurn, (data) => {
     logger.info(`PlayTurn`, { data });
     joinRooms(data, socket);
-    playTurn(data, socket, io).catch(error => errorHandler(error, socket));
+    playTurn(data, socket, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Restart, data => {
+  socket.on(Events.Restart, (data) => {
     logger.info(`Restart`, { data });
     joinRooms(data, socket);
-    requestRestart(data, socket, io).catch(error => errorHandler(error, socket));
+    requestRestart(data, socket, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Forfeit, data => {
+  socket.on(Events.Forfeit, (data) => {
     logger.info(`Forfeit`, { data });
     joinRooms(data, socket);
-    forfeit(data, io).catch(error => errorHandler(error, socket));
+    forfeit(data, io).catch((error) => errorHandler(error, socket));
   });
 
   socket.on(Events.Disconnect, () => {
     logger.info(`Disconnect`);
-    disconnect(socket).catch(error => errorHandler(error, socket));
+    disconnect(socket).catch((error) => errorHandler(error, socket));
   });
 });
 

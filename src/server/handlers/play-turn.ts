@@ -2,6 +2,7 @@ import socketIO = require('socket.io');
 
 import { Events, EventParams } from '../../shared/types';
 import { lobbies } from '../entities';
+import logger from '../logger';
 
 async function PlayTurn(
   data: EventParams[Events.PlayTurn],

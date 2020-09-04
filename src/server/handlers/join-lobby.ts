@@ -3,15 +3,17 @@ import socketIO = require('socket.io');
 import { Events, Emit } from '../../shared/types';
 import { lobbies, Lobby } from '../entities';
 import { SocketError } from '../errors';
+import logger from '../logger';
 
 const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
+  logger.info('Joining player as spectator', { data: { lobby: lobby.id } });
   const state = lobby.getGame().getState();
   socket.emit(Events.JoinedAsSpectator, { state });
 };
 
 const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
-  console.log('in joinPlayer', id);
   if (id) {
+    logger.info('Rejoining player to lobby', { data: { lobby: lobby.id, player: id } });
     const game = lobby.getGame();
     (socket.emit as Emit)(Events.RejoinedGame, {
       room: lobby.id,
@@ -20,14 +22,15 @@ const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
     });
     return;
   }
-  console.log('here');
+
   // On first join, create a new player with this socket
+  logger.info('Joining new player to lobby', { data: { lobby: lobby.id } });
   return lobby.addPlayer(socket.id);
 };
 
 const startGame = (lobby: Lobby, io: socketIO.Server) => {
   const game = lobby.initGame();
-  lobby.players.forEach(id => {
+  lobby.players.forEach((id) => {
     io.to(id).emit(Events.StartGame, {
       room: lobby.id,
       seat: game.getSeat(id),
@@ -47,7 +50,8 @@ async function joinLobby(
 
   // Handle spectator connection
   if (!id && lobby.hasGame()) {
-    return joinSpectator(socket, lobby);
+    joinSpectator(socket, lobby);
+    return;
   }
 
   // Handle player connection

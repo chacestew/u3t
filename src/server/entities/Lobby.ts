@@ -4,8 +4,16 @@ import nanoid = require('nanoid');
 import Game from './Game';
 import { NotFoundError, BadRequestError } from '../errors';
 import { ITurnInput } from '../../shared/types';
+import { lobbies } from '.';
+import logger from '../logger';
 
 const LOBBY_EXPIRATION_TIME = 1000 * 60 * 1;
+
+function createID(collection: Map<string, any>): string {
+  const id = nanoidGen('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+  if (!collection.has(id)) return id;
+  return createID(collection);
+}
 
 export class Lobby {
   readonly id: string;
@@ -13,17 +21,16 @@ export class Lobby {
   readonly restartRequests: Map<string, string> = new Map();
   private game?: Game;
   readonly timer: NodeJS.Timeout;
+  logger: (message: string, data?: { [key: string]: any }) => void;
   updated: number = new Date().getTime();
 
-  constructor(destroy: (id: string) => boolean) {
-    this.id = nanoidGen('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+  constructor(id: string, destroy: typeof lobbies.remove) {
+    this.id = id;
     this.timer = global.setTimeout(() => {
-      console.log('about to destroy');
       destroy(this.id);
-      console.log('done destroy');
       global.clearInterval(this.timer);
     }, LOBBY_EXPIRATION_TIME);
-    console.log('this.timer', this.timer);
+    this.logger = (message, data) => logger.info(`[Lobby#${this.id}]: ${message}`, data);
   }
 
   private refresh = () => {
@@ -50,6 +57,7 @@ export class Lobby {
   }
 
   initGame() {
+    this.logger('Initialised new game', { data: { lobby: this.id } });
     return (this.game = new Game({
       players: [...this.players.values()],
       onUpdate: this.refresh,
@@ -67,10 +75,13 @@ export class Lobby {
   }
 
   playTurn(turnInput: ITurnInput) {
+    console.log('THIS!!!!', this);
+    this.logger('Playing turn', { data: turnInput });
     return this.getGame().playTurn(turnInput);
   }
 
   forfeit(player: string) {
+    this.logger('Forfeiting');
     return this.getGame().forfeit(player);
   }
 
@@ -83,13 +94,15 @@ class LobbyManager {
   lobbies: Map<string, Lobby> = new Map();
 
   create() {
-    const lobby = new Lobby(this.remove);
+    const id = createID(this.lobbies);
+    const lobby = new Lobby(id, this.remove);
     this.lobbies.set(lobby.id, lobby);
+    logger.info(`Created lobby: ${id}`);
     return lobby;
   }
 
   remove = (id: string) => {
-    console.log('Removing lobby', id);
+    logger.info(`Removed lobby: ${id}`);
     return this.lobbies.delete(id);
   };
 

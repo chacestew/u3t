@@ -1,7 +1,6 @@
 {
   "printWidth": 90,
   "singleQuote": true,
-  "trailingComma": "es5",
   "overrides": [
     {
       "files": [".prettierrc", ".babelrc", ".eslintrc", "*.json"],
