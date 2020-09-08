@@ -1,16 +1,16 @@
-import nanoidGen = require('nanoid/generate');
-import nanoid = require('nanoid');
-
+import { customAlphabet } from 'nanoid';
 import Game from './Game';
 import { NotFoundError, BadRequestError } from '../errors';
 import { ITurnInput } from '../../shared/types';
 import { lobbies } from '.';
 import logger from '../logger';
 
+const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+
 const LOBBY_EXPIRATION_TIME = 1000 * 60 * 1;
 
 function createID(collection: Map<string, any>): string {
-  const id = nanoidGen('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
+  const id = nanoid();
   if (!collection.has(id)) return id;
   return createID(collection);
 }
@@ -39,7 +39,7 @@ export class Lobby {
 
   addPlayer(connection: string) {
     if (this.players.size > 1) throw new BadRequestError('Lobby already has two players');
-    const id = `${this.id}_${nanoid(4)}`;
+    const id = `${this.id}_${nanoid()}`;
     this.players.add(id);
     return id;
   }
