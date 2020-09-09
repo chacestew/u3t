@@ -9,6 +9,7 @@ import MenuItem from './MenuItem';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import { getInitialState } from '../../../shared/game';
 import { Header } from '../../Components/GameArea/Header/Header';
+import { media } from '../../styles/mixins';
 
 const Article = styled.article`
   width: 100%;
@@ -76,32 +77,34 @@ export default () => {
         justify-content: center;
       `}
     >
-      <Header state={getInitialState()} mode="share" />
-
+      <Header state={getInitialState()} mode="home" />
       <div
         css={`
           display: flex;
           position: relative;
           align-items: center;
+          justify-content: center;
         `}
       >
         <GameView state={getInitialState()} />
-        {/* <div
-        css={`
-          position: absolute;
-        `}
-      > */}
-        {/* <h2>Welcome to U3T!</h2>
-        <p>The ultimate way to play the 9 board variant of tic-tac-toe.</p> */}
         <section
           css={`
             position: absolute;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
             align-items: center;
             flex-direction: column;
-            padding: 2em;
+            padding: 1em;
             background: rgba(89, 75, 92, 0.9);
+            height: 100%;
+            width: 100%;
+
+            ${media.aboveMobileL`
+            padding: 2em;
+            height: 90%;
+            width: 90%;
+            border-radius: 6px;
+            `}
           `}
         >
           <MenuItem

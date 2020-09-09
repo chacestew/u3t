@@ -32,11 +32,13 @@ const NavContainer = styled.div`
   // padding: 1em 1em;
   display: flex;
   flex-direction: column;
-  ${({ lastChild }) => (!lastChild ? 'margin-bottom: 2em;' : '')}
 
   p {
-    margin-bottom: 0;
+    line-height: 1.5;
+    margin: 0;
+    margin-top: 1em;
     font-weight: bold;
+    font-size: 14px;
     color: ${palette.textColor};
   }
 `;

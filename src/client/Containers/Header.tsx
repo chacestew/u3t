@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import palette, { gridSize } from '../utils/palette';
+import { media } from '../styles/mixins';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -39,6 +40,7 @@ const StyledHeader = styled.header`
   }
 
   ul {
+    padding: 0;
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -48,7 +50,8 @@ const StyledHeader = styled.header`
     overflow: hidden;
 
     li {
-      padding: 0 2em;
+      padding-left: 3em;
+      ${media.aboveMobileL`padding-left: 5em;`}
       display: inline;
     }
   }
@@ -74,13 +77,12 @@ const Header = () => {
             <Link to="/">PLAY</Link>
           </li>
           <li>
-            <Link to="/rules">RULES</Link>
+            <Link to="/rules">LEARN</Link>
           </li>
-          <li>
-            <Link to="/about">ABOUT</Link>
-          </li>
+          {/* <li>
+            <DevBox />
+          </li> */}
         </ul>
-        <DevBox />
       </nav>
     </StyledHeader>
   );

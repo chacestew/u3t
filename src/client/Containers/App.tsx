@@ -12,6 +12,7 @@ import Rules from './Rules';
 import palette, { gridSize } from '../utils/palette';
 import { media } from '../styles/mixins';
 import Header from './Header';
+import Footer from './Footer';
 
 const GlobalStyle = createGlobalStyle`
   ${styledNormalize}
@@ -31,12 +32,17 @@ const GlobalStyle = createGlobalStyle`
     #root {
       background-color: ${palette.mainBg};
       height: 100vh;
-    min-height: 100vh;
-     margin: 0 auto;
-     display: flex;
-     flex-direction: column;
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
 
      ${media.aboveMobileL`height: auto`}
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
   }
 `;
@@ -65,15 +71,7 @@ const App = () => (
       <Route path="/playai" component={PlayAI} />
       <Route path="/rules" component={Rules} />
     </Main>
-    <footer
-      css={`
-        padding: 1em;
-        background-color: ${palette.header};
-        color: white;
-      `}
-    >
-      Copyright Chace Stewart - About - Contact
-    </footer>
+    <Footer />
   </>
 );
 

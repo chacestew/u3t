@@ -6,6 +6,7 @@ import Loading from './HeaderContents/Loading';
 import Share from './HeaderContents/Share';
 import InPlay from './HeaderContents/InPlay';
 import Finished from './HeaderContents/Finished';
+import Home from './HeaderContents/Home';
 
 export type Mode = 'loading' | 'share' | 'local' | 'online' | 'spectator';
 
@@ -33,6 +34,8 @@ export const Header: React.FC<Props> = ({
       return <Loading />;
     case 'share':
       return <Share room={room as string} />;
+    case 'home':
+      return <Home />;
     case 'spectator':
       return (
         <InPlay
