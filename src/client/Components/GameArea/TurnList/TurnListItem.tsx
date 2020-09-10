@@ -3,6 +3,7 @@ import * as T from '../../../../shared/types';
 import BaseCell from '../Cell/Cell';
 import BoardSVG from '../BoardSVG';
 import styled from 'styled-components';
+import { media } from '../../../styles/mixins';
 
 const Cell = styled(BaseCell)`
   width: 1.5em;
@@ -18,9 +19,6 @@ const Cell = styled(BaseCell)`
 const StyledTurnListItem = styled.div`
   display: flex;
   align-items: baseline;
-
-  span .board-icon {
-  }
 `;
 
 const TurnListBoardIcon = React.memo(({ index }: { index: T.Cell }) => {
@@ -30,13 +28,7 @@ const TurnListBoardIcon = React.memo(({ index }: { index: T.Cell }) => {
   });
 
   return (
-    <BoardSVG
-      css={`
-        margin: 0.25em;
-      `}
-      size="1.5em"
-      getPathAttributes={getPathAttributes}
-    />
+    <BoardSVG className="element" size="1.5em" getPathAttributes={getPathAttributes} />
   );
 });
 
@@ -53,11 +45,9 @@ const TurnListItem = ({
 }) => (
   <StyledTurnListItem>
     <span
+      className="element"
       css={`
          {
-          margin-left: 0.5em;
-          margin-right: 0.25em;
-          min-width: 1em;
           opacity: 0.5;
           font-weight: normal;
         }
@@ -67,28 +57,15 @@ const TurnListItem = ({
     </span>
     <div
       css={`
-        margin: 0.25em;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
       `}
     >
-      <Cell cellType={player} />
-      <span
-        css={`
-          margin: 0.25em;
-        `}
-      >
-        played on board
-      </span>
+      <Cell className="element" cellType={player} />
+      <span className="element">played on board</span>
       <TurnListBoardIcon index={board} />
-      <span
-        css={`
-          margin: 0.25em;
-        `}
-      >
-        and cell
-      </span>
+      <span className="element">and cell</span>
       <TurnListBoardIcon index={cell} />
     </div>
   </StyledTurnListItem>

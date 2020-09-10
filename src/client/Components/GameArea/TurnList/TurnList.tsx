@@ -62,6 +62,22 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
     overflow-y: scroll;
     color: white;
 
+    .element {
+      margin: 0.5em 0.25em;
+  
+      ${media.aboveMobileM`
+      margin: 0.5em 0.5em;
+      `}
+  
+      ${media.aboveMobileL`
+      margin: 0.5em 0.75em;
+      `}
+  
+      @media (min-width: 505px) {
+        margin: 0.5em 1.25em;
+      }
+    }
+
     // ${media.aboveMobileL`max-height: 150px;`}
 `;
 

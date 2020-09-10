@@ -9,11 +9,13 @@ const BoardSVG = ({
   size = '1em',
   pathAttributes,
   getPathAttributes,
+  className,
   ...rest
 }: {
   size?: string;
   getPathAttributes?: (index: Board) => { fill: string; fillOpacity: number };
   pathAttributes?: Array<{ fill: string; fillOpacity: number }>;
+  className?: string;
 }) => {
   const getAttrs = (index: Board) => {
     if (pathAttributes) return pathAttributes[index];
@@ -23,7 +25,7 @@ const BoardSVG = ({
 
   return (
     <svg
-      className="board-icon"
+      className={`board-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 965.199 965.199"

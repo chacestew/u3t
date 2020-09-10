@@ -21,6 +21,7 @@ const getCellBg = (cellType: null | T.Player) => {
 export interface Props {
   cellType: null | T.Player;
   size?: string;
+  className?: string;
 }
 
 const CellContainer = styled.div<Props>`
