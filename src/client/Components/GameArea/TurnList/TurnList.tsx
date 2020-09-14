@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import TurnListItem from './TurnListItem';
 import { flexColumns, media } from '../../../styles/mixins';
 import RestartButton from './RestartButton';
+import Button from '../../Button';
 
 const bgColor = '#f8f8ff'; //'#594b5c';
 
@@ -45,10 +46,6 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
       background-color: #594b5c;
       padding: 0.5em;
       z-index: 1;
-
-      svg {
-        margin-left: 0.5em;
-      }
     }
   }
 
@@ -112,10 +109,17 @@ const TurnList = ({
   return (
     <StyledTurnList expanded={expanded}>
       <div className="log-header">
-        <button className="expand-button" onClick={onClick}>
+        <Button
+          shadow={false}
+          svgRight
+          backgroundColor="#594b5c"
+          padding="0.5em"
+          fontColor="white"
+          onClick={onClick}
+        >
           Turn Log
           <FontAwesomeIcon icon={expanded ? faMinusSquare : faPlusSquare} />
-        </button>
+        </Button>
         <RestartButton onClick={onRestart} />
       </div>
       {expanded && (

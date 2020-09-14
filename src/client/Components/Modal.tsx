@@ -86,7 +86,7 @@ const Modal = ({ error, dismissError }: Props) => {
         `}
       >
         {links.map(([text, to]) => (
-          <Button to={to} onClick={dismissError}>
+          <Button borderRadius="4px" to={to} onClick={dismissError}>
             {text}
           </Button>
         ))}
