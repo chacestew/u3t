@@ -6,6 +6,9 @@ const { paths, loaders } = require('./helpers');
 module.exports = {
   name: 'client',
   entry: { main: paths.client },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.png'],
+  },
   mode: 'production',
   output: {
     path: paths.dist,

@@ -4,7 +4,10 @@
   "description": "Ultimate Tic-Tac-Toe",
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development && ts-node-dev --transpile-only ./src/index.ts"
+    "start": "export NODE_ENV=development && ts-node-dev --transpile-only ./src/index.ts",
+    "build": "webpack --config ./webpack/config.prod.js",
+    "serve": "export NODE_ENV=production && ts-node-dev --transpile-only ./src/index.ts",
+    "build-server": "tsc"
   },
   "keywords": [
     "tic-tac-toe",
@@ -69,6 +72,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-styled-components": "^1.11.1",
     "brotli-webpack-plugin": "^1.1.0",
+    "compression-webpack-plugin": "^6.0.1",
     "eslint": "^7.8.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
