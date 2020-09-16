@@ -79,9 +79,9 @@ const Header = () => {
           <li>
             <Link to="/rules">LEARN</Link>
           </li>
-          {/* <li>
+          <li>
             <DevBox />
-          </li> */}
+          </li>
         </ul>
       </nav>
     </StyledHeader>
@@ -101,7 +101,7 @@ const DevBox = () => {
 
   return (
     <div>
-      Instawin
+      Insta-End
       <input
         css="margin-left: 1em;"
         type="checkbox"

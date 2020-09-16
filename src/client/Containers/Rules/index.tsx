@@ -1,84 +1,82 @@
 import React from 'react';
-import pic from '../../../1.png';
+import pic1 from '../../../../assets/learn1.png';
+import pic2 from '../../../../assets/learn2.png';
+import pic3 from '../../../../assets/learn3.png';
 import palette from '../../utils/palette';
+import styled from 'styled-components';
+
+const Section = styled.div`
+  display: flex;
+  padding: 0.5em;
+  // background-color: ${palette.gameBarBg};
+  // border-bottom: 2px solid ${palette.gameBarBg};
+
+  img {
+    object-fit: contain;
+  }
+`;
+
+const Text = styled.div`
+  width: 55%;
+  color: white; //${palette.gameBarBg};
+  background-color: ${palette.gameBarBg};
+  margin-${({ side }) => side}: 1em;
+  padding: 1em;
+
+  h3 {
+    margin: 0;
+    font-style: italic;
+    margin-bottom: 1em;
+  }
+`;
 
 export default () => (
   <div>
-    <div
-      css={`
-        display: flex;
-        padding: 1em;
-      `}
-    >
-      <div
-        css={`
-          width: 55%;
-          color: ${palette.textColor2};
-          padding-right: 1em;
-        `}
-      >
+    <Section>
+      <Text side="right">
+        <h3>Three in a row</h3>
         Ultimate tic-tac-toe is played over nine smaller tic-tac-toe boards. You must win
         three smaller boards in a row to win the game.
-      </div>
+      </Text>
       <img
         css={`
-          background-color: ${palette.gameBarBg};
+          // background-color: ${palette.gameBarBg};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}
-        src={pic}
+        src={pic1}
       />
-    </div>
-    <div
-      css={`
-        display: flex;
-        padding: 1em;
-      `}
-    >
+    </Section>
+    <Section>
       <img
         css={`
-          background-color: ${palette.gameBarBg};
+          // background-color: ${palette.gameBarBg};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}
-        src={pic}
+        src={pic2}
       />
-      <div
-        css={`
-          width: 55%;
-          color: ${palette.textColor2};
-          padding-left: 1em;
-        `}
-      >
-        However, plan carefully as players will choose where their opponent will play .
-        For example, here X plays in the top-right cell, meaning O play their next turn in
-        the top-right board.
-      </div>
-    </div>
-    <div
-      css={`
-        display: flex;
-        padding: 1em;
-      `}
-    >
-      <div
-        css={`
-          width: 55%;
-          color: ${palette.textColor2};
-          padding-right: 1em;
-        `}
-      >
-        A board that is won or fill is not playable. If you are sent there, you may choose
-        any open board to play in.
-      </div>
+      <Text side="left">
+        <h3>Every move counts</h3>
+        Plan your moves carefully as the cell you choose will decide the next board in
+        play. Here <b>X</b> has chosen the top-right cell of the middle board, so <b>O</b>{' '}
+        must play in the top-right board.
+      </Text>
+    </Section>
+    <Section>
+      <Text side="right">
+        <h3>No Man's Land</h3>When a board has been won or has no cells remaining, it
+        becomes unplayable. If a player is sent to such a board, that player may{' '}
+        <b>choose any open board to play in.</b>
+      </Text>
       <img
         css={`
-          background-color: ${palette.gameBarBg};
+          // background-color: ${palette.gameBarBg};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}
-        src={pic}
+        src={pic3}
       />
-    </div>
+    </Section>
   </div>
 );
