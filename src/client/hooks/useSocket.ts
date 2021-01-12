@@ -1,9 +1,9 @@
-import io from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { useRef } from 'react';
 import { On, Emit } from '../../shared/types';
 
 const useSocket = () => {
-  const socketRef = useRef<SocketIOClient.Socket>();
+  const socketRef = useRef<Socket>();
 
   if (!socketRef.current) {
     socketRef.current = io();

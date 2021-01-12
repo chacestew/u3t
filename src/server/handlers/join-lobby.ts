@@ -1,17 +1,17 @@
-import socketIO = require('socket.io');
+import { Socket, Server } from 'socket.io';
 
 import { Events, Emit } from '../../shared/types';
 import { lobbies, Lobby } from '../entities';
 import { SocketError } from '../errors';
 import logger from '../logger';
 
-const joinSpectator = (socket: socketIO.Socket, lobby: Lobby) => {
+const joinSpectator = (socket: Socket, lobby: Lobby) => {
   logger.info('Joining player as spectator', { data: { lobby: lobby.id } });
   const state = lobby.getGame().getState();
   socket.emit(Events.JoinedAsSpectator, { state });
 };
 
-const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
+const joinPlayer = (socket: Socket, lobby: Lobby, id?: string) => {
   if (id) {
     logger.info('Rejoining player to lobby', { data: { lobby: lobby.id, player: id } });
     const game = lobby.getGame();
@@ -28,7 +28,7 @@ const joinPlayer = (socket: socketIO.Socket, lobby: Lobby, id?: string) => {
   return lobby.addPlayer(socket.id);
 };
 
-const startGame = (lobby: Lobby, io: socketIO.Server) => {
+const startGame = (lobby: Lobby, io: Server) => {
   const game = lobby.initGame();
   lobby.players.forEach((id) => {
     io.to(id).emit(Events.StartGame, {
@@ -42,8 +42,8 @@ const startGame = (lobby: Lobby, io: socketIO.Server) => {
 
 async function joinLobby(
   data: { room: string; id?: string },
-  socket: socketIO.Socket,
-  io: socketIO.Server
+  socket: Socket,
+  io: Server
 ) {
   const { room, id } = data;
   const lobby = lobbies.get(room);

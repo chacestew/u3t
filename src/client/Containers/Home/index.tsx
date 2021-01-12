@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import io from 'socket.io-client';
 import styled from 'styled-components';
 import { faRobot, faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';

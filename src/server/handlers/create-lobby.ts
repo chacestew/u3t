@@ -1,9 +1,9 @@
-import socketIO = require('socket.io');
+import { Socket } from 'socket.io';
 
 import { Events } from '../../shared/types';
 import { lobbies } from '../entities';
 
-async function createLobby(socket: socketIO.Socket) {
+async function createLobby(socket: Socket) {
   const { id } = lobbies.create();
   socket.emit(Events.LobbyReady, { room: id });
 }

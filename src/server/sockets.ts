@@ -1,9 +1,8 @@
-import socketIO = require('socket.io');
-
+import { Server, Socket } from 'socket.io';
+import { Server as HttpServer } from 'http';
 import { Events } from '../shared/types';
 import { lobbies } from './entities';
 import { BadRequestError, NotFoundError, SocketError } from './errors';
-import { Server } from 'http';
 import {
   createLobby,
   joinLobby,
@@ -14,22 +13,22 @@ import {
 } from './handlers';
 import logger from './logger';
 
-const io = socketIO();
+const io = new Server();
 
 const errorHandler = (
   err: BadRequestError | NotFoundError | SocketError,
-  socket: socketIO.Socket
+  socket: Socket
 ) => {
-  if (err instanceof NotFoundError) socket.error({ code: 'not-found' });
+  if (err instanceof NotFoundError) socket.emit('error', { code: 'not-found' });
   logger.error(err.message);
 };
 
-const joinRooms = (data: { id?: string; room?: string }, socket: socketIO.Socket) => {
+const joinRooms = (data: { id?: string; room?: string }, socket: Socket) => {
   if (data.room) socket.join(data.room);
   if (data.id) socket.join(data.id);
 };
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('Hello ', socket.id);
 
   socket.on(Events.CreateLobby, () => {
@@ -67,7 +66,7 @@ io.on('connection', (socket) => {
   });
 });
 
-export default (server: Server) => {
+export default (server: HttpServer) => {
   io.attach(server);
   return () => ({ lobbies });
 };

@@ -1,14 +1,10 @@
-import socketIO = require('socket.io');
+import { Socket, Server } from 'socket.io';
 
 import { Events, EventParams } from '../../shared/types';
 import { lobbies } from '../entities';
 import logger from '../logger';
 
-async function PlayTurn(
-  data: EventParams[Events.PlayTurn],
-  socket: socketIO.Socket,
-  io: socketIO.Server
-) {
+async function PlayTurn(data: EventParams[Events.PlayTurn], socket: Socket, io: Server) {
   const lobby = lobbies.get(data.room);
   const seat = lobby.getGame().getSeat(data.id);
 

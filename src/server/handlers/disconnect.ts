@@ -1,6 +1,6 @@
-import socketIO = require('socket.io');
+import { Socket } from 'socket.io';
 
-async function disconnect(socket: socketIO.Socket) {
+async function disconnect(socket: Socket) {
   console.log('Goodbye', socket.id);
 }
 
