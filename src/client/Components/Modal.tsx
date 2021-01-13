@@ -32,7 +32,7 @@ const gameErrors = {
 
 interface Props {
   error: EventParams[Events.Error];
-  dismissError: () => void;
+  dismissError?: () => void;
 }
 
 // const Button = ({ text, to, onClick }: LinkProps) => (

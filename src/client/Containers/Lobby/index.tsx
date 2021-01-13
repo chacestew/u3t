@@ -19,6 +19,8 @@ import useSocket from '../../hooks/useSocket';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
 import useMultiplerState from '../../hooks/useLobbyReducer';
+import { Reconnecting } from './Reconnecting';
+import useNavigatorOnline from '../../hooks/useNavigatorOnline';
 
 const useErrorManager = () => {
   const [error, setError] = useState<ErrorParams | null>(null);
@@ -35,6 +37,9 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
   // const [restartRequested, setRestartRequested] = useState(false);
   const [state, { playTurn, setState, restart }] = useGameReducer();
   const { error, setError, dismissError } = useErrorManager();
+  const isNavigatorOnline = useNavigatorOnline();
+  const [socketConnectionLost, setSocketConnectionLost] = useState(false);
+  const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
   // const [room, setRoom] = useState('');
   const {
     lobbyState,
@@ -54,22 +59,22 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
   const { socket, onEvent, emitEvent } = useSocket();
 
   useEffect(() => {
-    onEvent(Events.LobbyReady, data => {
+    onEvent(Events.LobbyReady, (data) => {
       onLobbyReady(data);
       history.replace(`/play/${data.room}`);
     });
 
-    onEvent(Events.StartGame, data => {
+    onEvent(Events.StartGame, (data) => {
       sessionStorage.setItem(data.room, data.id);
       onStartGame(data);
       setState(data.state);
     });
 
-    onEvent(Events.JoinedLobby, data => {
+    onEvent(Events.JoinedLobby, (data) => {
       onJoinedLobby(data);
     });
 
-    onEvent(Events.Sync, data => {
+    onEvent(Events.Sync, (data) => {
       onSync(data);
       setState(data.state);
     });
@@ -78,24 +83,32 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       setState(state);
     });
 
-    onEvent(Events.JoinedAsSpectator, data => {
+    onEvent(Events.JoinedAsSpectator, (data) => {
       onJoinedAsSpectator(data);
       if (data.state) {
         setState(data.state);
       } else restart();
     });
 
-    onEvent(Events.RejoinedGame, data => {
+    onEvent(Events.RejoinedGame, (data) => {
       onRejoinedGame(data);
       setState(data.state);
     });
 
-    onEvent(Events.RestartRequested, data => {
+    onEvent(Events.RestartRequested, (data) => {
       onRestartRequested(data);
     });
 
-    onEvent(Events.Error, error => {
+    onEvent(Events.Error, (error) => {
       setError(error);
+    });
+
+    onEvent(Events.Disconnect, () => {
+      setSocketConnectionLost(true);
+    });
+
+    socket.io.on('reconnect', () => {
+      setSocketConnectionLost(false);
     });
 
     return () => {
@@ -165,11 +178,13 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       />
       <RelativeBox>
         <Board
+          Alert={hasLostConnection && <Reconnecting />}
           seat={lobbyState.playerSeat}
           state={state}
           onValidTurn={onValidTurn}
           error={error}
           dismissError={dismissError}
+          disabled={hasLostConnection}
         />
         <TurnList turnList={state.turnList} onRestart={forfeitGame} />
       </RelativeBox>
