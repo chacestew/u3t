@@ -12,7 +12,10 @@ async function RequestRestart(
 
   const hasRestarted = lobby.requestRestart(data.id, socket.id);
 
-  if (!hasRestarted) return io.to(lobby.id).emit(Events.RestartRequested);
+  if (!hasRestarted) {
+    io.to(lobby.id).emit(Events.RestartRequested);
+    return;
+  }
 
   const game = lobby.getGame();
 

@@ -66,7 +66,7 @@ const NavContainer = styled.div`
   }
 `;
 
-export default () => {
+const Home = () => {
   return (
     <Article
       css={`
@@ -129,7 +129,8 @@ export default () => {
           />
         </section>
       </div>
-      {/* </div> */}
     </Article>
   );
 };
+
+export default Home;

@@ -8,7 +8,7 @@ import InPlay from './HeaderContents/InPlay';
 import Finished from './HeaderContents/Finished';
 import Home from './HeaderContents/Home';
 
-export type Mode = 'loading' | 'share' | 'local' | 'online' | 'spectator';
+export type Mode = 'home' | 'loading' | 'share' | 'local' | 'online' | 'spectator';
 
 interface Props {
   seat: 1 | 2;

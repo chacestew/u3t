@@ -63,35 +63,34 @@ const StyledHeader = styled.header`
   }
 `;
 
-const Header = () => {
-  return (
-    <StyledHeader>
-      <nav css="overflow: hidden">
-        <div>
-          <Link className="logo" to="/">
-            U3T
-          </Link>
-        </div>
-        <ul>
-          <li>
-            <Link to="/">PLAY</Link>
-          </li>
-          <li>
-            <Link to="/rules">LEARN</Link>
-          </li>
-          <li>
-            <DevBox />
-          </li>
-        </ul>
-      </nav>
-    </StyledHeader>
-  );
-};
+const Header = () => (
+  <StyledHeader>
+    <nav css="overflow: hidden">
+      <div>
+        <Link className="logo" to="/">
+          U3T
+        </Link>
+      </div>
+      <ul>
+        <li>
+          <Link to="/">PLAY</Link>
+        </li>
+        <li>
+          <Link to="/rules">LEARN</Link>
+        </li>
+        <li>
+          <DevBox />
+        </li>
+      </ul>
+    </nav>
+  </StyledHeader>
+);
 
 const DevBox = () => {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).dev = checked;
   }, [checked]);
 
@@ -107,7 +106,7 @@ const DevBox = () => {
         type="checkbox"
         checked={checked}
         onChange={handleChecked}
-      ></input>
+      />
     </div>
   );
 };
