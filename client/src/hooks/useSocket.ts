@@ -1,0 +1,19 @@
+import { io, Socket } from 'socket.io-client';
+import { useRef } from 'react';
+import { On, Emit } from '../shared/types';
+
+const useSocket = () => {
+  const socketRef = useRef<Socket>();
+
+  if (!socketRef.current) {
+    socketRef.current = io('http://localhost:8001');
+  }
+
+  const socket = socketRef.current;
+  const onEvent: On = (...args) => socket.on(...args);
+  const emitEvent: Emit = (...args) => socket.emit(...args);
+
+  return { socket, onEvent, emitEvent };
+};
+
+export default useSocket;
