@@ -37,16 +37,4 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackHotMiddleware(compiler));
 
   webpackDevServer.waitUntilValid(start);
-} else {
-  const expressStaticGzip = require('express-static-gzip');
-
-  app.use(
-    '/public',
-    expressStaticGzip('dist', {
-      enableBrotli: true,
-      index: false,
-      orderPreference: ['br'],
-    })
-  );
-  start();
 }
