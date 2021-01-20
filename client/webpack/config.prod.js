@@ -13,7 +13,7 @@ module.exports = {
   output: {
     path: paths.dist,
     filename: 'js/[name].[contenthash:8].js',
-    publicPath: '/public/',
+    publicPath: '/',
   },
   optimization: {
     splitChunks: {

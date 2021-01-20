@@ -68,6 +68,7 @@ io.on('connection', (socket: Socket) => {
 
 export default (server: HttpServer) => {
   io.attach(server, {
+    path: '/ws',
     cors: {
       origin: 'http://localhost:8000',
       methods: ['GET', 'POST'],
