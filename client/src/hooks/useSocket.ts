@@ -6,7 +6,9 @@ const useSocket = () => {
   const socketRef = useRef<Socket>();
 
   if (!socketRef.current) {
-    socketRef.current = io('http://localhost', { path: '/ws' });
+    socketRef.current = io(window.location.protocol + '//' + window.location.host, {
+      path: '/ws',
+    });
   }
 
   const socket = socketRef.current;

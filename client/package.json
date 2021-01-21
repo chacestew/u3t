@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "export NODE_ENV=development && nodemon ./index.js",
-    "build": "webpack --config ./webpack/config.prod.js",
+    "build": "del-cli dist && webpack --config ./webpack/config.prod.js",
     "serve": "export NODE_ENV=production && node ./index.js",
     "tsc": "tsc"
   },
@@ -40,6 +40,7 @@
     "clone-deep": "^4.0.1",
     "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.6.5",
+    "del-cli": "^3.0.1",
     "express": "^4.17.1",
     "nanoid": "^3.1.12",
     "react": "^16.13.1",
