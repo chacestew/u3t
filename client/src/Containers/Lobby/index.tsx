@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import { match, RouteComponentProps } from 'react-router-dom';
@@ -31,10 +31,6 @@ const useErrorManager = () => {
 };
 
 const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) => {
-  // const [playerId, setPlayerId] = useState('');
-  // const [playerSeat, setPlayerSeat] = useState<Player | null>(null);
-  // const [isSpectator, setIsSpectator] = useState(false);
-  // const [restartRequested, setRestartRequested] = useState(false);
   const [state, { playTurn, setState, restart }] = useGameReducer();
   const { error, setError, dismissError } = useErrorManager();
   const isNavigatorOnline = useNavigatorOnline();
@@ -58,7 +54,10 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
 
   const { socket, onEvent, emitEvent } = useSocket();
 
+  // uwc-debug
   useEffect(() => {
+    socket.open();
+
     onEvent(Events.LobbyReady, (data) => {
       onLobbyReady(data);
       history.replace(`/play/${data.room}`);
@@ -109,13 +108,39 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
 
     socket.io.on('reconnect', () => {
       setSocketConnectionLost(false);
+      console.log('emitting...', {
+        id: lobbyState.current.playerId,
+        room: lobbyState.current.roomId,
+      });
+      emitEvent(Events.Sync, {
+        id: lobbyState.current.playerId,
+        room: lobbyState.current.roomId,
+      } as any);
     });
 
     return () => {
       console.log('Closing socket');
+      socket.io.off();
+      socket.off();
       socket.close();
     };
-  }, []);
+  }, [
+    emitEvent,
+    lobbyState,
+    onEvent,
+    socket,
+    onJoinedAsSpectator,
+    onJoinedLobby,
+    onLobbyReady,
+    onRejoinedGame,
+    onRestartRequested,
+    onStartGame,
+    onSync,
+    restart,
+    setError,
+    setState,
+    history,
+  ]);
 
   useEffect(() => {
     if (!match.params.room) {
@@ -133,9 +158,9 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
   }, [match.params.room]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
-    const player = lobbyState.playerSeat as Player;
-    const id = lobbyState.playerId as string;
-    const room = lobbyState.roomId as string;
+    const player = lobbyState.current.playerSeat as Player;
+    const id = lobbyState.current.playerId as string;
+    const room = lobbyState.current.roomId as string;
 
     playTurn({ player, board, cell });
     emitEvent(Events.PlayTurn, {
@@ -148,38 +173,44 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
   };
 
   const restartGame = () => {
-    emitEvent(Events.Restart, { id: lobbyState.playerId!, room: lobbyState.roomId! });
+    emitEvent(Events.Restart, {
+      id: lobbyState.current.playerId!,
+      room: lobbyState.current.roomId!,
+    });
   };
 
   const forfeitGame = () => {
     if (!window.confirm('Are you sure you want to forfeit?')) return;
-    emitEvent(Events.Forfeit, { id: lobbyState.playerId!, room: lobbyState.roomId! });
+    emitEvent(Events.Forfeit, {
+      id: lobbyState.current.playerId!,
+      room: lobbyState.current.roomId!,
+    });
   };
 
-  const headerMode = lobbyState.isSpectator
+  const headerMode = lobbyState.current.isSpectator
     ? 'spectator'
-    : lobbyState.roomId && !lobbyState.playerSeat
+    : lobbyState.current.roomId && !lobbyState.current.playerSeat
     ? 'share'
-    : lobbyState.playerSeat
+    : lobbyState.current.playerSeat
     ? 'online'
     : 'loading';
 
-  console.log(lobbyState);
+  console.log(lobbyState.current);
 
   return (
     <>
       <Header
-        room={lobbyState.roomId!}
+        room={lobbyState.current.roomId!}
         state={state}
-        seat={lobbyState.playerSeat!}
+        seat={lobbyState.current.playerSeat!}
         mode={headerMode}
         onPlayAgainConfirm={restartGame}
-        restartRequested={lobbyState.restartRequested}
+        restartRequested={lobbyState.current.restartRequested}
       />
       <RelativeBox>
         <Board
           Alert={hasLostConnection && <Reconnecting />}
-          seat={lobbyState.playerSeat}
+          seat={lobbyState.current.playerSeat}
           state={state}
           onValidTurn={onValidTurn}
           error={error}

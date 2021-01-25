@@ -1,5 +1,4 @@
-import { useReducer } from 'react';
-import playTurn, { getInitialState, generateRandomMove } from '../shared/game';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import * as T from '../shared/types';
 
 interface IMultiplayerState {
@@ -88,34 +87,33 @@ export function reducer(
 
 export default function () {
   const [lobbyState, dispatch] = useReducer(reducer, initialState);
-  // const dispatchers = {
-  //   playTurn: (payload: T.ITurnInput) => {
-  //     dispatch({ type: 'PLAY-TURN', payload });
-  //   },
-  //   setState: (payload: T.IGameState) => {
-  //     dispatch({ type: 'SET-STATE', payload });
-  //   },
-  //   restart: () => {
-  //     dispatch({ type: 'RESTART' });
-  //   },
-  // };
-  const dispatchers = {
-    onLobbyReady: (payload: T.EventParams[T.Events.LobbyReady]) =>
-      dispatch({ type: T.Events.LobbyReady, payload }),
-    onStartGame: (payload: T.EventParams[T.Events.StartGame]) =>
-      dispatch({ type: T.Events.StartGame, payload }),
-    onJoinedLobby: (payload: T.EventParams[T.Events.JoinedLobby]) =>
-      dispatch({ type: T.Events.JoinedLobby, payload }),
-    onSync: (payload: T.EventParams[T.Events.Sync]) =>
-      dispatch({ type: T.Events.Sync, payload }),
-    onRejoinedGame: (payload: T.EventParams[T.Events.RejoinedGame]) =>
-      dispatch({ type: T.Events.RejoinedGame, payload }),
-    onJoinedAsSpectator: (payload: T.EventParams[T.Events.JoinedAsSpectator]) =>
-      dispatch({ type: T.Events.JoinedAsSpectator, payload }),
-    onRestartRequested: (payload: T.EventParams[T.Events.RestartRequested]) =>
-      dispatch({ type: T.Events.RestartRequested, payload }),
-    set: (payload: Partial<IMultiplayerState>) => dispatch({ type: 'set', payload }),
-    reset: () => dispatch({ type: 'reset' }),
-  };
-  return { lobbyState, dispatchers };
+  const lobbyStateRef = useRef<IMultiplayerState>(lobbyState);
+
+  useEffect(() => {
+    lobbyStateRef.current = lobbyState;
+  }, [lobbyState]);
+
+  const dispatchers = useMemo(
+    () => ({
+      onLobbyReady: (payload: T.EventParams[T.Events.LobbyReady]) =>
+        dispatch({ type: T.Events.LobbyReady, payload }),
+      onStartGame: (payload: T.EventParams[T.Events.StartGame]) =>
+        dispatch({ type: T.Events.StartGame, payload }),
+      onJoinedLobby: (payload: T.EventParams[T.Events.JoinedLobby]) =>
+        dispatch({ type: T.Events.JoinedLobby, payload }),
+      onSync: (payload: T.EventParams[T.Events.Sync]) =>
+        dispatch({ type: T.Events.Sync, payload }),
+      onRejoinedGame: (payload: T.EventParams[T.Events.RejoinedGame]) =>
+        dispatch({ type: T.Events.RejoinedGame, payload }),
+      onJoinedAsSpectator: (payload: T.EventParams[T.Events.JoinedAsSpectator]) =>
+        dispatch({ type: T.Events.JoinedAsSpectator, payload }),
+      onRestartRequested: (payload: T.EventParams[T.Events.RestartRequested]) =>
+        dispatch({ type: T.Events.RestartRequested, payload }),
+      set: (payload: Partial<IMultiplayerState>) => dispatch({ type: 'set', payload }),
+      reset: () => dispatch({ type: 'reset' }),
+    }),
+    []
+  );
+
+  return { lobbyState: lobbyStateRef, dispatchers, lobbyStateRef };
 }

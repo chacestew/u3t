@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useMemo, useReducer } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../shared/game';
 import * as T from '../shared/types';
 
@@ -43,16 +43,19 @@ interface Dispatchers {
 
 export default function (): [T.IGameState, Dispatchers] {
   const [state, dispatch] = useReducer(reducer, getInitialState());
-  const dispatchers = {
-    playTurn: (payload: T.ITurnInput) => {
-      dispatch({ type: 'PLAY-TURN', payload });
-    },
-    setState: (payload: T.IGameState) => {
-      dispatch({ type: 'SET-STATE', payload });
-    },
-    restart: () => {
-      dispatch({ type: 'RESTART' });
-    },
-  };
+  const dispatchers = useMemo(
+    () => ({
+      playTurn: (payload: T.ITurnInput) => {
+        dispatch({ type: 'PLAY-TURN', payload });
+      },
+      setState: (payload: T.IGameState) => {
+        dispatch({ type: 'SET-STATE', payload });
+      },
+      restart: () => {
+        dispatch({ type: 'RESTART' });
+      },
+    }),
+    []
+  );
   return [state, dispatchers];
 }
