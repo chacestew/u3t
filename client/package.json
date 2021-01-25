@@ -66,6 +66,8 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@simbathesailor/babel-plugin-use-what-changed": "^0.1.17",
+    "@simbathesailor/use-what-changed": "^0.1.25",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
     "babel-eslint": "^10.1.0",

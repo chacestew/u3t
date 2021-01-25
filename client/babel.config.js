@@ -13,6 +13,12 @@ module.exports = (api) => {
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
     [
+      '@simbathesailor/babel-plugin-use-what-changed',
+      {
+        active: process.env.NODE_ENV === 'development',
+      },
+    ],
+    [
       'babel-plugin-styled-components',
       {
         pure: true,
