@@ -2,7 +2,6 @@ import { Socket, Server } from 'socket.io';
 
 import { Events, Emit } from '../shared/types';
 import { lobbies, Lobby } from '../entities';
-import { SocketError } from '../errors';
 import logger from '../logger';
 
 const joinSpectator = (socket: Socket, lobby: Lobby) => {
@@ -63,7 +62,7 @@ async function joinLobby(
   }
 
   // Start when second player joined
-  if (lobby.players.size === 2) {
+  if (!lobby.hasGame() && lobby.players.size === 2) {
     startGame(lobby, io);
   }
 }
