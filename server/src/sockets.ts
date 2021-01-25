@@ -10,6 +10,7 @@ import {
   requestRestart,
   disconnect,
   forfeit,
+  sync,
 } from './handlers';
 import logger from './logger';
 
@@ -63,6 +64,11 @@ io.on('connection', (socket: Socket) => {
   socket.on(Events.Disconnect, () => {
     logger.info(`Disconnect`);
     disconnect(socket).catch((error) => errorHandler(error, socket));
+  });
+
+  socket.on(Events.Sync, (data) => {
+    logger.info('Reconnect', { data });
+    sync(data, socket).catch((error) => errorHandler(error, socket));
   });
 });
 
