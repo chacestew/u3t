@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 import styled, { createGlobalStyle } from 'styled-components';
 import styledNormalize from 'styled-normalize';
@@ -65,11 +65,14 @@ const App = () => (
     <GlobalStyle />
     <Header />
     <Main>
-      <Route exact path="/" component={Home} />
-      <Route path="/play/:room?" component={Play} />
-      <Route path="/hotseat" component={HotSeat} />
-      <Route path="/playai" component={PlayAI} />
-      <Route path="/rules" component={Rules} />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/play/:room?" component={Play} />
+        <Route path="/hotseat" component={HotSeat} />
+        <Route path="/playai" component={PlayAI} />
+        <Route path="/rules" component={Rules} />
+        <Redirect to="/" />
+      </Switch>
     </Main>
     <Footer />
   </>
