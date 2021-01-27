@@ -11,7 +11,7 @@ const start = () => {
   const mode = process.env.NODE_ENV;
   const port = 8000;
   server.listen(8000, () => {
-    console.info(`[${mode}] server listening on :${port}`);
+    console.info(`React server listening on :${port} [${mode}]`);
   });
 };
 
@@ -21,7 +21,6 @@ if (process.env.NODE_ENV === 'development') {
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const config = require('./webpack/config.dev');
   const compiler = webpack(config);
-  console.log('ayo');
 
   const webpackDevServer = webpackDevMiddleware(compiler, {
     overlay: true,
@@ -37,4 +36,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackHotMiddleware(compiler));
 
   webpackDevServer.waitUntilValid(start);
+} else {
+  console.error('Should not be run in production (use nginx)');
+  process.exitCode = 1;
 }

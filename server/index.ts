@@ -20,5 +20,5 @@ app.get('/health', (req, res) => {
 const mode = process.env.NODE_ENV;
 const port = 8001;
 server.listen(8001, () => {
-  console.info(`[${mode}] server listening on :${port}`);
+  console.info(`Socket.IO server listening on :${port} [${mode}]`);
 });
