@@ -7,7 +7,9 @@ import logger from '../logger';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
 
-const LOBBY_EXPIRATION_TIME = 1000 * 60 * 1;
+const minutes = (n: number) => 1000 * 60 * n;
+
+const LOBBY_EXPIRATION_TIME = minutes(3 * 60);
 
 function createID(collection: Map<string, any>): string {
   const id = nanoid();
@@ -27,7 +29,7 @@ export class Lobby {
   constructor(id: string, destroy: typeof lobbies.remove) {
     this.id = id;
     this.timer = global.setTimeout(() => {
-      destroy(this.id);
+      destroy(this.id, 'expired');
       global.clearInterval(this.timer);
     }, LOBBY_EXPIRATION_TIME);
     this.logger = (message, data) => logger.info(`[Lobby#${this.id}]: ${message}`, data);
@@ -75,7 +77,6 @@ export class Lobby {
   }
 
   playTurn(turnInput: ITurnInput) {
-    console.log('THIS!!!!', this);
     this.logger('Playing turn', { data: turnInput });
     return this.getGame().playTurn(turnInput);
   }
