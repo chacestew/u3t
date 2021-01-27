@@ -50,6 +50,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       set,
       reset,
     },
+    lobbyStateRef,
   } = useMultiplerState();
 
   const { socket, onEvent, emitEvent } = useSocket();
@@ -109,12 +110,12 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
     socket.io.on('reconnect', () => {
       setSocketConnectionLost(false);
       console.log('emitting...', {
-        id: lobbyState.current.playerId,
-        room: lobbyState.current.roomId,
+        id: lobbyStateRef.current.playerId,
+        room: lobbyStateRef.current.roomId,
       });
       emitEvent(Events.Sync, {
-        id: lobbyState.current.playerId,
-        room: lobbyState.current.roomId,
+        id: lobbyStateRef.current.playerId,
+        room: lobbyStateRef.current.roomId,
       } as any);
     });
 
@@ -126,7 +127,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
     };
   }, [
     emitEvent,
-    lobbyState,
+    lobbyStateRef,
     onEvent,
     socket,
     onJoinedAsSpectator,
@@ -158,9 +159,9 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
   }, [match.params.room]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
-    const player = lobbyState.current.playerSeat as Player;
-    const id = lobbyState.current.playerId as string;
-    const room = lobbyState.current.roomId as string;
+    const player = lobbyState.playerSeat as Player;
+    const id = lobbyState.playerId as string;
+    const room = lobbyState.roomId as string;
 
     playTurn({ player, board, cell });
     emitEvent(Events.PlayTurn, {
@@ -174,43 +175,43 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
 
   const restartGame = () => {
     emitEvent(Events.Restart, {
-      id: lobbyState.current.playerId!,
-      room: lobbyState.current.roomId!,
+      id: lobbyState.playerId!,
+      room: lobbyState.roomId!,
     });
   };
 
   const forfeitGame = () => {
     if (!window.confirm('Are you sure you want to forfeit?')) return;
     emitEvent(Events.Forfeit, {
-      id: lobbyState.current.playerId!,
-      room: lobbyState.current.roomId!,
+      id: lobbyState.playerId!,
+      room: lobbyState.roomId!,
     });
   };
 
-  const headerMode = lobbyState.current.isSpectator
+  const headerMode = lobbyState.isSpectator
     ? 'spectator'
-    : lobbyState.current.roomId && !lobbyState.current.playerSeat
+    : lobbyState.roomId && !lobbyState.playerSeat
     ? 'share'
-    : lobbyState.current.playerSeat
+    : lobbyState.playerSeat
     ? 'online'
     : 'loading';
 
-  console.log(lobbyState.current);
+  console.log(lobbyState);
 
   return (
     <>
       <Header
-        room={lobbyState.current.roomId!}
+        room={lobbyState.roomId!}
         state={state}
-        seat={lobbyState.current.playerSeat!}
+        seat={lobbyState.playerSeat!}
         mode={headerMode}
         onPlayAgainConfirm={restartGame}
-        restartRequested={lobbyState.current.restartRequested}
+        restartRequested={lobbyState.restartRequested}
       />
       <RelativeBox>
         <Board
           Alert={hasLostConnection && <Reconnecting />}
-          seat={lobbyState.current.playerSeat}
+          seat={lobbyState.playerSeat}
           state={state}
           onValidTurn={onValidTurn}
           error={error}

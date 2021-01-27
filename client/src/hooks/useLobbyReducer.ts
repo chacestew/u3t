@@ -115,5 +115,5 @@ export default function () {
     []
   );
 
-  return { lobbyState: lobbyStateRef, dispatchers, lobbyStateRef };
+  return { lobbyState, dispatchers, lobbyStateRef };
 }
