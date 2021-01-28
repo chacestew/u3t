@@ -22,7 +22,7 @@ const styles = css<Props>`
     backgroundColor = 'white',
     padding = '10px',
     shadow = true,
-    fontColor = palette.textColor2,
+    fontColor = palette.primaryDark,
     svgLeft,
     svgRight,
   }) => `

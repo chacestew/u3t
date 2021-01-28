@@ -18,9 +18,9 @@ export const Text = styled.div<{
 export const Bar = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: ${palette.gameBarBg};
+  background-color: ${palette.primaryLight};
   padding: 1em;
-  color: ${palette.textColor};
+  color: ${palette.white};
   margin-bottom: 0.5em;
   font-size: 18px;
   width: 100%;

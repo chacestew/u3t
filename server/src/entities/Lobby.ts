@@ -93,17 +93,22 @@ export class Lobby {
 
 class LobbyManager {
   lobbies: Map<string, Lobby> = new Map();
+  lobbiesMetrics = { created: 0, started: 0, finished: 0 };
 
   create() {
     const id = createID(this.lobbies);
     const lobby = new Lobby(id, this.remove);
+    this.lobbiesMetrics.created += 1;
     this.lobbies.set(lobby.id, lobby);
     logger.info(`Created lobby: ${id}`);
     return lobby;
   }
 
-  remove = (id: string) => {
-    logger.info(`Removed lobby: ${id}`);
+  remove = (id: string, reason: string) => {
+    logger.info(`Removed lobby: ${id} (${reason})`);
+    this.lobbiesMetrics.started += lobbies.get(id).hasGame() ? 1 : 0;
+    this.lobbiesMetrics.finished +=
+      lobbies.get(id).hasGame() && lobbies.get(id).getGame().getState().finished ? 1 : 0;
     return this.lobbies.delete(id);
   };
 

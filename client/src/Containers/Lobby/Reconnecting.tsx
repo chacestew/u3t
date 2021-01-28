@@ -9,8 +9,8 @@ const StyledReconnecting = styled.div`
   margin: 0px;
   padding: 1em;
   border-radius: 4px;
-  background-color: ${palette.gameBarBg};
-  color: ${palette.textColor};
+  background-color: ${palette.primaryLight};
+  color: ${palette.white};
   z-index: 2;
   font-weight: bold;
 

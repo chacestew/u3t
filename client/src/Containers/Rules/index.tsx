@@ -8,8 +8,8 @@ import styled from 'styled-components';
 const Section = styled.div`
   display: flex;
   padding: 0.5em;
-  // background-color: ${palette.gameBarBg};
-  // border-bottom: 2px solid ${palette.gameBarBg};
+  // background-color: ${palette.primaryLight};
+  // border-bottom: 2px solid ${palette.primaryLight};
 
   img {
     object-fit: contain;
@@ -18,8 +18,8 @@ const Section = styled.div`
 
 const Text = styled.div`
   width: 55%;
-  color: white; //${palette.gameBarBg};
-  background-color: ${palette.gameBarBg};
+  color: white; //${palette.primaryLight};
+  background-color: ${palette.primaryLight};
   margin-${({ side }) => side}: 1em;
   padding: 1em;
 
@@ -40,7 +40,7 @@ export default () => (
       </Text>
       <img
         css={`
-          // background-color: ${palette.gameBarBg};
+          // background-color: ${palette.primaryLight};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}
@@ -50,7 +50,7 @@ export default () => (
     <Section>
       <img
         css={`
-          // background-color: ${palette.gameBarBg};
+          // background-color: ${palette.primaryLight};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}
@@ -71,7 +71,7 @@ export default () => (
       </Text>
       <img
         css={`
-          // background-color: ${palette.gameBarBg};
+          // background-color: ${palette.primaryLight};
           // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
           width: 45%;
         `}

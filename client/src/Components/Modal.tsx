@@ -70,7 +70,7 @@ const Modal = ({ error, dismissError }: Props) => {
         justify-content: space-around;
         justify-content: space-evenly;
         align-items: center;
-        background-color: ${palette.gameBarBg};
+        background-color: ${palette.primaryLight};
         font-weight: bold;
         color: white;
         box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);

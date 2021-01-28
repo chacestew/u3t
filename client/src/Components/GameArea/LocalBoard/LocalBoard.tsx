@@ -13,7 +13,7 @@ import { media } from '../../../styles/mixins';
 const InnerGrid = styled(Grid)`
   grid-gap: 4px;
   border-style: solid;
-  border-color: ${palette.boardBorder};
+  border-color: ${palette.primaryLight};
   border-width: 0 4px 4px 0;
   padding: 6px;
 
@@ -61,7 +61,7 @@ const Board = ({
     <InnerGrid className={active && flashing ? 'flashing' : undefined}>
       {boardWinner && (
         <FontAwesomeIcon
-          color={palette.gameBarBg}
+          color={palette.primaryLight}
           style={{
             position: 'absolute',
             width: '80%',

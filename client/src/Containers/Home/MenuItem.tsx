@@ -22,13 +22,13 @@ const NavContainer = styled.div`
     margin-top: 1em;
     font-weight: bold;
     font-size: 14px;
-    color: ${palette.textColor};
+    color: ${palette.white};
   }
 `;
 
 const Description = styled.p`
   margin-bottom: 0;
-  color: ${palette.textColor};
+  color: ${palette.white};
 `;
 
 interface Props {

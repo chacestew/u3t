@@ -14,9 +14,9 @@ const MiniBoard = ({
     const baseAttrs = { fill: 'white', fillOpacity: 1 };
     switch (board.winner) {
       case 1:
-        return { ...baseAttrs, fill: palette.p1CellBg };
+        return { ...baseAttrs, fill: palette.red };
       case 2:
-        return { ...baseAttrs, fill: palette.p2CellBg };
+        return { ...baseAttrs, fill: palette.yellow };
       default:
         return {
           ...baseAttrs,

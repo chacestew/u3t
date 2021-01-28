@@ -10,11 +10,11 @@ import palette from '../../../utils/palette';
 const getCellBg = (cellType: null | T.Player) => {
   switch (cellType) {
     case 1:
-      return palette.p1CellBg;
+      return palette.red;
     case 2:
-      return palette.p2CellBg;
+      return palette.yellow;
     default:
-      return palette.cellBg;
+      return palette.white;
   }
 };
 
@@ -27,7 +27,7 @@ export interface Props {
 const CellContainer = styled.div<Props>`
   border-radius: 4px;
   font-weight: bold;
-  color: ${palette.gameBarBg};
+  color: ${palette.primaryLight};
   display: flex;
   justify-content: center;
   align-items: center;

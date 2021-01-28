@@ -13,7 +13,7 @@ const Button = styled.button<{ disabled: boolean; isOnline: boolean }>`
   font-weight: bold;
   box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
   border: 0;
-  color: ${palette.gameBarBg};
+  color: ${palette.primaryLight};
   ${({ isOnline }) => isOnline && 'margin-right: 0.5em;'}
 `;
 

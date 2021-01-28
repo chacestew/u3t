@@ -11,7 +11,7 @@ const DimmableHoverableCell = styled(Cell)<Props>`
     inPlayableArea &&
     `@media (hover: hover) {
       &:hover {
-       background-color: ${palette.cellHoverBg}
+       background-color: ${palette.primaryLight}
       }
     }
   `}
