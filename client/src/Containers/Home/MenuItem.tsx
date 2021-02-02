@@ -6,29 +6,15 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Button from '../../Components/Button';
 
 const NavContainer = styled.div`
-  line-height: 1.15;
-  font-family: 'Open Sans', sans-serif;
-  box-sizing: inherit;
-  width: 100%;
-  // border: 1px solid silver;
-  // border-radius: 4px;
-  // padding: 1em 1em;
   display: flex;
   flex-direction: column;
-
-  p {
-    line-height: 1.5;
-    margin: 0;
-    margin-top: 1em;
-    font-weight: bold;
-    font-size: 14px;
-    color: ${palette.white};
-  }
 `;
 
 const Description = styled.p`
-  margin-bottom: 0;
   color: ${palette.white};
+  line-height: 1.5;
+  margin-top: 1em;
+  font-size: 16px;
 `;
 
 interface Props {
@@ -38,7 +24,7 @@ interface Props {
   description: string;
 }
 
-export default ({ url, text, icon, description }: Props) => {
+function MenuItem({ url, text, icon, description }: Props) {
   return (
     <NavContainer>
       <Button svgLeft borderRadius="4px" to={url}>
@@ -48,4 +34,6 @@ export default ({ url, text, icon, description }: Props) => {
       <Description>{description}</Description>
     </NavContainer>
   );
-};
+}
+
+export default MenuItem;

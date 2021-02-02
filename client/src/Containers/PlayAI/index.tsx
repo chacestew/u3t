@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../../shared/game';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { Header } from '../../Components/GameArea/Header/Header';
+import GameHeader from '../../Components/GameArea/Header/GameHeader';
 
 const PlayAI = () => {
   const [gameState, setGameState] = useState(getInitialState());
@@ -35,7 +35,12 @@ const PlayAI = () => {
 
   return (
     <>
-      <Header seat={seat} mode="local" state={gameState} onPlayAgainConfirm={restart} />
+      <GameHeader
+        seat={seat}
+        mode="local"
+        state={gameState}
+        onPlayAgainConfirm={restart}
+      />
       <Board state={gameState} seat={seat} onValidTurn={play} />
     </>
   );

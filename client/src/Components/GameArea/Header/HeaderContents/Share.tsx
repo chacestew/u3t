@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Text } from '../styles';
+import { Text, Bar } from '../styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
-import { Bar } from '../styles';
 
 const FLASH_DURATION = 500;
 
@@ -46,7 +45,7 @@ const CopyToClipboard = styled.div<{ flashing: boolean }>`
   }
 `;
 
-export const Share = ({ room }: { room: string }) => {
+export default function Share({ room }: { room: string }) {
   const [clicked, setClicked] = useState(false);
   const handleCopy = () => {
     const el = document.createElement('textarea');
@@ -70,7 +69,7 @@ export const Share = ({ room }: { room: string }) => {
     <Bar>
       <Container justify="space-between">
         <LinkContainer>
-          u3t.io/play/
+          u3t.io/game/
           <b>{room}</b>
         </LinkContainer>
         <CopyToClipboard onClick={handleCopy} flashing={clicked}>
@@ -83,6 +82,4 @@ export const Share = ({ room }: { room: string }) => {
       </Container>
     </Bar>
   );
-};
-
-export default Share;
+}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 import * as T from '../shared/types';
 
-interface IMultiplayerState {
+export interface IMultiplayerState {
   playerId: null | string;
   playerSeat: null | 1 | 2;
   roomId: null | string;

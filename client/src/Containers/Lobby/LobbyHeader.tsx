@@ -1,0 +1,78 @@
+import React from 'react';
+
+import * as T from '../../shared/types';
+
+import Loading from '../../Components/GameArea/Header/HeaderContents/Loading';
+import Share from '../../Components/GameArea/Header/HeaderContents/Share';
+import InPlay from '../../Components/GameArea/Header/HeaderContents/InPlay';
+import Finished from '../../Components/GameArea/Header/HeaderContents/Finished';
+
+import { IMultiplayerState } from '../../hooks/useLobbyReducer';
+
+export type Mode = 'home' | 'loading' | 'share' | 'local' | 'online' | 'spectator';
+
+interface Props {
+  seat: 1 | 2;
+  lobbyState: IMultiplayerState;
+  state: T.IGameState;
+  restartRequested?: boolean;
+  onPlayAgainConfirm: () => void;
+}
+
+function SpectatorHeader({ state }: { state: T.IGameState }) {
+  return (
+    <InPlay
+      text="You are spectating"
+      cell={state.currentPlayer}
+      boards={state.boards}
+      activeBoard={state.activeBoard}
+    />
+  );
+}
+
+function ShareHeader({ room }: { room: string }) {
+  return <Share room={room} />;
+}
+
+function ActiveGame({ seat, state }: { seat: 1 | 2; state: T.IGameState }) {
+  return (
+    <InPlay
+      text={state.currentPlayer === seat ? 'You to play' : 'Opponent to play'}
+      cell={seat}
+      boards={state.boards}
+      activeBoard={state.activeBoard}
+    />
+  );
+}
+
+export default function LobbyHeader({
+  lobbyState,
+  state,
+  seat,
+  onPlayAgainConfirm,
+  restartRequested,
+}: Props) {
+  // As spectator
+  if (lobbyState.isSpectator) return <SpectatorHeader state={state} />;
+
+  // Before game
+  if (lobbyState.roomId && !lobbyState.playerSeat)
+    return <ShareHeader room={lobbyState.roomId} />;
+
+  // After game
+  if (state.finished)
+    return (
+      <Finished
+        winner={state.winner}
+        isOnline
+        onPlayAgainConfirm={onPlayAgainConfirm}
+        restartRequested={restartRequested}
+      />
+    );
+
+  // During game
+  if (lobbyState.playerSeat) return <ActiveGame seat={seat} state={state} />;
+
+  // While loading
+  return <Loading />;
+}

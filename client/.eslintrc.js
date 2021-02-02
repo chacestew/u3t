@@ -37,6 +37,7 @@ module.exports = {
     ],
     'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],
     'react/self-closing-comp': 1,
+    'react/prop-types': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
     'no-console': 0,
     'import/default': 0,

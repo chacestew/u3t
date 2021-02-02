@@ -35,9 +35,9 @@ const App = () => (
     <Main>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/play/:room?" component={Play} />
-        <Route path="/hotseat" component={HotSeat} />
-        <Route path="/playai" component={PlayAI} />
+        <Route path="/game/:room?" component={Play} />
+        <Route path="/local" component={HotSeat} />
+        <Route path="/ai" component={PlayAI} />
         <Route path="/rules" component={Rules} />
         <Redirect to="/" />
       </Switch>

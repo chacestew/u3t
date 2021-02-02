@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { match, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
-  IGameState,
   Events,
-  EventParams,
   Player,
   Board as BoardType,
   Board as CellType,
-  Errors,
   ErrorParams,
 } from '../../shared/types';
 
 import useGameReducer from '../../hooks/useGameReducer';
-import { Header } from '../../Components/GameArea/Header/Header';
+import LobbyHeader from './LobbyHeader';
 import useSocket from '../../hooks/useSocket';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
@@ -61,7 +58,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
 
     onEvent(Events.LobbyReady, (data) => {
       onLobbyReady(data);
-      history.replace(`/play/${data.room}`);
+      history.replace(`/game/${data.room}`);
     });
 
     onEvent(Events.StartGame, (data) => {
@@ -200,11 +197,10 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
 
   return (
     <>
-      <Header
-        room={lobbyState.roomId!}
+      <LobbyHeader
         state={state}
+        lobbyState={lobbyState}
         seat={lobbyState.playerSeat!}
-        mode={headerMode}
         onPlayAgainConfirm={restartGame}
         restartRequested={lobbyState.restartRequested}
       />

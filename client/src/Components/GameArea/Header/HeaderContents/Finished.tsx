@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { Cell, Text, Bar } from '../styles';
-import { Mode } from '../Header';
 import palette from '../../../../utils/palette';
 
-const Button = styled.button<{ disabled: boolean; isOnline: boolean }>`
+const Button = styled.button<{ disabled: boolean; isOnline?: boolean }>`
   background-color: ${({ disabled }) => (disabled ? '#dddeda' : 'white')};
   border-radius: 4px;
   height: 2em;
@@ -18,19 +17,22 @@ const Button = styled.button<{ disabled: boolean; isOnline: boolean }>`
 `;
 
 interface PlayAgainProps {
-  mode: Mode;
+  isOnline?: boolean;
   onPlayAgainConfirm: () => void;
   restartRequested?: boolean;
 }
 
-const PlayAgain = ({ mode, onPlayAgainConfirm, restartRequested }: PlayAgainProps) => {
+const PlayAgain = ({
+  isOnline,
+  onPlayAgainConfirm,
+  restartRequested,
+}: PlayAgainProps) => {
   const [confirmed, setConfirmed] = useState(false);
   const onClick = () => {
     setConfirmed(!confirmed);
     onPlayAgainConfirm();
   };
 
-  const isOnline = mode === 'online';
   return (
     <Text justify="flex-end">
       <Button onClick={onClick} disabled={confirmed} isOnline={isOnline}>
@@ -45,7 +47,7 @@ interface Props extends PlayAgainProps {
   winner: 1 | 2 | null;
 }
 
-const Finished = ({ winner, mode, restartRequested, onPlayAgainConfirm }: Props) => {
+const Finished = ({ isOnline, winner, restartRequested, onPlayAgainConfirm }: Props) => {
   return (
     <Bar>
       <Text justify="flex-start">
@@ -60,7 +62,7 @@ const Finished = ({ winner, mode, restartRequested, onPlayAgainConfirm }: Props)
       </Text>
       <PlayAgain
         restartRequested={restartRequested}
-        mode={mode}
+        isOnline={isOnline}
         onPlayAgainConfirm={onPlayAgainConfirm}
       />
     </Bar>

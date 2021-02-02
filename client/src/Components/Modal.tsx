@@ -14,7 +14,7 @@ const gameErrors = {
     message: () => 'Game not found or has expired.',
     links: [
       ['HOME', '/'],
-      ['NEW LOBBY', '/play'],
+      ['NEW LOBBY', '/game'],
     ],
   },
   'will-expire': {
