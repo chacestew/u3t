@@ -14,6 +14,7 @@ import Footer from './Footer';
 
 import { gridSize } from '../utils/palette';
 import { media } from '../styles/mixins';
+import About from './About/About';
 
 const Main = styled.main`
   display: flex;
@@ -39,6 +40,7 @@ const App = () => (
         <Route path="/local" component={HotSeat} />
         <Route path="/ai" component={PlayAI} />
         <Route path="/rules" component={Rules} />
+        <Route path="/about" component={About} />
         <Redirect to="/" />
       </Switch>
     </Main>
