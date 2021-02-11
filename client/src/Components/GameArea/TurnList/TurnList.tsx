@@ -1,14 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as T from '../../../shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import TurnListItem from './TurnListItem';
+
+import TurnListItem, { TurnListCell, TurnListParagraph } from './TurnListItem';
 import { flexColumns, media } from '../../../styles/mixins';
-import RestartButton from './RestartButton';
 import Button from '../../Button';
 
-const bgColor = '#f8f8ff'; //'#594b5c';
+const TurnListButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const TurnListToggle = styled(Button)`
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  border: 0;
+  outline: 0;
+  background-color: #594b5c;
+  padding: 0.5em;
+  z-index: 1;
+`;
+
+const TurnListContainer = styled.div`
+  background-color: #594b5c;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  color: white;
+`;
 
 const StyledTurnList = styled.div<{ expanded: boolean }>`
   ${flexColumns}
@@ -32,50 +56,6 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
     position: relative;
     bottom: 0;
   }
-
-  .log-header {
-    display: flex;
-    justify-content: space-between;
-
-    .expand-button {
-      cursor: pointer;
-      color: white;
-      font-weight: bold;
-      border: 0;
-      outline: 0;
-      background-color: #594b5c;
-      padding: 0.5em;
-      z-index: 1;
-    }
-  }
-
-  .log-list {
-    background-color: #594b5c;
-    // padding: 0.5em;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-    overflow-y: scroll;
-    color: white;
-
-    .element {
-      margin: 0.5em 0.25em;
-  
-      ${media.aboveMobileM`
-      margin: 0.5em 0.5em;
-      `}
-  
-      ${media.aboveMobileL`
-      margin: 0.5em 0.75em;
-      `}
-  
-      @media (min-width: 505px) {
-        margin: 0.5em 1.25em;
-      }
-    }
-
-    // ${media.aboveMobileL`max-height: 150px;`}
 `;
 
 const useStickyExpandedState = () => {
@@ -87,20 +67,29 @@ const useStickyExpandedState = () => {
   });
 
   useEffect(() => {
-    window.localStorage.setItem('expanded', JSON.stringify(expanded));
+    // window.localStorage.setItem('expanded', JSON.stringify(expanded));
   }, [expanded]);
 
   return [expanded, setExpanded];
 };
 
 const TurnList = ({
-  turnList,
-  onRestart,
+  state,
+  seat,
+  RestartButton,
 }: {
-  turnList: T.ITurnInput[];
-  onRestart: () => void;
+  state: T.IGameState;
+  seat?: T.Player;
+  RestartButton: JSX.Element;
 }) => {
   const [expanded, setExpanded] = useStickyExpandedState();
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current!.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }, [state.turnList.length]);
 
   const onClick = () => {
     setExpanded(!expanded);
@@ -108,8 +97,8 @@ const TurnList = ({
 
   return (
     <StyledTurnList expanded={expanded}>
-      <div className="log-header">
-        <Button
+      <TurnListButtonsContainer className="log-header">
+        <TurnListToggle
           shadow={false}
           svgRight
           backgroundColor="#594b5c"
@@ -117,17 +106,37 @@ const TurnList = ({
           fontColor="white"
           onClick={onClick}
         >
-          Turn Log
-          <FontAwesomeIcon icon={expanded ? faMinusSquare : faPlusSquare} />
-        </Button>
-        <RestartButton onClick={onRestart} />
-      </div>
+          Turn log
+          <FontAwesomeIcon icon={expanded ? faCaretDown : faCaretUp} />
+        </TurnListToggle>
+        {RestartButton}
+      </TurnListButtonsContainer>
       {expanded && (
-        <div className="log-list">
-          {turnList.map((t, i) => (
+        <TurnListContainer>
+          {seat && (
+            <TurnListParagraph>
+              <b>
+                You are playing as <TurnListCell cellType={seat} />.
+              </b>{' '}
+              Have fun!
+            </TurnListParagraph>
+          )}
+          {state.turnList.map((t, i) => (
             <TurnListItem key={i} turn={i} {...t} />
           ))}
-        </div>
+          {state.finished && (
+            <TurnListParagraph>
+              {state.tied ? (
+                <b>It&apos;s a draw!</b>
+              ) : (
+                <b>
+                  <TurnListCell cellType={state.winner} /> wins!
+                </b>
+              )}
+            </TurnListParagraph>
+          )}
+          <div ref={bottomRef} />
+        </TurnListContainer>
       )}
     </StyledTurnList>
   );

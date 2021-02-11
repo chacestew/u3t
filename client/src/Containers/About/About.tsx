@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { boxShadow } from '../../styles/mixins';
 
 const Article = styled.div`
   // background-color: ${palette.primaryLight};
@@ -15,7 +16,7 @@ const Section = styled.div`
   padding: 1em;
   margin-top: 1em;
   border-radius: 6px;
-  box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
+  ${boxShadow}
 
   background-color: ${palette.primaryLight};
   // border-bottom: 2px solid ${palette.primaryLight};

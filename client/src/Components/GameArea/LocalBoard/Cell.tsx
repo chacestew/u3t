@@ -4,7 +4,7 @@ import Cell from '../Cell/Cell';
 import palette from '../../../utils/palette';
 import * as T from '../../../shared/types';
 
-const DimmableHoverableCell = styled(Cell)<Props>`
+const DimmableHoverableCell = styled(Cell)<Partial<Props>>`
   ${({ shouldDim }) => shouldDim && `opacity: 0.5;`}
   ${({ cellType, inPlayableArea }) =>
     !cellType &&
@@ -20,8 +20,8 @@ const DimmableHoverableCell = styled(Cell)<Props>`
 interface Props {
   cellType: null | T.Player;
   inPlayableArea: boolean;
-  cellIndex?: T.Cell;
-  onClick: any;
+  cellIndex: T.Cell;
+  onClick: (cellIndex: T.Cell) => void;
   shouldDim: boolean;
 }
 
@@ -32,10 +32,9 @@ const InteractiveCell = ({
   onClick,
   shouldDim,
 }: Props) => {
-  const handleClick = () => {
-    console.log('clicked!');
+  function handleClick() {
     onClick(cellIndex);
-  };
+  }
   return (
     <DimmableHoverableCell
       shouldDim={shouldDim}

@@ -1,16 +1,17 @@
 import React from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../Button';
 
-const RestartButton = ({ onClick }: { onClick: () => void }) => {
+interface Props {
+  onClick: () => void;
+  text: string;
+  icon: JSX.Element;
+}
+
+export default function RestartButton({ onClick, text, icon }: Props) {
   return (
     <Button shadow={false} svgRight padding="0.5em" onClick={onClick}>
-      {'Forfeit'}
-      <FontAwesomeIcon color="white" stroke="#594b5c" strokeWidth="50" icon={faFlag} />
+      {text}
+      {icon}
     </Button>
   );
-};
-
-export default RestartButton;
+}

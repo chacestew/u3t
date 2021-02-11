@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../../shared/game';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 const PlayAI = () => {
   const [gameState, setGameState] = useState(getInitialState());
@@ -9,7 +13,6 @@ const PlayAI = () => {
 
   useEffect(() => {
     const yourSeat = Math.ceil(Math.random() * 2);
-    console.log('you are player:', yourSeat);
     setSeat(yourSeat);
   }, []);
 
@@ -42,6 +45,16 @@ const PlayAI = () => {
         onPlayAgainConfirm={restart}
       />
       <Board state={gameState} seat={seat} onValidTurn={play} />
+      <TurnList
+        state={gameState}
+        RestartButton={
+          <RestartButton
+            onClick={restart}
+            text="Restart"
+            icon={<FontAwesomeIcon icon={faRedo} />}
+          />
+        }
+      />
     </>
   );
 };

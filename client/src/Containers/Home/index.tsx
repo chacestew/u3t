@@ -29,11 +29,12 @@ const MenuContainer = styled.div`
   height: 100%;
   width: 100%;
   border-radius: 4px;
+  height: 90%;
+  width: 90%;
 
   ${media.aboveMobileL`
             padding: 2em;
-            height: 90%;
-            width: 90%;
+
             border-radius: 6px;`}
 `;
 

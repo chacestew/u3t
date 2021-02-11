@@ -18,6 +18,10 @@ import { RelativeBox } from '../../styles/Utils';
 import useMultiplerState from '../../hooks/useLobbyReducer';
 import { Reconnecting } from './Reconnecting';
 import useNavigatorOnline from '../../hooks/useNavigatorOnline';
+import Modal from '../../Components/Modal';
+import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
+import { faFlag } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const useErrorManager = () => {
   const [error, setError] = useState<ErrorParams | null>(null);
@@ -193,7 +197,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
     ? 'online'
     : 'loading';
 
-  console.log(lobbyState);
+  console.log(state);
 
   return (
     <>
@@ -207,14 +211,32 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       <RelativeBox>
         <Board
           Alert={hasLostConnection && <Reconnecting />}
+          Modal={error && <Modal error={error} dismissError={dismissError} />}
           seat={lobbyState.playerSeat}
           state={state}
           onValidTurn={onValidTurn}
-          error={error}
-          dismissError={dismissError}
           disabled={hasLostConnection}
         />
-        <TurnList turnList={state.turnList} onRestart={forfeitGame} />
+        {state && (
+          <TurnList
+            seat={lobbyState.playerSeat!}
+            state={state}
+            RestartButton={
+              <RestartButton
+                onClick={forfeitGame}
+                text="Forfeit"
+                icon={
+                  <FontAwesomeIcon
+                    color="white"
+                    stroke="#594b5c"
+                    strokeWidth="50"
+                    icon={faFlag}
+                  />
+                }
+              />
+            }
+          />
+        )}
       </RelativeBox>
     </>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import palette from '../utils/palette';
 import { EventParams, Events } from '../shared/types';
 import Button from './Button';
+import { boxShadow } from '../styles/mixins';
 
 interface LinkProps {
   text: string;
@@ -73,7 +74,7 @@ const Modal = ({ error, dismissError }: Props) => {
         background-color: ${palette.primaryLight};
         font-weight: bold;
         color: white;
-        box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
+        ${boxShadow}
       `}
     >
       <span>{message()}</span>

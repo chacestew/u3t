@@ -17,7 +17,12 @@ interface Props {
   onInvalidTurn?: (error: T.Errors) => void;
   Alert?: false | React.ReactElement;
   disabled?: boolean;
+  Modal?: React.ReactElement | null;
 }
+
+const Container = styled.div`
+  position: relative;
+`;
 
 const OuterGrid = styled(Grid)<{ disabled?: boolean }>`
   width: 100vw;
@@ -25,20 +30,24 @@ const OuterGrid = styled(Grid)<{ disabled?: boolean }>`
   max-width: ${gridSize};
   max-height: ${gridSize};
 
-  ${(props) => props.disabled && `pointer-events: none; opacity: 0.6;`}
+  ${(props) =>
+    props.disabled &&
+    `
+      pointer-events: none; 
+      opacity: 0.6;
+    `}
 `;
 
-const GameView = ({
+export default function GameView({
   state,
   seat,
   onValidTurn,
   onInvalidTurn,
-  error,
+  Modal,
   Alert,
-  dismissError,
   disabled,
-}: Props) => {
-  const { turn, boards, activeBoard, winner, winningSet, currentPlayer } = state;
+}: Props) {
+  const { boards, activeBoard, winner, winningSet } = state;
   const [flashing, setFlashing] = useState(false);
 
   const onPlay = (turnInput: { board: T.Board; cell: T.Cell }) => {
@@ -60,12 +69,13 @@ const GameView = ({
   };
 
   return (
-    <div css="position: relative;">
-      {error && <Modal error={error} dismissError={dismissError} />}
+    <Container>
+      {Modal && Modal}
       {Alert && Alert}
       <OuterGrid disabled={disabled}>
         {boards.map((b, i) => (
           <Board
+            seat={seat!}
             key={i}
             data={b}
             flashing={flashing}
@@ -77,8 +87,6 @@ const GameView = ({
           />
         ))}
       </OuterGrid>
-    </div>
+    </Container>
   );
-};
-
-export default GameView;
+}

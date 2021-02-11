@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Cell, Text, Bar } from '../styles';
 import palette from '../../../../utils/palette';
+import { boxShadow } from '../../../../styles/mixins';
 
 const Button = styled.button<{ disabled: boolean; isOnline?: boolean }>`
   background-color: ${({ disabled }) => (disabled ? '#dddeda' : 'white')};
@@ -10,9 +11,9 @@ const Button = styled.button<{ disabled: boolean; isOnline?: boolean }>`
   height: 2em;
   padding: 0 0.5em;
   font-weight: bold;
-  box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
   border: 0;
   color: ${palette.primaryLight};
+  ${boxShadow}
   ${({ isOnline }) => isOnline && 'margin-right: 0.5em;'}
 `;
 

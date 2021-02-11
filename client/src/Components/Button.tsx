@@ -2,6 +2,7 @@ import React from 'react';
 import palette from '../utils/palette';
 import styled, { css } from 'styled-components';
 import { Link as ReactRouterLink } from 'react-router-dom';
+import { boxShadow } from '../styles/mixins';
 
 interface Props {
   borderRadius?: string;
@@ -34,7 +35,7 @@ const styles = css<Props>`
   background-color: ${backgroundColor};
   padding: ${padding};
   border-radius: ${borderRadius};
-  ${shadow && `box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5)`};
+  ${shadow && boxShadow};
   font-weight: bold;
   color: ${fontColor};
   text-decoration: none;

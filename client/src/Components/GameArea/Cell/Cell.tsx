@@ -6,8 +6,9 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import * as T from '../../../shared/types';
 
 import palette from '../../../utils/palette';
+import { boxShadow } from '../../../styles/mixins';
 
-const getCellBg = (cellType: null | T.Player) => {
+export const getCellBg = (cellType: null | T.Player) => {
   switch (cellType) {
     case 1:
       return palette.red;
@@ -24,25 +25,25 @@ export interface Props {
   className?: string;
 }
 
-const CellContainer = styled.div<Props>`
+const CellContainer = styled.button<Props>`
   border-radius: 4px;
-  font-weight: bold;
   color: ${palette.primaryLight};
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
+  border: 0;
+  outline: 0;
   background-color: ${({ cellType }) => getCellBg(cellType)};
   ${({ size }) => size && `width: ${size}; height: ${size};`}
-  svg {
-    width: 50% !important;
-    height: 50% !important;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+  ${boxShadow}
+  && > svg {
+    width: 50%;
+    height: 50%;
   }
 `;
 
-const Cell = ({ ...rest }: Props) => {
+export default function Cell({ ...rest }: Props) {
   return (
     <CellContainer {...rest}>
       {rest.cellType && (
@@ -50,6 +51,4 @@ const Cell = ({ ...rest }: Props) => {
       )}
     </CellContainer>
   );
-};
-
-export default Cell;
+}

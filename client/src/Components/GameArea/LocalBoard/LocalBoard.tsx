@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import Grid from '../../Grid';
 import Cell from './Cell';
+import { getCellBg } from '../Cell/Cell';
 import palette from '../../../utils/palette';
 import * as T from '../../../shared/types';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +11,7 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { media } from '../../../styles/mixins';
 
-const InnerGrid = styled(Grid)`
+const InnerGrid = styled(Grid)<{ bgColor?: string }>`
   grid-gap: 4px;
   border-style: solid;
   border-color: ${palette.primaryLight};
@@ -26,7 +27,7 @@ const InnerGrid = styled(Grid)`
     border-bottom: 0;
   }
   &.flashing {
-    background-color: skyblue;
+    background-color: ${(p) => p.bgColor};
   }
 `;
 
@@ -36,7 +37,8 @@ interface Props {
   winningSet: Array<null | number>;
   data: T.IBoardState;
   boardIndex: T.Board;
-  onClick: any;
+  onClick: (turnInput: Omit<T.ITurnInput, 'player'>) => void;
+  seat: T.Player;
   activeBoard: T.Board[];
 }
 
@@ -45,11 +47,12 @@ const Board = ({
   gameWinner,
   winningSet,
   data: { cells, winner: boardWinner },
+  seat,
   boardIndex,
   onClick,
   activeBoard,
 }: Props) => {
-  const _onClick = (cellIndex: T.Cell) => {
+  const handleClick = (cellIndex: T.Cell) => {
     onClick({ board: boardIndex, cell: cellIndex });
   };
   const active = !gameWinner && activeBoard.includes(boardIndex);
@@ -58,7 +61,10 @@ const Board = ({
     [gameWinner, winningSet, boardIndex, active]
   );
   return (
-    <InnerGrid className={active && flashing ? 'flashing' : undefined}>
+    <InnerGrid
+      className={active && flashing ? 'flashing' : undefined}
+      bgColor={getCellBg(seat)}
+    >
       {boardWinner && (
         <FontAwesomeIcon
           color={palette.primaryLight}
@@ -79,7 +85,7 @@ const Board = ({
         <Cell
           shouldDim={shouldDim}
           inPlayableArea={active}
-          onClick={_onClick}
+          onClick={handleClick}
           cellType={cell}
           cellIndex={i as T.Cell}
           key={i}

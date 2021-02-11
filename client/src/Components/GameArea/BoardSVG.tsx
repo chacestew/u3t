@@ -1,9 +1,5 @@
 import * as React from 'react';
-import styled, { withTheme } from 'styled-components';
-import palette from '../../utils/palette';
-import { faPallet } from '@fortawesome/free-solid-svg-icons';
-import { IBoardState, Board } from '../../shared/types';
-import { get } from 'http';
+import { Board } from '../../shared/types';
 
 const BoardSVG = ({
   size = '1em',

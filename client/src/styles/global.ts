@@ -37,8 +37,6 @@ const globalStyles = css`
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-
-      ${media.aboveMobileL`height: auto`}
     }
   }
 `;

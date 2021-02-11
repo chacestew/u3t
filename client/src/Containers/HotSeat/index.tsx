@@ -5,6 +5,9 @@ import useGameReducer from '../../hooks/useGameReducer';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
+import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function HotSeat() {
   const [state, { playTurn, restart }] = useGameReducer();
@@ -20,7 +23,16 @@ export default function HotSeat() {
       <GameHeader seat={state.currentPlayer} state={state} onPlayAgainConfirm={restart} />
       <RelativeBox>
         <Board state={state} seat={state.currentPlayer} onValidTurn={onValidTurn} />
-        <TurnList turnList={state.turnList} onRestart={restart} />
+        <TurnList
+          state={state}
+          RestartButton={
+            <RestartButton
+              onClick={restart}
+              text="Restart"
+              icon={<FontAwesomeIcon icon={faRedo} />}
+            />
+          }
+        />
       </RelativeBox>
     </>
   );

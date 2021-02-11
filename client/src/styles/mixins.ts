@@ -5,6 +5,10 @@ export const flexColumns = `
   flex-direction: column;
 `;
 
+export const boxShadow = `
+  box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
+`;
+
 export const media = {
   aboveMobileS: (styles: TemplateStringsArray) => css`
     @media (min-width: 321px) {

@@ -26,7 +26,7 @@ export const Bar = styled.div`
   width: 100%;
 `;
 
-export const Cell = styled(BaseCell)`
+export const Cell = styled(BaseCell).attrs({ forwardedAs: 'div' })`
   width: 2em;
   height: 2em;
 `;
