@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import TurnListItem, { TurnListCell, TurnListParagraph } from './TurnListItem';
 import { flexColumns, media } from '../../../styles/mixins';
-import Button from '../../Button';
+import { Button } from '../../Button';
 
 const TurnListButtonsContainer = styled.div`
   display: flex;
@@ -14,24 +14,30 @@ const TurnListButtonsContainer = styled.div`
 `;
 
 const TurnListToggle = styled(Button)`
-  cursor: pointer;
   color: white;
-  font-weight: bold;
-  border: 0;
-  outline: 0;
   background-color: #594b5c;
-  padding: 0.5em;
   z-index: 1;
+
+  :hover,
+  :focus {
+    filter: none;
+    outline: 0;
+  }
+
+  & > svg {
+    margin-left: 0.5em;
+  }
 `;
 
-const TurnListContainer = styled.div`
+const TurnListContainer = styled.div<{ expanded: boolean }>`
   background-color: #594b5c;
-  display: flex;
   flex-direction: column;
   flex: 1;
   width: 100%;
   overflow: auto;
   color: white;
+  display: none;
+  ${({ expanded }) => expanded && `display: flex;`}
 `;
 
 const StyledTurnList = styled.div<{ expanded: boolean }>`
@@ -42,7 +48,7 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
   font-weight: bold;
   font-size: 16px;
   color: #594b5c;
-  margin-top: 0.5em;
+  padding-top: 20%;
   z-index: 1;
 
   ${({ expanded }) =>
@@ -52,26 +58,12 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
      bottom: 0;
      width: 100%;`}
 
-  @media (min-height: 700px) {
+  @media (min-height: 721px) {
     position: relative;
+    padding-top: 0;
     bottom: 0;
   }
 `;
-
-const useStickyExpandedState = () => {
-  const [expanded, setExpanded] = useState(() => {
-    const val = window.localStorage.getItem('expanded');
-
-    if (val !== null) return JSON.parse(val);
-    return true;
-  });
-
-  useEffect(() => {
-    // window.localStorage.setItem('expanded', JSON.stringify(expanded));
-  }, [expanded]);
-
-  return [expanded, setExpanded];
-};
 
 const TurnList = ({
   state,
@@ -82,11 +74,14 @@ const TurnList = ({
   seat?: T.Player;
   RestartButton: JSX.Element;
 }) => {
-  const [expanded, setExpanded] = useStickyExpandedState();
+  const [expanded, setExpanded] = useState(() => {
+    return window?.innerHeight || 0 >= 700;
+  });
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current!.scrollIntoView({
+    console.log('bottomRef.current', bottomRef.current);
+    bottomRef.current?.scrollIntoView({
       behavior: 'smooth',
     });
   }, [state.turnList.length]);
@@ -98,46 +93,39 @@ const TurnList = ({
   return (
     <StyledTurnList expanded={expanded}>
       <TurnListButtonsContainer className="log-header">
-        <TurnListToggle
-          shadow={false}
-          svgRight
-          backgroundColor="#594b5c"
-          padding="0.5em"
-          fontColor="white"
-          onClick={onClick}
-        >
+        <TurnListToggle shadow={false} onClick={onClick}>
           Turn log
           <FontAwesomeIcon icon={expanded ? faCaretDown : faCaretUp} />
         </TurnListToggle>
         {RestartButton}
       </TurnListButtonsContainer>
-      {expanded && (
-        <TurnListContainer>
-          {seat && (
-            <TurnListParagraph>
+      <TurnListContainer expanded={expanded}>
+        <TurnListParagraph>
+          {seat ? (
+            <b>
+              You are playing as <TurnListCell cellType={seat} />.
+            </b>
+          ) : (
+            <b>New game started.</b>
+          )}{' '}
+          Have fun!
+        </TurnListParagraph>
+        {state.turnList.map((t, i) => (
+          <TurnListItem key={i} turn={i} {...t} />
+        ))}
+        {state.finished && (
+          <TurnListParagraph>
+            {state.tied ? (
+              <b>It&apos;s a draw!</b>
+            ) : (
               <b>
-                You are playing as <TurnListCell cellType={seat} />.
-              </b>{' '}
-              Have fun!
-            </TurnListParagraph>
-          )}
-          {state.turnList.map((t, i) => (
-            <TurnListItem key={i} turn={i} {...t} />
-          ))}
-          {state.finished && (
-            <TurnListParagraph>
-              {state.tied ? (
-                <b>It&apos;s a draw!</b>
-              ) : (
-                <b>
-                  <TurnListCell cellType={state.winner} /> wins!
-                </b>
-              )}
-            </TurnListParagraph>
-          )}
-          <div ref={bottomRef} />
-        </TurnListContainer>
-      )}
+                <TurnListCell cellType={state.winner} /> wins!
+              </b>
+            )}
+          </TurnListParagraph>
+        )}
+        <div ref={bottomRef} />
+      </TurnListContainer>
     </StyledTurnList>
   );
 };

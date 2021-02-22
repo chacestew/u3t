@@ -18,26 +18,18 @@ import { RelativeBox } from '../../styles/Utils';
 import useMultiplerState from '../../hooks/useLobbyReducer';
 import { Reconnecting } from './Reconnecting';
 import useNavigatorOnline from '../../hooks/useNavigatorOnline';
-import Modal from '../../Components/Modal';
+import ErrorModal from '../../Components/ErrorModal';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const useErrorManager = () => {
-  const [error, setError] = useState<ErrorParams | null>(null);
-
-  const dismissError = () => setError(null);
-
-  return { error, setError, dismissError };
-};
-
 const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) => {
   const [state, { playTurn, setState, restart }] = useGameReducer();
-  const { error, setError, dismissError } = useErrorManager();
+  const [error, setError] = useState<ErrorParams | null>(null);
   const isNavigatorOnline = useNavigatorOnline();
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
-  // const [room, setRoom] = useState('');
+
   const {
     lobbyState,
     dispatchers: {
@@ -80,7 +72,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       setState(data.state);
     });
 
-    onEvent(Events.InvalidTurn, ({ state, error }) => {
+    onEvent(Events.InvalidTurn, ({ state }) => {
       setState(state);
     });
 
@@ -108,7 +100,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       setSocketConnectionLost(true);
     });
 
-    socket.io.on('reconnect', () => {
+    socket.io.on(Events.Reconnect, () => {
       setSocketConnectionLost(false);
       console.log('emitting...', {
         id: lobbyStateRef.current.playerId,
@@ -157,7 +149,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
         emitEvent(Events.JoinLobby, { room: match.params.room });
       }
     }
-  }, [match.params.room]);
+  }, [emitEvent, match.params.room, reset, set]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
     const player = lobbyState.playerSeat as Player;
@@ -189,16 +181,6 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
     });
   };
 
-  const headerMode = lobbyState.isSpectator
-    ? 'spectator'
-    : lobbyState.roomId && !lobbyState.playerSeat
-    ? 'share'
-    : lobbyState.playerSeat
-    ? 'online'
-    : 'loading';
-
-  console.log(state);
-
   return (
     <>
       <LobbyHeader
@@ -211,7 +193,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       <RelativeBox>
         <Board
           Alert={hasLostConnection && <Reconnecting />}
-          Modal={error && <Modal error={error} dismissError={dismissError} />}
+          Modal={error && <ErrorModal />}
           seat={lobbyState.playerSeat}
           state={state}
           onValidTurn={onValidTurn}

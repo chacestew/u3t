@@ -1,21 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 
 import { Cell, Text, Bar } from '../styles';
-import palette from '../../../../utils/palette';
-import { boxShadow } from '../../../../styles/mixins';
-
-const Button = styled.button<{ disabled: boolean; isOnline?: boolean }>`
-  background-color: ${({ disabled }) => (disabled ? '#dddeda' : 'white')};
-  border-radius: 4px;
-  height: 2em;
-  padding: 0 0.5em;
-  font-weight: bold;
-  border: 0;
-  color: ${palette.primaryLight};
-  ${boxShadow}
-  ${({ isOnline }) => isOnline && 'margin-right: 0.5em;'}
-`;
+import { Button } from '../../../Button';
 
 interface PlayAgainProps {
   isOnline?: boolean;
@@ -36,10 +22,9 @@ const PlayAgain = ({
 
   return (
     <Text justify="flex-end">
-      <Button onClick={onClick} disabled={confirmed} isOnline={isOnline}>
-        Play again?
+      <Button shadow rounded onClick={onClick} disabled={confirmed}>
+        Play again? {isOnline && `(${restartRequested || confirmed ? 1 : 0}/2)`}
       </Button>
-      {isOnline && `(${restartRequested || confirmed ? 1 : 0}/2)`}
     </Text>
   );
 };

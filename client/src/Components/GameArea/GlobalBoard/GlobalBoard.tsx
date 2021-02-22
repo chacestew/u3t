@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Grid from '../../Grid';
 
@@ -6,7 +6,6 @@ import Board from '../LocalBoard/LocalBoard';
 import { isInvalidTurn } from '../../../shared/game';
 import * as T from '../../../shared/types';
 import { gridSize } from '../../../utils/palette';
-import Modal from '../../Modal';
 
 interface Props {
   state: T.IGameState;

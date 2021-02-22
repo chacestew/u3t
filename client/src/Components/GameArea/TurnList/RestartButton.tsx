@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from '../../Button';
+import styled from 'styled-components';
+import { Button } from '../../Button';
 
 interface Props {
   onClick: () => void;
@@ -7,11 +8,20 @@ interface Props {
   icon: JSX.Element;
 }
 
+const StyledButton = styled(Button)`
+  :hover {
+    filter: none;
+  }
+  & > svg {
+    margin-left: 0.5em;
+  }
+`;
+
 export default function RestartButton({ onClick, text, icon }: Props) {
   return (
-    <Button shadow={false} svgRight padding="0.5em" onClick={onClick}>
+    <StyledButton shadow={false} onClick={onClick}>
       {text}
       {icon}
-    </Button>
+    </StyledButton>
   );
 }

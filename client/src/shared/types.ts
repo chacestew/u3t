@@ -51,6 +51,7 @@ export enum Events {
   Error = 'error',
   Forfeit = 'forfeit',
   JoinedLobby = 'joined-lobby',
+  Reconnect = 'reconnect',
 }
 
 export type ServerError = 'not-found' | 'will-expire';

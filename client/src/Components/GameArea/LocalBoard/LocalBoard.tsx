@@ -12,13 +12,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { media } from '../../../styles/mixins';
 
 const InnerGrid = styled(Grid)<{ bgColor?: string }>`
-  grid-gap: 4px;
+  grid-gap: 0.25em;
+  padding: 0.25em;
   border-style: solid;
   border-color: ${palette.primaryLight};
-  border-width: 0 4px 4px 0;
-  padding: 6px;
+  border-width: 0 2px 2px 0;
 
-  ${media.aboveMobileS`grid-gap: 6px; padding: 8px;`}
+  ${media.aboveMobileL`
+    border-width: 0 0.25em 0.25em 0;
+    grid-gap: 0.5em; padding: 0.5em;
+  `}
 
   &:nth-child(3n) {
     border-right: 0;

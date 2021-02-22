@@ -36,7 +36,10 @@ const App = () => (
     <Main>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/game/:room?" component={Play} />
+        <Route
+          path="/game/:room?"
+          render={(routeProps) => <Play key={routeProps.location.key} {...routeProps} />}
+        />
         <Route path="/local" component={HotSeat} />
         <Route path="/ai" component={PlayAI} />
         <Route path="/rules" component={Rules} />

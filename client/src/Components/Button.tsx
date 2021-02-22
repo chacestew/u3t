@@ -1,58 +1,36 @@
-import React from 'react';
 import palette from '../utils/palette';
 import styled, { css } from 'styled-components';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { boxShadow } from '../styles/mixins';
 
-interface Props {
-  borderRadius?: string;
-  backgroundColor?: string;
-  padding?: string;
+interface ButtonStyleProps {
   shadow?: boolean;
-  fontColor?: string;
-  to?: string;
-  svgRight?: boolean;
-  svgLeft?: boolean;
-  children?: React.ReactNode;
-  onClick?: () => void;
+  rounded?: boolean;
+  disabled?: boolean;
 }
 
-const styles = css<Props>`
-  ${({
-    borderRadius = '0',
-    backgroundColor = 'white',
-    padding = '10px',
-    shadow = true,
-    fontColor = palette.primaryDark,
-    svgLeft,
-    svgRight,
-  }) => `
+const buttonStyles = css<ButtonStyleProps>`
   display: flex;
   justify-content: center;
   cursor: pointer;
   border: 0;
-  outline: 0;
-  background-color: ${backgroundColor};
-  padding: ${padding};
-  border-radius: ${borderRadius};
-  ${shadow && boxShadow};
-  font-weight: bold;
-  color: ${fontColor};
   text-decoration: none;
-  ${svgLeft ? `svg { margin-right: 0.5em; }` : ''}
-  ${svgRight ? `svg { margin-left: 0.5em; }` : ''}
-  `}
+  padding: 0.5em;
+  font-weight: bold;
+  background-color: ${palette.white};
+  color: ${palette.primaryDark};
+  ${({ shadow }) => shadow && boxShadow}
+  ${({ rounded }) => rounded && 'border-radius: 4px;'}
+  ${({ disabled }) => disabled && 'opacity: 0.5; pointer-events: none;'}
+  :active, :hover, :focus {
+    filter: brightness(90%);
+  }
 `;
 
-const StyledButton = styled.button`
-  ${styles}
+export const Button = styled.button`
+  ${buttonStyles}
 `;
 
-const Link = styled(ReactRouterLink)`
-  ${styles}
+export const ButtonLink = styled(ReactRouterLink)`
+  ${buttonStyles}
 `;
-
-const Button = ({ to, ...rest }: Props) =>
-  to ? <Link to={to} {...rest} /> : <StyledButton {...rest} />;
-
-export default Button;

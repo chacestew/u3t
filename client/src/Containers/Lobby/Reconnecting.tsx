@@ -16,13 +16,10 @@ const StyledReconnecting = styled.div`
 
   svg {
     margin-left: 0.5em;
+    animation: pulse 1s ease infinite;
   }
 
-  span {
-    animation: dc-ldr 1.2s ease infinite;
-  }
-
-  @keyframes dc-ldr {
+  @keyframes pulse {
     0%,
     100% {
       opacity: 1;
@@ -35,8 +32,6 @@ const StyledReconnecting = styled.div`
 
 export const Reconnecting = () => (
   <StyledReconnecting>
-    <span>
-      Reconnecting <FontAwesomeIcon icon={faCloud} />
-    </span>
+    Reconnecting <FontAwesomeIcon icon={faCloud} />
   </StyledReconnecting>
 );

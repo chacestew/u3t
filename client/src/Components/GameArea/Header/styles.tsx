@@ -22,7 +22,6 @@ export const Bar = styled.div`
   padding: 1em;
   color: ${palette.white};
   margin-bottom: 0.5em;
-  font-size: 18px;
   width: 100%;
 `;
 

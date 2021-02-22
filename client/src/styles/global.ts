@@ -23,7 +23,11 @@ const globalStyles = css`
     padding: 0;
   }
 
-  p {
+  p,
+  h1,
+  h2,
+  h3,
+  h4 {
     margin: 0;
   }
 
