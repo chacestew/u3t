@@ -40,15 +40,15 @@ const startGame = (lobby: Lobby, io: Server) => {
 };
 
 async function joinLobby(
-  data: { room: string; id?: string },
+  data: { room: string; id?: string; spectator?: boolean },
   socket: Socket,
   io: Server
 ) {
-  const { room, id } = data;
+  const { room, id, spectator } = data;
   const lobby = lobbies.get(room);
 
   // Handle spectator connection
-  if (!id && lobby.hasGame()) {
+  if ((!id && lobby.hasGame()) || spectator) {
     joinSpectator(socket, lobby);
     return;
   }

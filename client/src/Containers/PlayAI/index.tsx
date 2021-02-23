@@ -41,7 +41,7 @@ const PlayAI = () => {
       <GameHeader seat={seat!} state={gameState} onPlayAgainConfirm={restartGame} />
       <Board state={gameState} seat={seat} onValidTurn={play} />
       <TurnList
-        seat={seat!}
+        lobbyState={{ playerSeat: seat, started: true }}
         state={gameState}
         RestartButton={
           <RestartButton

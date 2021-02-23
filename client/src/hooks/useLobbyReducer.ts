@@ -7,6 +7,7 @@ export interface IMultiplayerState {
   roomId: null | string;
   isSpectator: boolean;
   restartRequested: boolean;
+  started: boolean;
 }
 
 const initialState: IMultiplayerState = {
@@ -15,6 +16,7 @@ const initialState: IMultiplayerState = {
   roomId: null,
   isSpectator: false,
   restartRequested: false,
+  started: false,
 };
 
 const Actions = T.Events;
@@ -33,6 +35,7 @@ export function reducer(
     case T.Events.StartGame: {
       return {
         ...state,
+        started: true,
         playerId: action.payload.id,
         playerSeat: action.payload.seat,
       };
@@ -85,8 +88,8 @@ export function reducer(
   }
 }
 
-export default function () {
-  const [lobbyState, dispatch] = useReducer(reducer, initialState);
+export default function (passedState: Partial<IMultiplayerState>) {
+  const [lobbyState, dispatch] = useReducer(reducer, { ...initialState, ...passedState });
   const lobbyStateRef = useRef<IMultiplayerState>(lobbyState);
 
   useEffect(() => {

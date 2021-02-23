@@ -65,6 +65,7 @@ export interface EventParams {
   [Events.JoinLobby]: {
     room: string;
     id?: string;
+    spectator?: boolean;
   };
   [Events.CreateLobby]: {
     id: string;

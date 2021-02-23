@@ -23,7 +23,11 @@ import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) => {
+const OnlineGame = ({
+  history,
+  match,
+  spectator,
+}: RouteComponentProps<{ room: string }> & { spectator?: boolean }) => {
   const [state, { playTurn, setState, restart }] = useGameReducer();
   const [error, setError] = useState<ErrorParams | null>(null);
   const isNavigatorOnline = useNavigatorOnline();
@@ -44,7 +48,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
       reset,
     },
     lobbyStateRef,
-  } = useMultiplerState();
+  } = useMultiplerState({ isSpectator: !!spectator });
 
   const { socket, onEvent, emitEvent } = useSocket();
 
@@ -146,10 +150,13 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
         set({ playerId: savedId });
         emitEvent(Events.JoinLobby, { room: match.params.room, id: savedId });
       } else {
-        emitEvent(Events.JoinLobby, { room: match.params.room });
+        emitEvent(Events.JoinLobby, {
+          room: match.params.room,
+          spectator: lobbyState.isSpectator,
+        });
       }
     }
-  }, [emitEvent, match.params.room, reset, set]);
+  }, [emitEvent, lobbyState.isSpectator, match.params.room, match.path, reset, set]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
     const player = lobbyState.playerSeat as Player;
@@ -201,7 +208,7 @@ const OnlineGame = ({ history, match }: RouteComponentProps<{ room: string }>) =
         />
         {state && (
           <TurnList
-            seat={lobbyState.playerSeat!}
+            lobbyState={lobbyState}
             state={state}
             RestartButton={
               <RestartButton

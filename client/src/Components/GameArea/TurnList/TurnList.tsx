@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as T from '../../../shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import TurnListItem, { TurnListCell, TurnListParagraph } from './TurnListItem';
 import { flexColumns, media } from '../../../styles/mixins';
 import { Button } from '../../Button';
+import { IMultiplayerState } from '../../../hooks/useLobbyReducer';
 
 const TurnListButtonsContainer = styled.div`
   display: flex;
@@ -65,17 +66,33 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
   }
 `;
 
+const OpeningText = ({ lobbyState }: { lobbyState: Partial<IMultiplayerState> }) => {
+  if (!lobbyState.started) return <p>Waiting for more players.</p>;
+  if (lobbyState.isSpectator) return <p>You are spectating.</p>;
+  if (lobbyState.playerSeat)
+    return (
+      <p>
+        <b>
+          You are playing as <TurnListCell cellType={lobbyState.playerSeat} />.
+        </b>{' '}
+        Have fun!
+      </p>
+    );
+  return <p>New game started.</p>;
+};
+
 const TurnList = ({
   state,
-  seat,
+  lobbyState,
   RestartButton,
 }: {
   state: T.IGameState;
   seat?: T.Player;
   RestartButton: JSX.Element;
+  lobbyState: Partial<IMultiplayerState>;
 }) => {
   const [expanded, setExpanded] = useState(() => {
-    return window?.innerHeight || 0 >= 700;
+    return (window?.innerHeight || 0) >= 700;
   });
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -101,14 +118,7 @@ const TurnList = ({
       </TurnListButtonsContainer>
       <TurnListContainer expanded={expanded}>
         <TurnListParagraph>
-          {seat ? (
-            <b>
-              You are playing as <TurnListCell cellType={seat} />.
-            </b>
-          ) : (
-            <b>New game started.</b>
-          )}{' '}
-          Have fun!
+          <OpeningText lobbyState={lobbyState} />
         </TurnListParagraph>
         {state.turnList.map((t, i) => (
           <TurnListItem key={i} turn={i} {...t} />

@@ -25,6 +25,7 @@ export default function HotSeat() {
         <Board state={state} seat={state.currentPlayer} onValidTurn={onValidTurn} />
         <TurnList
           state={state}
+          lobbyState={{ started: true }}
           RestartButton={
             <RestartButton
               onClick={restart}

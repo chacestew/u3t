@@ -46,10 +46,10 @@ export default function CodeInputForm({ mode }: { mode: CodeInputMode }) {
     [mode, code, history]
   );
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase();
-    if (value === '' || /^[A-Z]+$/.test(value)) {
-      setCode(value);
+  const setText = (value: string) => {
+    const text = value.toUpperCase();
+    if (text === '' || text.length < 5 || /^[A-Z]+$/.test(text)) {
+      setCode(text);
     }
   };
 
@@ -57,7 +57,13 @@ export default function CodeInputForm({ mode }: { mode: CodeInputMode }) {
     <Container>
       <Label>Input game code to {mode}</Label>
       <Form onSubmit={onSubmit}>
-        <input maxLength={4} value={code} placeholder="CODE" onChange={onChange} />
+        <input
+          maxLength={4}
+          value={code}
+          placeholder="CODE"
+          onChange={(e) => setText(e.target.value)}
+          onPaste={(e) => setText(e.clipboardData.getData('text').slice(-4))}
+        />
         <Button type="submit" rounded shadow disabled={code.length !== 4}>
           <FontAwesomeIcon icon={faCheck} />
         </Button>
