@@ -1,12 +1,24 @@
-import { Socket, Server } from 'socket.io';
+import { Server } from 'socket.io';
 
-import { Events, EventParams } from '../shared/types';
+import {
+  Events,
+  SocketCallback,
+  PlayTurnResponse,
+  PlayTurnRequestArgs,
+  ioEmitter,
+  Sync,
+} from '../shared/types2/types';
 import { lobbies } from '../entities';
-import logger from '../logger';
 
-async function PlayTurn(data: EventParams[Events.PlayTurn], socket: Socket, io: Server) {
-  const lobby = lobbies.get(data.room);
-  const seat = lobby.getGame().getSeat(data.id);
+const emitSync = ioEmitter<Sync>(Events.Sync);
+
+async function PlayTurn(
+  data: PlayTurnRequestArgs,
+  io: Server,
+  cb: SocketCallback<PlayTurnResponse>
+) {
+  const lobby = lobbies.get(data.lobbyId);
+  const seat = lobby.getGame().getSeat(data.playerId);
 
   const payload = {
     player: seat,
@@ -25,14 +37,10 @@ async function PlayTurn(data: EventParams[Events.PlayTurn], socket: Socket, io: 
   const state = lobby.getGame().getState();
 
   if (error) {
-    socket.emit(Events.InvalidTurn, {
-      state,
-      error,
-    });
+    cb({ valid: false, error });
   } else {
-    io.to(lobby.id).emit(Events.Sync, {
-      state,
-    });
+    cb({ valid: true });
+    emitSync(io, lobby.id, { state });
   }
 }
 

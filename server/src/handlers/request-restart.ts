@@ -1,31 +1,31 @@
 import { Socket, Server } from 'socket.io';
 
-import { Events, EventParams } from '../shared/types';
+import { Events, RestartRequestArgs, ioEmitter, Sync } from '../shared/types2/types';
 import { lobbies } from '../entities';
 
-async function RequestRestart(
-  data: EventParams[Events.Restart],
-  socket: Socket,
-  io: Server
-) {
-  const lobby = lobbies.get(data.room);
+const emitRestartRequested = ioEmitter(Events.RestartRequested);
+const emitSync = ioEmitter<Sync>(Events.Sync);
 
-  const hasRestarted = lobby.requestRestart(data.id, socket.id);
+async function RequestRestart(data: RestartRequestArgs, socket: Socket, io: Server) {
+  const lobby = lobbies.get(data.lobbyId);
+
+  const hasRestarted = lobby.requestRestart(data.playerId, socket.id);
 
   if (!hasRestarted) {
-    io.to(lobby.id).emit(Events.RestartRequested);
-    return;
+    emitRestartRequested(io, lobby.id);
+  } else {
+    const game = lobby.getGame();
+
+    // Send the game state and seat to players individually
+    lobby.players.forEach((id) => {
+      emitSync(io, id, { state: game.getState(), seat: game.getSeat(id) });
+      // io.to(id).emit(Events.Sync, { state: game.getState(), seat: game.getSeat(id) });
+    });
+
+    // Send the game state to the whole room (for spectators)
+    emitSync(io, lobby.id, { state: game.getState() });
+    // io.to(lobby.id).emit(Events.Sync, { state: game.getState() });
   }
-
-  const game = lobby.getGame();
-
-  // Send the game state and seat to players individually
-  lobby.players.forEach((id) => {
-    io.to(id).emit(Events.Sync, { state: game.getState(), seat: game.getSeat(id) });
-  });
-
-  // Send the game state to the whole room (for spectators)
-  io.to(lobby.id).emit(Events.Sync, { state: game.getState() });
 }
 
 export default RequestRestart;

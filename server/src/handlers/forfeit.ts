@@ -1,16 +1,20 @@
 import { Server } from 'socket.io';
 
-import { Events, EventParams } from '../shared/types';
+import { Events, ForfeitRequestArgs, ioEmitter, Sync } from '../shared/types2/types';
 import { lobbies } from '../entities';
 
-async function Forfeit(data: EventParams[Events.Forfeit], io: Server) {
-  console.log({ data });
-  const lobby = lobbies.get(data.room);
-  const state = lobby.forfeit(data.id);
+const emitSync = ioEmitter<Sync>(Events.Sync);
 
-  io.to(lobby.id).emit(Events.Sync, {
-    state,
-  });
+async function Forfeit(data: ForfeitRequestArgs, io: Server) {
+  console.log({ data });
+  const lobby = lobbies.get(data.lobbyId);
+  const state = lobby.forfeit(data.playerId);
+
+  emitSync(io, lobby.id, { state });
+
+  // io.to(lobby.id).emit(Events.Sync, {
+  //   state,
+  // });
 }
 
 export default Forfeit;

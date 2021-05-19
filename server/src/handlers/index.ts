@@ -4,4 +4,4 @@ export { default as joinLobby } from './join-lobby';
 export { default as playTurn } from './play-turn';
 export { default as disconnect } from './disconnect';
 export { default as forfeit } from './forfeit';
-export { default as sync } from './sync';
+export { default as resync } from './resync';

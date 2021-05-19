@@ -1,6 +1,16 @@
 import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
-import { Events } from './shared/types';
+import {
+  Events,
+  SocketCallback,
+  CreateLobbyResponse,
+  JoinLobbyResponses,
+  JoinLobbyRequestArgs,
+  PlayTurnResponse,
+  RestartRequestArgs,
+  ForfeitRequestArgs,
+  ResyncArgs,
+} from './shared/types2/types';
 import { lobbies } from './entities';
 import { BadRequestError, NotFoundError, SocketError } from './errors';
 import {
@@ -10,7 +20,7 @@ import {
   requestRestart,
   disconnect,
   forfeit,
-  sync,
+  resync,
 } from './handlers';
 import logger from './logger';
 
@@ -24,38 +34,41 @@ const errorHandler = (
   logger.error(err.message);
 };
 
-const joinRooms = (data: { id?: string; room?: string }, socket: Socket) => {
-  if (data.room) socket.join(data.room);
-  if (data.id) socket.join(data.id);
+const joinRooms = (data: { lobbyId?: string; playerId?: string }, socket: Socket) => {
+  if (data.lobbyId) socket.join(data.lobbyId);
+  if (data.playerId) socket.join(data.playerId);
 };
 
 io.on('connection', (socket: Socket) => {
   console.log('Hello ', socket.id);
 
-  socket.on(Events.CreateLobby, () => {
+  socket.on(Events.CreateLobby, (cb: SocketCallback<CreateLobbyResponse>) => {
     logger.info(`CreateLobby`);
-    createLobby(socket).catch((error) => errorHandler(error, socket));
+    createLobby(socket, cb).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.JoinLobby, (data) => {
-    logger.info(`JoinLobby`, { data });
-    joinRooms(data, socket);
-    joinLobby(data, socket, io).catch((error) => errorHandler(error, socket));
-  });
+  socket.on(
+    Events.JoinLobby,
+    (data: JoinLobbyRequestArgs, cb: SocketCallback<JoinLobbyResponses>) => {
+      logger.info(`JoinLobby`, { data });
+      joinRooms(data, socket);
+      joinLobby(socket, io, data, cb).catch((error) => errorHandler(error, socket));
+    }
+  );
 
-  socket.on(Events.PlayTurn, (data) => {
+  socket.on(Events.PlayTurn, (data, cb: SocketCallback<PlayTurnResponse>) => {
     logger.info(`PlayTurn`, { data });
     joinRooms(data, socket);
-    playTurn(data, socket, io).catch((error) => errorHandler(error, socket));
+    playTurn(data, io, cb).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Restart, (data) => {
+  socket.on(Events.Restart, (data: RestartRequestArgs) => {
     logger.info(`Restart`, { data });
     joinRooms(data, socket);
     requestRestart(data, socket, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Forfeit, (data) => {
+  socket.on(Events.Forfeit, (data: ForfeitRequestArgs) => {
     logger.info(`Forfeit`, { data });
     joinRooms(data, socket);
     forfeit(data, io).catch((error) => errorHandler(error, socket));
@@ -66,9 +79,9 @@ io.on('connection', (socket: Socket) => {
     disconnect(socket).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Sync, (data) => {
+  socket.on(Events.Resync, (data: ResyncArgs) => {
     logger.info('Reconnect', { data });
-    sync(data, socket).catch((error) => errorHandler(error, socket));
+    resync(data, socket).catch((error) => errorHandler(error, socket));
   });
 });
 

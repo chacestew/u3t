@@ -1,70 +1,72 @@
 import { Socket, Server } from 'socket.io';
 
-import { Events, Emit } from '../shared/types';
-import { lobbies, Lobby } from '../entities';
+import {
+  JoinLobbyRequestArgs,
+  JoinLobbyResponses,
+  SocketCallback,
+  Events,
+  ioEmitter,
+  GameStarted,
+} from '../shared/types2/types';
+import { lobbies } from '../entities';
 import logger from '../logger';
 
-const joinSpectator = (socket: Socket, lobby: Lobby) => {
-  logger.info('Joining player as spectator', { data: { lobby: lobby.id } });
-  const state = lobby.getGame().getState();
-  socket.emit(Events.JoinedAsSpectator, { state });
-};
+const emitGameStarted = ioEmitter<GameStarted>(Events.GameStarted);
 
-const joinPlayer = (socket: Socket, lobby: Lobby, id?: string) => {
-  if (id) {
-    logger.info('Rejoining player to lobby', { data: { lobby: lobby.id, player: id } });
-    const game = lobby.getGame();
-    (socket.emit as Emit)(Events.RejoinedGame, {
-      room: lobby.id,
-      seat: game.getSeat(id),
-      state: game.getState(),
-    });
-    return;
-  }
-
-  // On first join, create a new player with this socket
-  logger.info('Joining new player to lobby', { data: { lobby: lobby.id } });
-  return lobby.addPlayer(socket.id);
-};
-
-const startGame = (lobby: Lobby, io: Server) => {
-  const game = lobby.initGame();
-  lobby.players.forEach((id) => {
-    io.to(id).emit(Events.StartGame, {
-      room: lobby.id,
-      seat: game.getSeat(id),
-      id,
-      state: game.getState(),
-    });
-  });
-};
-
-async function joinLobby(
-  data: { room: string; id?: string; spectator?: boolean },
+export default async function joinLobby(
   socket: Socket,
-  io: Server
+  io: Server,
+  data: JoinLobbyRequestArgs,
+  cb: SocketCallback<JoinLobbyResponses>
 ) {
-  const { room, id, spectator } = data;
-  const lobby = lobbies.get(room);
-
-  // Handle spectator connection
-  if ((!id && lobby.hasGame()) || spectator) {
-    joinSpectator(socket, lobby);
-    return;
-  }
-
-  // Handle player connection
-  const playerId = joinPlayer(socket, lobby, id);
-
-  if (playerId) {
+  console.log('lobbyId', data.lobbyId);
+  const lobby = lobbies.get(data.lobbyId);
+  console.log('lobby', lobby);
+  // Handle spectator joining
+  if ((!data.playerId && lobby.hasGame()) || data.spectator) {
+    cb({
+      lobbyId: lobby.id,
+      state: lobby.getGame().getState(),
+      role: 'spectator',
+    });
+    // Handle player rejoining a game
+  } else if (data.playerId) {
+    logger.info('Rejoining player to lobby', {
+      data: { lobby: lobby.id, player: data.playerId },
+    });
+    const game = lobby.getGame();
+    cb({
+      lobbyId: lobby.id,
+      seat: game.getSeat(lobby.id),
+      state: game.getState(),
+      role: 'reconnected-player',
+    });
+  } else {
+    // Handle first time joining a game
+    logger.info('Joining new player to lobby', { data: { lobby: lobby.id } });
+    const playerId = lobby.addPlayer(socket.id);
     socket.join(playerId);
-    socket.emit(Events.JoinedLobby, { id: playerId, room: lobby.id });
-  }
+    cb({ lobbyId: lobby.id, playerId, role: 'new-player' });
 
-  // Start when second player joined
-  if (!lobby.hasGame() && lobby.players.size === 2) {
-    startGame(lobby, io);
+    // Start when second player joined
+    if (!lobby.hasGame() && lobby.players.size === 2) {
+      logger.info('Starting new game for lobby', { data: { lobby: lobby.id } });
+      const game = lobby.initGame();
+
+      lobby.players.forEach((playerId) => {
+        emitGameStarted(io, playerId, {
+          lobbyId: lobby.id,
+          playerId,
+          seat: game.getSeat(playerId),
+          state: game.getState(),
+        });
+        // io.to(playerId).emit(Events.StartGame, {
+        //   lobbyId: lobby.id,
+        //   playerId,
+        //   seat: game.getSeat(playerId),
+        //   state: game.getState(),
+        // });
+      });
+    }
   }
 }
-
-export default joinLobby;

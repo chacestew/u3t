@@ -1,4 +1,4 @@
-import winston from 'winston';
+import * as winston from 'winston';
 
 const myFormat = winston.format.printf(({ level, message, timestamp, data }) => {
   return `${timestamp} [${level}]: ${message} ${data ? JSON.stringify(data) : ''}`;
