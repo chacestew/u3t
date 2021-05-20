@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 
-import { Events, ForfeitRequestArgs, ioEmitter, Sync } from '../shared/types2/types';
+import { Events, ForfeitRequestArgs, ioEmitter, Sync } from '../shared/types';
 import { lobbies } from '../entities';
 
 const emitSync = ioEmitter<Sync>(Events.Sync);

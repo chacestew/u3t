@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
@@ -9,12 +9,7 @@ import { Button, ButtonLink } from '../../Components/Button';
 import palette from '../../utils/palette';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CodeInputForm, { CodeInputMode } from './CodeInputForm';
-import {
-  EventParams,
-  Events,
-  JoinLobbyResponse,
-  CreateLobbyResponse,
-} from '../../shared/types';
+import { Events, CreateLobbyResponse, JoinLobbyResponses } from '../../shared/types';
 import { useHistory } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 
@@ -118,7 +113,7 @@ export default function Home({ socket }: { socket: Socket }) {
         lobbyId,
         spectator: codeInputMode === 'spectate',
       },
-      (data: JoinLobbyResponse) => {
+      (data: JoinLobbyResponses) => {
         console.log('data inside onSubmit', data);
         history.push(`/game/${data.lobbyId}`, data);
       }

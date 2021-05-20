@@ -1,17 +1,7 @@
 import React from 'react';
 
-import * as T from '../../../../shared/types';
-import MiniBoard from '../MiniBoard';
-
-import { Cell, Text, Bar } from '../styles';
+import { Bar } from '../styles';
 import { Link } from 'react-router-dom';
-
-interface Props {
-  cell: 1 | 2;
-  text?: string;
-  boards: T.IBoardState[];
-  activeBoard: T.Cell[];
-}
 
 const InPlay = () => {
   return (

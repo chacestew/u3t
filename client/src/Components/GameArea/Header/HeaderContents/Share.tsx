@@ -45,7 +45,7 @@ const CopyToClipboard = styled.div<{ flashing: boolean }>`
   }
 `;
 
-export default function Share({ room }: { room: string }) {
+export default function Share({ lobbyId }: { lobbyId: string }) {
   const [clicked, setClicked] = useState(false);
   const handleCopy = () => {
     const el = document.createElement('textarea');
@@ -70,11 +70,11 @@ export default function Share({ room }: { room: string }) {
       <Container justify="space-between">
         <LinkContainer>
           u3t.io/game/
-          <b>{room}</b>
+          <b>{lobbyId}</b>
         </LinkContainer>
         <CopyToClipboard onClick={handleCopy} flashing={clicked}>
           Copy to{' '}
-          <span css="white-space: pre;">
+          <span style={{ whiteSpace: 'pre' }}>
             clipboard
             <FontAwesomeIcon icon={faCopy} />
           </span>

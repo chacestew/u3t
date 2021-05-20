@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import * as T from '../../../shared/types';
+import { Player } from '../../../shared/types';
 
 import palette from '../../../utils/palette';
 import { boxShadow } from '../../../styles/mixins';
 
-export const getCellBg = (cellType: null | T.Player) => {
+export const getCellBg = (cellType: null | Player) => {
   switch (cellType) {
     case 1:
       return palette.red;
@@ -20,7 +20,7 @@ export const getCellBg = (cellType: null | T.Player) => {
 };
 
 export interface Props {
-  cellType: null | T.Player;
+  cellType: null | Player;
   size?: string;
   className?: string;
 }

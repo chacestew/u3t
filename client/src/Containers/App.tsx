@@ -63,14 +63,14 @@ function App() {
           </Route>
           <Route
             exact
-            path="/game/:room?"
+            path="/game/:lobbyId?"
             render={(routeProps) => (
               <Play socket={socket} key={routeProps.location.key} {...routeProps} />
             )}
           />
           <Route
             exact
-            path="/game/:room/spectate"
+            path="/game/:lobbyId/spectate"
             render={(routeProps) => (
               <Play
                 socket={socket}

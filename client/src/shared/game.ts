@@ -64,7 +64,7 @@ const didWinBoard = (state: T.IGameState, payload: T.ITurnInput) => {
   const board = state.boards[payload.board];
 
   return getWinnableSets(payload.cell).some(([p1, p2, p3]) =>
-    [board.cells[p1], board.cells[p2], board.cells[p3]].every(e => e === payload.player)
+    [board.cells[p1], board.cells[p2], board.cells[p3]].every((e) => e === payload.player)
   );
 };
 
@@ -156,6 +156,7 @@ export function forfeit(state: T.IGameState, player: T.Player) {
   switch (player) {
     case 1:
       nextState.winner = 2;
+      break;
     case 2:
       nextState.winner = 1;
   }
@@ -165,7 +166,7 @@ export function forfeit(state: T.IGameState, player: T.Player) {
   return nextState;
 }
 
-export default function(
+export default function (
   state: T.IGameState,
   payload: T.ITurnInput,
   validate?: boolean

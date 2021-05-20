@@ -7,7 +7,7 @@ import {
   Events,
   ioEmitter,
   GameStarted,
-} from '../shared/types2/types';
+} from '../shared/types';
 import { lobbies } from '../entities';
 import logger from '../logger';
 

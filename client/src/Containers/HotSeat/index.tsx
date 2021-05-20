@@ -1,6 +1,6 @@
 import React from 'react';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import * as T from '../../shared/types';
+import { ITurnInput } from '../../shared/types';
 import useGameReducer from '../../hooks/useGameReducer';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export default function HotSeat() {
   const [state, { playTurn, restart }] = useGameReducer();
 
-  const onValidTurn = ({ board, cell }: T.ITurnInput) => {
+  const onValidTurn = ({ board, cell }: ITurnInput) => {
     const player = state.currentPlayer;
 
     playTurn({ player, board, cell });

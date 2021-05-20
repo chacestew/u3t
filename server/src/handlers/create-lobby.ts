@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { SocketCallback, CreateLobbyResponse } from '../shared/types2/types';
+import { SocketCallback, CreateLobbyResponse } from '../shared/types';
 import { lobbies } from '../entities';
 
 async function createLobby(socket: Socket, cb: SocketCallback<CreateLobbyResponse>) {

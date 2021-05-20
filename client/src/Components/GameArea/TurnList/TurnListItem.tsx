@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
-import * as T from '../../../shared/types';
+import { Cell, Player, Board } from '../../../shared/types';
 import BaseCell from '../Cell/Cell';
 import BoardSVG from '../BoardSVG';
 import styled from 'styled-components';
-import { media } from '../../../styles/mixins';
 
 export const TurnListParagraph = styled.p`
   padding: 0.5em;
@@ -22,18 +21,18 @@ export const StyledTurnListItem = styled.div`
   align-items: baseline;
 `;
 
-const Board = styled(BoardSVG)`
+const StyledBoardSVG = styled(BoardSVG)`
   vertical-align: bottom;
   margin: 0em 0.25em;
 `;
 
-const TurnListBoardIcon = memo(({ index }: { index: T.Cell }) => {
+const TurnListBoardIcon = memo(({ index }: { index: Cell }) => {
   const getPathAttributes = (i: number) => ({
     fill: 'white',
     fillOpacity: i === index ? 1 : 0.5,
   });
 
-  return <Board size="1.5em" getPathAttributes={getPathAttributes} />;
+  return <StyledBoardSVG size="1.5em" getPathAttributes={getPathAttributes} />;
 });
 
 const TurnListItem = ({
@@ -43,9 +42,9 @@ const TurnListItem = ({
   cell,
 }: {
   turn: number;
-  player: T.Player;
-  board: T.Board;
-  cell: T.Cell;
+  player: Player;
+  board: Board;
+  cell: Cell;
 }) => (
   <StyledTurnListItem>
     <TurnListParagraph>

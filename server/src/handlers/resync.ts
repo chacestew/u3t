@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Events, Sync, emitter, ResyncArgs } from '../shared/types2/types';
+import { Events, Sync, emitter, ResyncArgs } from '../shared/types';
 import { lobbies } from '../entities';
 
 const emitSync = emitter<Sync>(Events.Sync);

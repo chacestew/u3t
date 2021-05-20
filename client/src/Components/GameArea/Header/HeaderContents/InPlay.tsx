@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as T from '../../../../shared/types';
+import { IBoardState, Cell as CellType } from '../../../../shared/types';
 import MiniBoard from '../MiniBoard';
 
 import { Cell, Text, Bar } from '../styles';
@@ -8,8 +8,8 @@ import { Cell, Text, Bar } from '../styles';
 interface Props {
   cell: 1 | 2;
   text?: string;
-  boards: T.IBoardState[];
-  activeBoard: T.Cell[];
+  boards: IBoardState[];
+  activeBoard: CellType[];
 }
 
 const InPlay = ({ cell, text, boards, activeBoard }: Props) => {

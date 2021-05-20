@@ -2,18 +2,26 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Grid from '../../Grid';
 
-import Board from '../LocalBoard/LocalBoard';
+import LocalBoard from '../LocalBoard/LocalBoard';
 import { isInvalidTurn } from '../../../shared/game';
-import * as T from '../../../shared/types';
+import {
+  IGameState,
+  ITurnInput,
+  Player,
+  Errors,
+  ErrorParams,
+  Board,
+  Cell,
+} from '../../../shared/types';
 import { gridSize } from '../../../utils/palette';
 
 interface Props {
-  state: T.IGameState;
-  seat: null | T.Player;
-  error?: T.ErrorParams | null;
+  state: IGameState;
+  seat: null | Player;
+  error?: ErrorParams | null;
   dismissError?: () => void;
-  onValidTurn: (turnInput: T.ITurnInput) => void;
-  onInvalidTurn?: (error: T.Errors) => void;
+  onValidTurn: (turnInput: ITurnInput) => void;
+  onInvalidTurn?: (error: Errors) => void;
   Alert?: false | React.ReactElement;
   disabled?: boolean;
   Modal?: React.ReactElement | null;
@@ -49,13 +57,13 @@ export default function GameView({
   const { boards, activeBoard, winner, winningSet } = state;
   const [flashing, setFlashing] = useState(false);
 
-  const onPlay = (turnInput: { board: T.Board; cell: T.Cell }) => {
+  const onPlay = (turnInput: { board: Board; cell: Cell }) => {
     if (disabled) return;
     const turn = { player: seat!, ...turnInput };
     const invalidTurnError = isInvalidTurn(state, turn);
     if (invalidTurnError) {
       onInvalidTurn && onInvalidTurn(invalidTurnError);
-      if (invalidTurnError === T.Errors.BoardNotPlayable) {
+      if (invalidTurnError === Errors.BoardNotPlayable) {
         if (flashing) return;
         setFlashing(true);
         setTimeout(() => {
@@ -73,14 +81,14 @@ export default function GameView({
       {Alert && Alert}
       <OuterGrid disabled={disabled}>
         {boards.map((b, i) => (
-          <Board
+          <LocalBoard
             seat={seat!}
             key={i}
             data={b}
             flashing={flashing}
             gameWinner={winner}
             winningSet={winningSet}
-            boardIndex={i as T.Cell}
+            boardIndex={i as Cell}
             activeBoard={activeBoard}
             onClick={onPlay}
           />

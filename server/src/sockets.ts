@@ -10,7 +10,7 @@ import {
   RestartRequestArgs,
   ForfeitRequestArgs,
   ResyncArgs,
-} from './shared/types2/types';
+} from './shared/types';
 import { lobbies } from './entities';
 import { BadRequestError, NotFoundError, SocketError } from './errors';
 import {

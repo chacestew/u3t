@@ -1,14 +1,14 @@
 import React from 'react';
 
-import * as T from '../../../shared/types';
+import { IGameState } from '../../../shared/types';
 
 import InPlay from './HeaderContents/InPlay';
 import Finished from './HeaderContents/Finished';
 
 interface Props {
   seat: 1 | 2;
-  state: T.IGameState;
-  room?: string;
+  state: IGameState;
+  lobbyId?: string;
   restartRequested?: boolean;
   onPlayAgainConfirm: () => void;
   isOnline?: boolean;

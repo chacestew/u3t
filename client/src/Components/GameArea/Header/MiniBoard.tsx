@@ -1,14 +1,14 @@
 import React from 'react';
 import BoardSVG from '../BoardSVG';
-import * as T from '../../../shared/types';
+import { Board, IBoardState } from '../../../shared/types';
 import palette from '../../../utils/palette';
 
 const MiniBoard = ({
   activeBoard,
   boards,
 }: {
-  activeBoard: T.Board[];
-  boards: T.IBoardState[];
+  activeBoard: Board[];
+  boards: IBoardState[];
 }) => {
   const pathAttributes = boards.map((board, index) => {
     const baseAttrs = { fill: 'white', fillOpacity: 1 };
@@ -20,7 +20,7 @@ const MiniBoard = ({
       default:
         return {
           ...baseAttrs,
-          fillOpacity: activeBoard.includes(index as T.Board) ? 1 : 0.5,
+          fillOpacity: activeBoard.includes(index as Board) ? 1 : 0.5,
         };
     }
   });

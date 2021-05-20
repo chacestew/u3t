@@ -1,8 +1,8 @@
 import { useMemo, useReducer } from 'react';
 import playTurn, { getInitialState, generateRandomMove } from '../shared/game';
-import * as T from '../shared/types';
+import { IGameState, ITurnInput } from '../shared/types';
 
-function instantEnd(state: T.IGameState): T.IGameState {
+function instantEnd(state: IGameState): IGameState {
   const turn = generateRandomMove(state);
 
   const nextState = playTurn(state, turn).state;
@@ -12,22 +12,30 @@ function instantEnd(state: T.IGameState): T.IGameState {
   return instantEnd(nextState);
 }
 
-function reducer(
-  state: T.IGameState,
-  action: { type: string; payload?: T.IGameState | T.ITurnInput }
-): T.IGameState {
+const PLAY_TURN = 'play-turn';
+const SET_STATE = 'set-state';
+const RESTART = 'restart';
+const UNDO = 'undo';
+
+type Action =
+  | { type: typeof PLAY_TURN; payload: ITurnInput }
+  | { type: typeof SET_STATE; payload: IGameState }
+  | { type: typeof RESTART }
+  | { type: typeof UNDO };
+
+function reducer(state: IGameState, action: Action): IGameState {
   switch (action.type) {
-    case 'PLAY-TURN': {
+    case PLAY_TURN: {
       if ((window as any).dev === true) {
         return instantEnd(state);
       }
-      const turnInput = action.payload as T.ITurnInput;
+      const turnInput = action.payload;
       return playTurn(state, turnInput).state;
     }
-    case 'SET-STATE': {
-      return action.payload as T.IGameState;
+    case SET_STATE: {
+      return action.payload;
     }
-    case 'RESTART': {
+    case RESTART: {
       return getInitialState();
     }
     default:
@@ -36,23 +44,26 @@ function reducer(
 }
 
 interface Dispatchers {
-  playTurn: (payload: T.ITurnInput) => void;
-  setState: (payload: T.IGameState) => void;
+  playTurn: (payload: ITurnInput) => void;
+  setState: (payload: IGameState) => void;
   restart: () => void;
 }
 
-export default function (): [T.IGameState, Dispatchers] {
+export default function (): [IGameState, Dispatchers] {
   const [state, dispatch] = useReducer(reducer, getInitialState());
   const dispatchers = useMemo(
     () => ({
-      playTurn: (payload: T.ITurnInput) => {
-        dispatch({ type: 'PLAY-TURN', payload });
+      playTurn: (payload: ITurnInput) => {
+        dispatch({ type: PLAY_TURN, payload });
       },
-      setState: (payload: T.IGameState) => {
-        dispatch({ type: 'SET-STATE', payload });
+      setState: (payload: IGameState) => {
+        dispatch({ type: SET_STATE, payload });
       },
       restart: () => {
-        dispatch({ type: 'RESTART' });
+        dispatch({ type: RESTART });
+      },
+      undo: () => {
+        dispatch({ type: UNDO });
       },
     }),
     []

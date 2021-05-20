@@ -1,3 +1,5 @@
+import { Server, Socket } from 'socket.io';
+
 export type Cell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 export type Board = Cell;
 export type Player = 1 | 2;
@@ -38,6 +40,7 @@ export enum Events {
   CreateLobby = 'create-lobby',
   LobbyReady = 'lobby-ready',
   StartGame = 'start-game',
+  GameStarted = 'start-game',
   RejoinGame = 'rejoin-game',
   RejoinedGame = 'rejoined-game',
   JoinLobby = 'join-lobby',
@@ -51,6 +54,7 @@ export enum Events {
   Error = 'error',
   Forfeit = 'forfeit',
   JoinedLobby = 'joined-lobby',
+  Resync = 'resync',
 }
 
 export type ServerError = 'not-found' | 'will-expire';
@@ -60,14 +64,24 @@ export type ErrorParams = {
   errorData?: { [key: string]: string };
 };
 
-export type SocketCallback<ResponsePayload> = (payload: ResponsePayload) => unknown;
+export type SocketCallback<ResponsePayload> = (payload: ResponsePayload) => void;
+
+// CreateLobby
 
 export type CreateLobbyResponse = {
   lobbyId: string;
   playerId: string;
 };
 
-export type JoinLobbyResponse =
+// JoinLobby
+
+export interface JoinLobbyRequestArgs {
+  lobbyId: string;
+  playerId?: string;
+  spectator?: boolean;
+}
+
+export type JoinLobbyResponses =
   | JoinLobbyResponse_NewPlayer
   | JoinLobbyResponse_Reconnection
   | JoinLobbyResponse_Spectator;
@@ -91,78 +105,70 @@ export interface JoinLobbyResponse_Reconnection {
   role: 'reconnected-player';
 }
 
+// Auth
+
+interface IdFields {
+  lobbyId: string;
+  playerId: string;
+}
+
+// PlayTurn
+
+export interface PlayTurnRequestArgs extends IdFields {
+  board: Board;
+  cell: Cell;
+  dev: boolean;
+}
+
 export interface PlayTurnResponse {
   valid: boolean;
   error?: Errors;
 }
 
-export interface EventParams {
-  [Events.JoinLobby]: {
-    lobbyId: string;
-    playerId?: string;
-    spectator?: boolean;
-  };
-  [Events.CreateLobby]: {
-    lobbyId: string;
-    playerId: string;
-  };
-  [Events.PlayTurn]: {
-    lobbyId: string;
-    playerId: string;
-    board: Board;
-    cell: Cell;
-    dev: boolean;
-  };
-  [Events.StartGame]: {
-    lobbyId: string;
-    playerId: string;
-    seat: Player;
-    state: IGameState;
-  };
-  [Events.RejoinGame]: {
-    id: string;
-  };
-  [Events.RejoinedGame]: {
-    room: string;
-    seat: Player;
-    state: IGameState;
-  };
-  [Events.Sync]: {
-    state: IGameState;
-    seat: Player;
-  };
-  [Events.InvalidTurn]: {
-    state: IGameState;
-    error: Errors;
-  };
-  [Events.Restart]: {
-    id: string;
-    room: string;
-  };
-  [Events.JoinedAsSpectator]: {
-    state: IGameState;
-  };
-  [Events.RestartRequested]: null;
-  [Events.LobbyReady]: {
-    room: string;
-  };
-  [Events.Error]: ErrorParams;
-  [Events.Forfeit]: {
-    room: string;
-    id: string;
-  };
-  [Events.JoinedLobby]: {
-    id: string;
-    room: string;
-  };
+// GameStarted
+
+export interface GameStarted extends IdFields {
+  seat: Player;
+  state: IGameState;
 }
 
-export type On = <E>(
-  event: E & Events,
-  fn: (params: EventParams[typeof event]) => any
-) => unknown;
+// RejoinGame
 
-export type Emit = <E>(
-  event: E & Events,
-  eventParams?: EventParams[typeof event]
-) => unknown;
+export type ResyncArgs = IdFields;
+
+// Restart
+
+export type RestartRequestArgs = IdFields;
+
+// Forfeit
+
+export type ForfeitRequestArgs = IdFields;
+
+// Sync
+
+export interface Sync {
+  state: IGameState;
+  seat?: Player;
+}
+
+// LobbyReady
+
+export interface LobbyReady {
+  lobbyId: string;
+}
+
+export const emitter = <Args>(event: Events) => (socket: Socket, args?: Args) =>
+  socket.emit(event, args);
+
+export const ioEmitter = <Args>(event: Events) => (io: Server, to: string, args?: Args) =>
+  io.to(to).emit(event, args);
+
+// export type On = <E>(
+//   event: E & Events,
+//   fn: (params: EventParams[typeof event]) => any
+// ) => unknown;
+
+// export type Emit = <E>(
+//   event: E & Events,
+//   eventParams?: EventParams[typeof event]
+// ) => unknown;

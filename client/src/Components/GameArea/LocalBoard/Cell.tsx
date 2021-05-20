@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Cell from '../Cell/Cell';
 import palette from '../../../utils/palette';
-import * as T from '../../../shared/types';
+import { Cell as CellType, Player } from '../../../shared/types';
 
 const DimmableHoverableCell = styled(Cell)<Partial<Props>>`
   ${({ shouldDim }) => shouldDim && `opacity: 0.5;`}
@@ -18,10 +18,10 @@ const DimmableHoverableCell = styled(Cell)<Partial<Props>>`
 `;
 
 interface Props {
-  cellType: null | T.Player;
+  cellType: null | Player;
   inPlayableArea: boolean;
-  cellIndex: T.Cell;
-  onClick: (cellIndex: T.Cell) => void;
+  cellIndex: CellType;
+  onClick: (cellIndex: CellType) => void;
   shouldDim: boolean;
 }
 

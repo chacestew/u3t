@@ -18,11 +18,11 @@ import {
   ForfeitRequestArgs,
   JoinLobbyResponses,
   PlayTurnRequestArgs,
-} from '../../shared/types2/types';
+  PlayTurnResponse,
+} from '../../shared/types';
 
 import useGameReducer from '../../hooks/useGameReducer';
 import LobbyHeader from './LobbyHeader';
-import useSocket from '../../hooks/useSocket';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import { RelativeBox } from '../../styles/Utils';
 import useMultiplerState from '../../hooks/useLobbyReducer';
@@ -41,7 +41,11 @@ const OnlineGame = ({
   spectator,
   socket,
 }: // socket,
-RouteComponentProps<{ room: string }, StaticContext, { playerId?: string }> & {
+RouteComponentProps<
+  { lobbyId: string },
+  StaticContext,
+  { playerId?: string; lobbyId?: string }
+> & {
   spectator?: boolean;
   socket: Socket;
 }) => {
@@ -51,100 +55,39 @@ RouteComponentProps<{ room: string }, StaticContext, { playerId?: string }> & {
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
 
-  const {
-    lobbyState,
-    dispatchers: {
-      onStartGame,
-      onJoinedAsSpectator,
-      onJoinedLobby,
-      onRejoinedGame,
-      onRestartRequested,
-      onSync,
-      set,
-      reset,
-    },
-    lobbyStateRef,
-  } = useMultiplerState({ isSpectator: !!spectator });
-
-  // const { socket, onEvent, emitEvent } = useSocket();
+  const { lobbyState, lobbyStateRef, dispatch } = useMultiplerState({
+    isSpectator: !!spectator,
+  });
 
   // uwc-*debug
   useEffect(() => {
     if (!socket.connected) socket.open();
 
-    // onEvent(Events.LobbyReady, (data) => {
-    //   onLobbyReady(data);
-    //   history.replace(`/game/${data.room}`);
-    // });
-
     socket.on(Events.GameStarted, (data: GameStarted) => {
       console.log('received game started', data);
       sessionStorage.setItem(data.lobbyId, data.playerId);
-      onStartGame(data);
+      dispatch({ event: Events.GameStarted, data });
       setState(data.state);
     });
-
-    // onEvent(Events.StartGame, (data) => {
-    //   sessionStorage.setItem(data.lobbyId, data.playerId);
-    //   onStartGame(data);
-    //   setState(data.state);
-    // });
-
-    // onEvent(Events.JoinedLobby, (data) => {
-    //   onJoinedLobby(data);
-    // });
 
     socket.on(Events.Sync, (data: Sync) => {
-      onSync(data);
+      dispatch({ event: Events.Sync, data });
       setState(data.state);
     });
 
-    // onEvent(Events.Sync, (data) => {
-    //   onSync(data);
-    //   setState(data.state);
-    // });
-
-    // onEvent(Events.InvalidTurn, ({ state }) => {
-    //   setState(state);
-    // });
-
-    // onEvent(Events.JoinedAsSpectator, (data) => {
-    //   onJoinedAsSpectator(data);
-    //   if (data.state) {
-    //     setState(data.state);
-    //   } else restart();
-    // });
-
-    // onEvent(Events.RejoinedGame, (data) => {
-    //   onRejoinedGame(data);
-    //   setState(data.state);
-    // });
-
     socket.on(Events.RestartRequested, () => {
-      onRestartRequested();
+      dispatch({ event: Events.RestartRequested });
     });
-
-    // onEvent(Events.RestartRequested, (data) => {
-    //   onRestartRequested(data);
-    // });
 
     socket.on(Events.Error, (error) => setError(error));
 
-    // onEvent(Events.Error, (error) => {
-    //   setError(error);
-    // });
-
     socket.on(Events.Disconnect, () => setSocketConnectionLost(true));
-
-    // onEvent(Events.Disconnect, () => {
-    //   setSocketConnectionLost(true);
-    // });
 
     socket.io.on('reconnect', () => {
       setSocketConnectionLost(false);
       socket.emit(Events.Resync, {
         playerId: lobbyStateRef.current.playerId,
-        lobbyId: lobbyStateRef.current.roomId,
+        lobbyId: lobbyStateRef.current.lobbyId,
       } as ResyncArgs);
     });
 
@@ -154,111 +97,63 @@ RouteComponentProps<{ room: string }, StaticContext, { playerId?: string }> & {
       socket.off();
       socket.close();
     };
-  }, [
-    // emitEvent,
-    lobbyStateRef,
-    // onEvent,
-    socket,
-    onJoinedAsSpectator,
-    onJoinedLobby,
-    // onLobbyReady,
-    onRejoinedGame,
-    onRestartRequested,
-    onStartGame,
-    onSync,
-    restart,
-    setError,
-    setState,
-    history,
-  ]);
+  }, [lobbyStateRef, socket, restart, setError, setState, history, dispatch]);
 
-  useEffect(
-    () => {
-      console.log('useEffect for joinlobby called');
-      const playerId = location.state?.playerId || undefined; // sessionStorage.getItem(match.params.room)
-      const lobbyId = location.state?.lobbyId || match.params.room;
-      set({ playerId, roomId: lobbyId });
-      console.log({ playerId, lobbyId });
-      if (playerId) return;
-      socket.emit(
-        Events.JoinLobby,
-        {
-          lobbyId,
-          playerId,
-          spectator: lobbyState.isSpectator,
-        } as JoinLobbyRequestArgs,
-        (data: JoinLobbyResponses) => {
-          console.log('got join lobby response', data);
-          switch (data.role) {
-            case 'new-player':
-              onJoinedLobby(data);
-              break;
-            case 'reconnected-player':
-              onRejoinedGame(data);
-              break;
-            case 'spectator':
-              onJoinedAsSpectator(data);
-          }
+  useEffect(() => {
+    console.log('useEffect for joinlobby called');
+    const playerId = location.state?.playerId; // sessionStorage.getItem(match.params.lobbyId)
+    const lobbyId = location.state?.lobbyId || match.params.lobbyId;
+    dispatch({ event: 'set', data: { playerId, lobbyId } });
+    if (playerId) return;
+    socket.emit(
+      Events.JoinLobby,
+      {
+        lobbyId,
+        playerId,
+        spectator: lobbyState.isSpectator,
+      } as JoinLobbyRequestArgs,
+      (data: JoinLobbyResponses) => {
+        switch (data.role) {
+          case 'new-player':
+            dispatch({ event: Events.JoinedLobby, data });
+            break;
+          case 'reconnected-player':
+            dispatch({ event: Events.RejoinedGame, data });
+            break;
+          case 'spectator':
+            dispatch({ event: Events.JoinedAsSpectator, data });
         }
-      );
-      // emitEvent(Events.JoinLobby, {
-      //   lobbyId: match.params.room,
-      //   playerId,
-      //   spectator: lobbyState.isSpectator,
-      // });
-    },
-    [
-      // emitEvent,
-      // lobbyState.isSpectator,
-      // location.state,
-      // match.params.room,
-      // match.path,
-      // onJoinedAsSpectator,
-      // onJoinedLobby,
-      // onRejoinedGame,
-      // reset,
-      // set,
-      // socket,
-    ]
-  );
+      }
+    );
+  }, []);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
-    const player = lobbyState.playerSeat as Player;
-    const id = lobbyState.playerId as string;
-    const room = lobbyState.roomId as string;
-    console.log('onvalidturn data', {
-      lobbyId: room,
-      playerId: id,
-      board,
-      cell,
-      dev: (window as any).dev,
-    });
+    const { playerSeat, playerId, lobbyId } = lobbyState;
+    const player = playerSeat as Player;
 
     playTurn({ player, board, cell });
     socket.emit(
       Events.PlayTurn,
       {
-        lobbyId: room,
-        playerId: id,
+        lobbyId,
+        playerId,
         board,
         cell,
         dev: (window as any).dev,
       } as PlayTurnRequestArgs,
-      (res) => {}
+      (res: PlayTurnResponse) => {
+        if (!res.valid) {
+          // Undo the turn here
+          // Display res.error somehow
+        }
+      }
     );
-    // emitEvent(Events.PlayTurn, {
-    //   room,
-    //   id,
-    //   board,
-    //   cell,
-    //   dev: (window as any).dev,
-    // });
   };
 
   const restartGame = () => {
     socket.emit(Events.Restart, {
       playerId: lobbyState.playerId,
-      lobbyId: lobbyState.roomId,
+      lobbyId: lobbyState.lobbyId,
     } as RestartRequestArgs);
   };
 
@@ -266,7 +161,7 @@ RouteComponentProps<{ room: string }, StaticContext, { playerId?: string }> & {
     if (!window.confirm('Are you sure you want to forfeit?')) return;
     socket.emit(Events.Forfeit, {
       playerId: lobbyState.playerId,
-      lobbyId: lobbyState.roomId,
+      lobbyId: lobbyState.lobbyId,
     } as ForfeitRequestArgs);
   };
 

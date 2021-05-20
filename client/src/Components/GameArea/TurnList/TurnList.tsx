@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import * as T from '../../../shared/types';
+import { IGameState, Player } from '../../../shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
@@ -86,8 +86,8 @@ const TurnList = ({
   lobbyState,
   RestartButton,
 }: {
-  state: T.IGameState;
-  seat?: T.Player;
+  state: IGameState;
+  seat?: Player;
   RestartButton: JSX.Element;
   lobbyState: Partial<IMultiplayerState>;
 }) => {

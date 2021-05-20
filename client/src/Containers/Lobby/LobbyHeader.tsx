@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as T from '../../shared/types';
+import { IGameState } from '../../shared/types';
 
 import Loading from '../../Components/GameArea/Header/HeaderContents/Loading';
 import Share from '../../Components/GameArea/Header/HeaderContents/Share';
@@ -14,12 +14,12 @@ export type Mode = 'home' | 'loading' | 'share' | 'local' | 'online' | 'spectato
 interface Props {
   seat: 1 | 2;
   lobbyState: IMultiplayerState;
-  state: T.IGameState;
+  state: IGameState;
   restartRequested?: boolean;
   onPlayAgainConfirm: () => void;
 }
 
-function SpectatorHeader({ state }: { state: T.IGameState }) {
+function SpectatorHeader({ state }: { state: IGameState }) {
   return (
     <InPlay
       text="You are spectating"
@@ -30,11 +30,11 @@ function SpectatorHeader({ state }: { state: T.IGameState }) {
   );
 }
 
-function ShareHeader({ room }: { room: string }) {
-  return <Share room={room} />;
+function ShareHeader({ lobbyId }: { lobbyId: string }) {
+  return <Share lobbyId={lobbyId} />;
 }
 
-function ActiveGame({ seat, state }: { seat: 1 | 2; state: T.IGameState }) {
+function ActiveGame({ seat, state }: { seat: 1 | 2; state: IGameState }) {
   return (
     <InPlay
       text={state.currentPlayer === seat ? 'You to play' : 'Opponent to play'}
@@ -56,8 +56,8 @@ export default function LobbyHeader({
   if (lobbyState.isSpectator) return <SpectatorHeader state={state} />;
 
   // Before game
-  if (lobbyState.roomId && !lobbyState.playerSeat)
-    return <ShareHeader room={lobbyState.roomId} />;
+  if (lobbyState.lobbyId && !lobbyState.playerSeat)
+    return <ShareHeader lobbyId={lobbyState.lobbyId} />;
 
   // After game
   if (state.finished)

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import {
   Events,
   GameStarted,
@@ -6,12 +6,12 @@ import {
   JoinLobbyResponse_Reconnection,
   JoinLobbyResponse_Spectator,
   Sync,
-} from '../shared/types2/types';
+} from '../shared/types';
 
 export interface IMultiplayerState {
   playerId: null | string;
   playerSeat: null | 1 | 2;
-  roomId: null | string;
+  lobbyId: null | string;
   isSpectator: boolean;
   restartRequested: boolean;
   started: boolean;
@@ -20,51 +20,51 @@ export interface IMultiplayerState {
 const initialState: IMultiplayerState = {
   playerId: null,
   playerSeat: null,
-  roomId: null,
+  lobbyId: null,
   isSpectator: false,
   restartRequested: false,
   started: false,
 };
 
-export function reducer(
-  state: IMultiplayerState,
-  action: { type: Events | 'reset' | 'set'; payload?: any }
-): IMultiplayerState {
-  switch (action.type) {
-    case Events.LobbyReady: {
-      return {
-        ...state,
-        roomId: action.payload.lobbyId,
-      };
-    }
+type Action =
+  | { event: Events.GameStarted; data: GameStarted }
+  | { event: Events.JoinedLobby; data: JoinLobbyResponse_NewPlayer }
+  | { event: Events.Sync; data: Sync }
+  | { event: Events.RejoinedGame; data: JoinLobbyResponse_Reconnection }
+  | { event: Events.JoinedAsSpectator; data: JoinLobbyResponse_Spectator }
+  | { event: Events.RestartRequested }
+  | { event: 'set'; data: Partial<IMultiplayerState> }
+  | { event: 'reset' };
+
+export function reducer(state: IMultiplayerState, action: Action): IMultiplayerState {
+  switch (action.event) {
     case Events.GameStarted: {
       return {
         ...state,
         started: true,
-        playerId: action.payload.playerId,
-        playerSeat: action.payload.seat,
+        playerId: action.data.playerId,
+        playerSeat: action.data.seat,
       };
     }
     case Events.JoinedLobby: {
       return {
         ...state,
-        roomId: action.payload.lobbyId,
-        playerId: action.payload.playerId,
+        lobbyId: action.data.lobbyId,
+        playerId: action.data.playerId,
       };
     }
     case Events.Sync: {
       return {
         ...state,
-        playerSeat: action.payload.seat || state.playerSeat,
-        restartRequested:
-          action.payload.state.turn === 1 ? false : state.restartRequested,
+        playerSeat: action.data.seat || state.playerSeat,
+        restartRequested: action.data.state.turn === 1 ? false : state.restartRequested,
       };
     }
     case Events.RejoinedGame: {
       return {
         ...state,
-        roomId: action.payload.lobbyId,
-        playerSeat: action.payload.seat,
+        lobbyId: action.data.lobbyId,
+        playerSeat: action.data.seat,
       };
     }
     case Events.JoinedAsSpectator: {
@@ -82,7 +82,7 @@ export function reducer(
     case 'set': {
       return {
         ...state,
-        ...action.payload,
+        ...action.data,
       };
     }
     case 'reset': {
@@ -101,25 +101,5 @@ export default function (passedState: Partial<IMultiplayerState>) {
     lobbyStateRef.current = lobbyState;
   }, [lobbyState]);
 
-  const dispatchers = useMemo(
-    () => ({
-      // onLobbyReady: (payload: LobbyReady) =>
-      //   dispatch({ type: Events.LobbyReady, payload }),
-      onStartGame: (payload: GameStarted) =>
-        dispatch({ type: Events.GameStarted, payload }),
-      onJoinedLobby: (payload: JoinLobbyResponse_NewPlayer) =>
-        dispatch({ type: Events.JoinedLobby, payload }),
-      onSync: (payload: Sync) => dispatch({ type: Events.Sync, payload }),
-      onRejoinedGame: (payload: JoinLobbyResponse_Reconnection) =>
-        dispatch({ type: Events.RejoinedGame, payload }),
-      onJoinedAsSpectator: (payload: JoinLobbyResponse_Spectator) =>
-        dispatch({ type: Events.JoinedAsSpectator, payload }),
-      onRestartRequested: () => dispatch({ type: Events.RestartRequested }),
-      set: (payload: Partial<IMultiplayerState>) => dispatch({ type: 'set', payload }),
-      reset: () => dispatch({ type: 'reset' }),
-    }),
-    []
-  );
-
-  return { lobbyState, dispatchers, lobbyStateRef };
+  return { lobbyState, lobbyStateRef, dispatch };
 }

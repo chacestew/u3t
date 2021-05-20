@@ -7,7 +7,7 @@ import {
   PlayTurnRequestArgs,
   ioEmitter,
   Sync,
-} from '../shared/types2/types';
+} from '../shared/types';
 import { lobbies } from '../entities';
 
 const emitSync = ioEmitter<Sync>(Events.Sync);

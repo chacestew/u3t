@@ -1,6 +1,6 @@
 import { Socket, Server } from 'socket.io';
 
-import { Events, RestartRequestArgs, ioEmitter, Sync } from '../shared/types2/types';
+import { Events, RestartRequestArgs, ioEmitter, Sync } from '../shared/types';
 import { lobbies } from '../entities';
 
 const emitRestartRequested = ioEmitter(Events.RestartRequested);

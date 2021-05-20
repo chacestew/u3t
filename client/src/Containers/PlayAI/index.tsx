@@ -6,12 +6,12 @@ import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
-import * as T from '../../shared/types';
+import { Player, ITurnInput } from '../../shared/types';
 import useGameReducer from '../../hooks/useGameReducer';
 
 const PlayAI = () => {
   const [gameState, { playTurn, restart }] = useGameReducer();
-  const [seat, setSeat] = useState<T.Player | null>(null);
+  const [seat, setSeat] = useState<Player | null>(null);
 
   useEffect(() => {
     const yourSeat = Math.ceil(Math.random() * 2) as 1 | 2;
@@ -26,7 +26,7 @@ const PlayAI = () => {
     }, 500);
   }, [gameState, seat, playTurn]);
 
-  const play = ({ board, cell }: T.ITurnInput) => {
+  const play = ({ board, cell }: ITurnInput) => {
     playTurn({ player: seat!, board, cell });
   };
 

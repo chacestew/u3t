@@ -5,7 +5,13 @@ import Grid from '../../Grid';
 import Cell from './Cell';
 import { getCellBg } from '../Cell/Cell';
 import palette from '../../../utils/palette';
-import * as T from '../../../shared/types';
+import {
+  Player,
+  IBoardState,
+  Board as BoardType,
+  ITurnInput,
+  Cell as CellType,
+} from '../../../shared/types';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -36,13 +42,13 @@ const InnerGrid = styled(Grid)<{ bgColor?: string }>`
 
 interface Props {
   flashing: boolean;
-  gameWinner: null | T.Player;
+  gameWinner: null | Player;
   winningSet: Array<null | number>;
-  data: T.IBoardState;
-  boardIndex: T.Board;
-  onClick: (turnInput: Omit<T.ITurnInput, 'player'>) => void;
-  seat: T.Player;
-  activeBoard: T.Board[];
+  data: IBoardState;
+  boardIndex: BoardType;
+  onClick: (turnInput: Omit<ITurnInput, 'player'>) => void;
+  seat: Player;
+  activeBoard: BoardType[];
 }
 
 const Board = ({
@@ -55,7 +61,7 @@ const Board = ({
   onClick,
   activeBoard,
 }: Props) => {
-  const handleClick = (cellIndex: T.Cell) => {
+  const handleClick = (cellIndex: CellType) => {
     onClick({ board: boardIndex, cell: cellIndex });
   };
   const active = !gameWinner && activeBoard.includes(boardIndex);
@@ -90,7 +96,7 @@ const Board = ({
           inPlayableArea={active}
           onClick={handleClick}
           cellType={cell}
-          cellIndex={i as T.Cell}
+          cellIndex={i as CellType}
           key={i}
         />
       ))}
