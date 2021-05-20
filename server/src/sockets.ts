@@ -44,7 +44,9 @@ io.on('connection', (socket: Socket) => {
 
   socket.on(Events.CreateLobby, (cb: SocketCallback<CreateLobbyResponse>) => {
     logger.info(`CreateLobby`);
-    createLobby(socket, cb).catch((error) => errorHandler(error, socket));
+    createLobby(socket, cb)
+      .then((data) => joinRooms(data, socket))
+      .catch((error) => errorHandler(error, socket));
   });
 
   socket.on(

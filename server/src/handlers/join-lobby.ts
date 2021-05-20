@@ -19,9 +19,7 @@ export default async function joinLobby(
   data: JoinLobbyRequestArgs,
   cb: SocketCallback<JoinLobbyResponses>
 ) {
-  console.log('lobbyId', data.lobbyId);
   const lobby = lobbies.get(data.lobbyId);
-  console.log('lobby', lobby);
   // Handle spectator joining
   if ((!data.playerId && lobby.hasGame()) || data.spectator) {
     cb({
@@ -45,7 +43,9 @@ export default async function joinLobby(
     // Handle first time joining a game
     logger.info('Joining new player to lobby', { data: { lobby: lobby.id } });
     const playerId = lobby.addPlayer(socket.id);
+
     socket.join(playerId);
+
     cb({ lobbyId: lobby.id, playerId, role: 'new-player' });
 
     // Start when second player joined
@@ -54,18 +54,15 @@ export default async function joinLobby(
       const game = lobby.initGame();
 
       lobby.players.forEach((playerId) => {
+        logger.info('Emitting game started message:', {
+          data: { lobbyId: lobby.id, playerId, seat: game.getSeat(playerId) },
+        });
         emitGameStarted(io, playerId, {
           lobbyId: lobby.id,
           playerId,
           seat: game.getSeat(playerId),
           state: game.getState(),
         });
-        // io.to(playerId).emit(Events.StartGame, {
-        //   lobbyId: lobby.id,
-        //   playerId,
-        //   seat: game.getSeat(playerId),
-        //   state: game.getState(),
-        // });
       });
     }
   }
