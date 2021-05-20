@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 import styled from 'styled-components';
+import { io, Socket } from 'socket.io-client';
 
 import GlobalStyle from '../styles/global';
 import Play from './Lobby';
@@ -29,34 +30,66 @@ const Main = styled.main`
   ${media.aboveMobileL`overflow: auto`}
 `;
 
-const App = () => (
-  <>
-    <GlobalStyle />
-    <Header />
-    <Main>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route
-          exact
-          path="/game/:room?"
-          render={(routeProps) => <Play key={routeProps.location.key} {...routeProps} />}
-        />
-        <Route
-          exact
-          path="/game/:room/spectate"
-          render={(routeProps) => (
-            <Play key={routeProps.location.key} spectator {...routeProps} />
-          )}
-        />
-        <Route path="/local" component={HotSeat} />
-        <Route path="/ai" component={PlayAI} />
-        <Route path="/rules" component={Rules} />
-        <Route path="/about" component={About} />
-        <Redirect to="/" />
-      </Switch>
-    </Main>
-    <Footer />
-  </>
-);
+const socketURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8001'
+    : window.location.protocol + '//' + window.location.host;
+
+const socket = io(socketURL, {
+  autoConnect: true,
+  path: '/ws',
+});
+
+function App() {
+  // const socketRef = useRef<Socket>();
+
+  // if (!socketRef.current) {
+  //   socketRef.current = io(socketURL, {
+  //     autoConnect: true,
+  //     path: '/ws',
+  //   });
+  // }
+
+  // const socket = socketRef.current;
+
+  return (
+    <>
+      <GlobalStyle />
+      <Header />
+      <Main>
+        <Switch>
+          <Route exact path="/">
+            <Home socket={socket} />
+          </Route>
+          <Route
+            exact
+            path="/game/:room?"
+            render={(routeProps) => (
+              <Play socket={socket} key={routeProps.location.key} {...routeProps} />
+            )}
+          />
+          <Route
+            exact
+            path="/game/:room/spectate"
+            render={(routeProps) => (
+              <Play
+                socket={socket}
+                key={routeProps.location.key}
+                spectator
+                {...routeProps}
+              />
+            )}
+          />
+          <Route path="/local" component={HotSeat} />
+          <Route path="/ai" component={PlayAI} />
+          <Route path="/rules" component={Rules} />
+          <Route path="/about" component={About} />
+          <Redirect to="/" />
+        </Switch>
+      </Main>
+      <Footer />
+    </>
+  );
+}
 
 export default hot(App);

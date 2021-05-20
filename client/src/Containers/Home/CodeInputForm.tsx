@@ -5,6 +5,7 @@ import { Button } from '../../Components/Button';
 import palette from '../../utils/palette';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
 export type CodeInputMode = null | 'join' | 'spectate';
 
@@ -30,20 +31,27 @@ const Form = styled.form`
   }
 `;
 
-export default function CodeInputForm({ mode }: { mode: CodeInputMode }) {
+export default function CodeInputForm({
+  mode,
+  onInputSubmit,
+}: {
+  onInputSubmit: (value: string) => void;
+  mode: CodeInputMode;
+}) {
   const [code, setCode] = useState('');
   const history = useHistory();
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      onInputSubmit(code);
       if (mode === 'join') {
-        history.push(`/game/${code}`);
+        // history.push(`/game/${code}`);
       } else if (mode === 'spectate') {
-        history.push(`/game/${code}/spectate`);
+        // history.push(`/game/${code}/spectate`);
       }
     },
-    [mode, code, history]
+    [mode, code, history, onInputSubmit]
   );
 
   const setText = (value: string) => {

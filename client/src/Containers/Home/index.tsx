@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
@@ -9,6 +9,14 @@ import { Button, ButtonLink } from '../../Components/Button';
 import palette from '../../utils/palette';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CodeInputForm, { CodeInputMode } from './CodeInputForm';
+import {
+  EventParams,
+  Events,
+  JoinLobbyResponse,
+  CreateLobbyResponse,
+} from '../../shared/types';
+import { useHistory } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 
 const Article = styled.article`
   ${flexColumns}
@@ -90,8 +98,33 @@ const MenuSection = styled.section<{ marginBottom?: boolean }>`
   }
 `;
 
-export default function Home() {
+export default function Home({ socket }: { socket: Socket }) {
   const [codeInputMode, setCodeInputMode] = useState<CodeInputMode>(null);
+  const history = useHistory();
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  useEffect(() => {
+    socket.on('connect', () => setIsConnected(true));
+    socket.on('disconnect', () => setIsConnected(false));
+  });
+  const onCreateGame = () => {
+    socket.emit(Events.CreateLobby, (data: CreateLobbyResponse) => {
+      history.push(`/game/${data.lobbyId}`, data);
+    });
+  };
+  const onSubmit = (lobbyId: string) => {
+    socket.emit(
+      Events.JoinLobby,
+      {
+        lobbyId,
+        spectator: codeInputMode === 'spectate',
+      },
+      (data: JoinLobbyResponse) => {
+        console.log('data inside onSubmit', data);
+        history.push(`/game/${data.lobbyId}`, data);
+      }
+    );
+  };
+  console.log(isConnected);
   return (
     <Article>
       <HomeHeader />
@@ -107,7 +140,13 @@ export default function Home() {
               Start a new online game or join an existing game to play or spectate.
             </Description>
             <ButtonGrid>
-              <ButtonLink style={{ gridArea: 'start' }} to="/game" rounded shadow>
+              <ButtonLink
+                style={{ gridArea: 'start' }}
+                onClick={onCreateGame}
+                rounded
+                shadow
+                disabled={!isConnected}
+              >
                 Start
               </ButtonLink>
               <Button
@@ -126,7 +165,9 @@ export default function Home() {
               >
                 Spectate
               </Button>
-              {codeInputMode && <CodeInputForm mode={codeInputMode} />}
+              {codeInputMode && (
+                <CodeInputForm onInputSubmit={onSubmit} mode={codeInputMode} />
+              )}
             </ButtonGrid>
           </MenuSection>
 

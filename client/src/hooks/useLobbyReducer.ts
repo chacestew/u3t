@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react';
-import * as T from '../shared/types';
+import {
+  Events,
+  GameStarted,
+  JoinLobbyResponse_NewPlayer,
+  JoinLobbyResponse_Reconnection,
+  JoinLobbyResponse_Spectator,
+  Sync,
+} from '../shared/types2/types';
 
 export interface IMultiplayerState {
   playerId: null | string;
@@ -19,35 +26,33 @@ const initialState: IMultiplayerState = {
   started: false,
 };
 
-const Actions = T.Events;
-
 export function reducer(
   state: IMultiplayerState,
-  action: { type: T.Events | 'reset' | 'set'; payload?: any }
+  action: { type: Events | 'reset' | 'set'; payload?: any }
 ): IMultiplayerState {
   switch (action.type) {
-    case T.Events.LobbyReady: {
+    case Events.LobbyReady: {
       return {
         ...state,
-        roomId: action.payload.room,
+        roomId: action.payload.lobbyId,
       };
     }
-    case T.Events.StartGame: {
+    case Events.GameStarted: {
       return {
         ...state,
         started: true,
-        playerId: action.payload.id,
+        playerId: action.payload.playerId,
         playerSeat: action.payload.seat,
       };
     }
-    case T.Events.JoinedLobby: {
+    case Events.JoinedLobby: {
       return {
         ...state,
-        roomId: action.payload.room,
-        playerId: action.payload.id,
+        roomId: action.payload.lobbyId,
+        playerId: action.payload.playerId,
       };
     }
-    case T.Events.Sync: {
+    case Events.Sync: {
       return {
         ...state,
         playerSeat: action.payload.seat || state.playerSeat,
@@ -55,20 +60,20 @@ export function reducer(
           action.payload.state.turn === 1 ? false : state.restartRequested,
       };
     }
-    case T.Events.RejoinedGame: {
+    case Events.RejoinedGame: {
       return {
         ...state,
-        roomId: action.payload.room,
+        roomId: action.payload.lobbyId,
         playerSeat: action.payload.seat,
       };
     }
-    case T.Events.JoinedAsSpectator: {
+    case Events.JoinedAsSpectator: {
       return {
         ...state,
         isSpectator: true,
       };
     }
-    case T.Events.RestartRequested: {
+    case Events.RestartRequested: {
       return {
         ...state,
         restartRequested: true,
@@ -98,20 +103,18 @@ export default function (passedState: Partial<IMultiplayerState>) {
 
   const dispatchers = useMemo(
     () => ({
-      onLobbyReady: (payload: T.EventParams[T.Events.LobbyReady]) =>
-        dispatch({ type: T.Events.LobbyReady, payload }),
-      onStartGame: (payload: T.EventParams[T.Events.StartGame]) =>
-        dispatch({ type: T.Events.StartGame, payload }),
-      onJoinedLobby: (payload: T.EventParams[T.Events.JoinedLobby]) =>
-        dispatch({ type: T.Events.JoinedLobby, payload }),
-      onSync: (payload: T.EventParams[T.Events.Sync]) =>
-        dispatch({ type: T.Events.Sync, payload }),
-      onRejoinedGame: (payload: T.EventParams[T.Events.RejoinedGame]) =>
-        dispatch({ type: T.Events.RejoinedGame, payload }),
-      onJoinedAsSpectator: (payload: T.EventParams[T.Events.JoinedAsSpectator]) =>
-        dispatch({ type: T.Events.JoinedAsSpectator, payload }),
-      onRestartRequested: (payload: T.EventParams[T.Events.RestartRequested]) =>
-        dispatch({ type: T.Events.RestartRequested, payload }),
+      // onLobbyReady: (payload: LobbyReady) =>
+      //   dispatch({ type: Events.LobbyReady, payload }),
+      onStartGame: (payload: GameStarted) =>
+        dispatch({ type: Events.GameStarted, payload }),
+      onJoinedLobby: (payload: JoinLobbyResponse_NewPlayer) =>
+        dispatch({ type: Events.JoinedLobby, payload }),
+      onSync: (payload: Sync) => dispatch({ type: Events.Sync, payload }),
+      onRejoinedGame: (payload: JoinLobbyResponse_Reconnection) =>
+        dispatch({ type: Events.RejoinedGame, payload }),
+      onJoinedAsSpectator: (payload: JoinLobbyResponse_Spectator) =>
+        dispatch({ type: Events.JoinedAsSpectator, payload }),
+      onRestartRequested: () => dispatch({ type: Events.RestartRequested }),
       set: (payload: Partial<IMultiplayerState>) => dispatch({ type: 'set', payload }),
       reset: () => dispatch({ type: 'reset' }),
     }),
