@@ -1,0 +1,22 @@
+{
+  "name": "u3t",
+  "version": "1.0.0",
+  "description": "u3t monorepo",
+  "private": true,
+  "workspaces": [
+    "common"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chacestew/u3t.git"
+  },
+  "keywords": [
+    "u3t"
+  ],
+  "author": "Chace Stewart",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chacestew/u3t/issues"
+  },
+  "homepage": "https://github.com/chacestew/u3t#readme"
+}

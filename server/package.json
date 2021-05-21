@@ -1,5 +1,5 @@
 {
-  "name": "u3t",
+  "name": "u3t-server",
   "version": "0.1.0",
   "description": "Ultimate Tic-Tac-Toe",
   "main": "index.js",
