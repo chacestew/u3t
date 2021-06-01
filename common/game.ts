@@ -132,20 +132,22 @@ const isOpenBoard = (board: T.IBoardState) => !board.winner && board.cellsOpen >
 export function isInvalidTurn(state: T.IGameState, turn: T.ITurnInput) {
   const { player, board, cell } = turn;
 
-  if (state.finished) return T.Errors.GameIsFinished;
+  if (state.finished) {
+    return T.Errors.GameIsFinished;
+  }
 
   if (state.currentPlayer !== player) {
-    console.log('Play out of turn.');
+    // Play out of turn
     return T.Errors.WrongTurn;
   }
 
   if (!state.activeBoard.includes(board)) {
-    console.log('Board not playable');
+    // Board not playable
     return T.Errors.BoardNotPlayable;
   }
 
   if (state.boards[board].cells[cell] !== null) {
-    console.log('Cell is occupied.');
+    // Cell is occupied
     return T.Errors.CellOccupied;
   }
 }
