@@ -166,13 +166,3 @@ export const ioEmitter =
   <Args>(event: Events) =>
   (io: Server, to: string, args?: Args) =>
     io.to(to).emit(event, args);
-
-// export type On = <E>(
-//   event: E & Events,
-//   fn: (params: EventParams[typeof event]) => any
-// ) => unknown;
-
-// export type Emit = <E>(
-//   event: E & Events,
-//   eventParams?: EventParams[typeof event]
-// ) => unknown;
