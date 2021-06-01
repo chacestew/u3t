@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IBoardState, Cell as CellType } from '../../../../shared/types';
+import { IBoardState, Cell as CellType } from '@u3t/common';
 import MiniBoard from '../MiniBoard';
 
 import { Cell, Text, Bar } from '../styles';

@@ -6,7 +6,7 @@ import {
   JoinLobbyResponse_Reconnection,
   JoinLobbyResponse_Spectator,
   Sync,
-} from '../shared/types';
+} from '@u3t/common';
 
 export interface IMultiplayerState {
   playerId: null | string;

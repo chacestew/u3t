@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IGameState } from '../../../shared/types';
+import { IGameState } from '@u3t/common';
 
 import InPlay from './HeaderContents/InPlay';
 import Finished from './HeaderContents/Finished';

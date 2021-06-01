@@ -1,5 +1,13 @@
-import play, { getInitialState, generateRandomMove, forfeit } from '../shared/game';
-import { ITurnInput, IGameState, Errors, Player } from '../shared/types';
+import play, {
+  getInitialState,
+  generateRandomMove,
+  forfeit,
+  ITurnInput,
+  IGameState,
+  Errors,
+  Player,
+} from '@u3t/common';
+
 import { BadRequestError } from '../errors';
 
 function instantEnd(state: IGameState): IGameState {

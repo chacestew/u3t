@@ -10,7 +10,7 @@ import {
   RestartRequestArgs,
   ForfeitRequestArgs,
   ResyncArgs,
-} from './shared/types';
+} from '@u3t/common';
 import { lobbies } from './entities';
 import { BadRequestError, NotFoundError, SocketError } from './errors';
 import {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IGameState } from '../../shared/types';
+import { IGameState } from '@u3t/common';
 
 import Loading from '../../Components/GameArea/Header/HeaderContents/Loading';
 import Share from '../../Components/GameArea/Header/HeaderContents/Share';

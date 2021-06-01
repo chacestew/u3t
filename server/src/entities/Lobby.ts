@@ -1,7 +1,7 @@
 import { customAlphabet } from 'nanoid';
 import Game from './Game';
 import { NotFoundError, BadRequestError } from '../errors';
-import { ITurnInput } from '../shared/types';
+import { ITurnInput } from '@u3t/common';
 import { lobbies } from '.';
 import logger from '../logger';
 

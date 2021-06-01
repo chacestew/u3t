@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Cell, Player, Board } from '../../../shared/types';
+import { Cell, Player, Board } from '@u3t/common';
 import BaseCell from '../Cell/Cell';
 import BoardSVG from '../BoardSVG';
 import styled from 'styled-components';

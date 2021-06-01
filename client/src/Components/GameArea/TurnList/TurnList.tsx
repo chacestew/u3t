@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { IGameState, Player } from '../../../shared/types';
+import { IGameState, Player } from '@u3t/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
@@ -97,7 +97,6 @@ const TurnList = ({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('bottomRef.current', bottomRef.current);
     bottomRef.current?.scrollIntoView({
       behavior: 'smooth',
     });

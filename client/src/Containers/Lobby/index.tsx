@@ -19,7 +19,7 @@ import {
   JoinLobbyResponses,
   PlayTurnRequestArgs,
   PlayTurnResponse,
-} from '../../shared/types';
+} from '@u3t/common';
 
 import useGameReducer from '../../hooks/useGameReducer';
 import LobbyHeader from './LobbyHeader';

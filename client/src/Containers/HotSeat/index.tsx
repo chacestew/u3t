@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { ITurnInput } from '../../shared/types';
+import { ITurnInput } from '@u3t/common';
 import useGameReducer from '../../hooks/useGameReducer';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
@@ -17,6 +17,10 @@ export default function HotSeat() {
 
     playTurn({ player, board, cell });
   };
+
+  useEffect(() => {
+    window.state = state;
+  }, [state]);
 
   return (
     <>

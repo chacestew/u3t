@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Grid from '../../Grid';
 
 import LocalBoard from '../LocalBoard/LocalBoard';
-import { isInvalidTurn } from '../../../shared/game';
 import {
+  isInvalidTurn,
   IGameState,
   ITurnInput,
   Player,
@@ -12,7 +12,8 @@ import {
   ErrorParams,
   Board,
   Cell,
-} from '../../../shared/types';
+} from '@u3t/common';
+
 import { gridSize } from '../../../utils/palette';
 
 interface Props {

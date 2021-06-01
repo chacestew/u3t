@@ -11,7 +11,7 @@ import {
   Board as BoardType,
   ITurnInput,
   Cell as CellType,
-} from '../../../shared/types';
+} from '@u3t/common';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

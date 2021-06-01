@@ -7,7 +7,7 @@ import {
   Events,
   ioEmitter,
   GameStarted,
-} from '../shared/types';
+} from '@u3t/common';
 import { lobbies } from '../entities';
 import logger from '../logger';
 

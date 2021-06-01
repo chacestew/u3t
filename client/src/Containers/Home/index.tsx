@@ -2,14 +2,19 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { getInitialState } from '../../shared/game';
+import {
+  getInitialState,
+  Events,
+  CreateLobbyResponse,
+  JoinLobbyResponses,
+} from '@u3t/common';
 import HomeHeader from '../../Components/GameArea/Header/HeaderContents/Home';
 import { flexColumns, media } from '../../styles/mixins';
 import { Button, ButtonLink } from '../../Components/Button';
 import palette from '../../utils/palette';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CodeInputForm, { CodeInputMode } from './CodeInputForm';
-import { Events, CreateLobbyResponse, JoinLobbyResponses } from '../../shared/types';
+
 import { useHistory } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 

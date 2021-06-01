@@ -1,6 +1,10 @@
 import { useMemo, useReducer } from 'react';
-import playTurn, { getInitialState, generateRandomMove } from '../shared/game';
-import { IGameState, ITurnInput } from '../shared/types';
+import playTurn, {
+  getInitialState,
+  generateRandomMove,
+  IGameState,
+  ITurnInput,
+} from '@u3t/common';
 
 function instantEnd(state: IGameState): IGameState {
   const turn = generateRandomMove(state);

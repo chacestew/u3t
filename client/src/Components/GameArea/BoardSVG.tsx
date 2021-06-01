@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Board } from '../../shared/types';
+import { Board } from '@u3t/common';
 
 const BoardSVG = ({
   size = '1em',
