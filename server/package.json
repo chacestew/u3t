@@ -49,6 +49,6 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "2.2.1",
-    "ts-node-dev": "^1.0.0-pre.62"
+    "ts-node-dev": "^1.1.6"
   }
 }

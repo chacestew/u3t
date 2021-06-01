@@ -6,6 +6,10 @@
   "workspaces": [
     "common"
   ],
+  "scripts": {
+    "start": "(cd client && npm start) & (cd server && npm start)",
+    "build": "(cd server && npm run build) & (cd client && npm run build)"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chacestew/u3t.git"

@@ -2,10 +2,11 @@
   "name": "@u3t/common",
   "version": "1.0.0",
   "description": "Common module for U3T",
-  "module": "./build/index.js",
+  "main": "./build/index.js",
+  "module": "./index.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "del-cli build && tsc"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "@types/clone-deep": "^4.0.1",
     "clone-deep": "^4.0.1",
     "core-js": "^3.12.1",
+    "del-cli": "^3.0.1",
     "socket.io": "^4.1.2",
     "typescript": "^4.2.4"
   },
