@@ -24,6 +24,8 @@ import {
 } from './handlers';
 import logger from './logger';
 
+const SIMULATED_DELAY = 1500;
+
 const io = new Server();
 
 const errorHandler = (
@@ -41,6 +43,13 @@ const joinRooms = (data: { lobbyId?: string; playerId?: string }, socket: Socket
 
 io.on('connection', (socket: Socket) => {
   console.log('Hello ', socket.id);
+
+  if (SIMULATED_DELAY)
+    socket.use((socket, next) => {
+      setTimeout(() => {
+        next();
+      }, SIMULATED_DELAY);
+    });
 
   socket.on(Events.CreateLobby, (cb: SocketCallback<CreateLobbyResponse>) => {
     logger.info(`CreateLobby`);
@@ -61,7 +70,10 @@ io.on('connection', (socket: Socket) => {
   socket.on(Events.PlayTurn, (data, cb: SocketCallback<PlayTurnResponse>) => {
     logger.info(`PlayTurn`, { data });
     joinRooms(data, socket);
-    playTurn(data, io, cb).catch((error) => errorHandler(error, socket));
+    playTurn(data, io, cb).catch((error) => {
+      cb({ valid: false, error });
+      errorHandler(error, socket);
+    });
   });
 
   socket.on(Events.Restart, (data: RestartRequestArgs) => {
