@@ -6,7 +6,8 @@
   "module": "./index.ts",
   "scripts": {
     "test": "jest",
-    "build": "del-cli build && tsc"
+    "build": "del-cli build && tsc",
+    "build-prod": "npm i && npm run build"
   },
   "author": "",
   "license": "ISC",
