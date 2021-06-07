@@ -12,7 +12,7 @@ jobs:
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USERNAME }}
-          port: ${{ secrets.PORT }}
+          password: ${{ secrets.DO_PASSWORD }}
           script: |
             cd /home/u3t
             bash deploy.sh
