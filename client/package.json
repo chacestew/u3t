@@ -7,7 +7,6 @@
     "start": "export NODE_ENV=development && nodemon ./index.js",
     "build": "del-cli dist && webpack --config ./webpack/config.prod.js",
     "build-prod": "npm i && npm run build",
-    "serve": "export NODE_ENV=production && node ./index.js",
     "tsc": "tsc"
   },
   "keywords": [

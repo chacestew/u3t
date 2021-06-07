@@ -24,8 +24,6 @@ import {
 } from './handlers';
 import logger from './logger';
 
-const SIMULATED_DELAY = 1500;
-
 const io = new Server();
 
 const errorHandler = (
@@ -44,12 +42,13 @@ const joinRooms = (data: { lobbyId?: string; playerId?: string }, socket: Socket
 io.on('connection', (socket: Socket) => {
   console.log('Hello ', socket.id);
 
-  if (SIMULATED_DELAY)
+  if (process.env.NODE_ENV === 'development') {
     socket.use((socket, next) => {
       setTimeout(() => {
         next();
-      }, SIMULATED_DELAY);
+      }, 1000);
     });
+  }
 
   socket.on(Events.CreateLobby, (cb: SocketCallback<CreateLobbyResponse>) => {
     logger.info(`CreateLobby`);
