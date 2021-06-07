@@ -15,4 +15,6 @@ jobs:
           password: ${{ secrets.DO_PASSWORD }}
           script: |
             cd /home/u3t
+            git fetch
+            git pull
             bash deploy.sh
