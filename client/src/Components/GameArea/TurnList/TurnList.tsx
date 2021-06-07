@@ -67,18 +67,18 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
 `;
 
 const OpeningText = ({ lobbyState }: { lobbyState: Partial<IMultiplayerState> }) => {
-  if (!lobbyState.started) return <p>Waiting for more players.</p>;
-  if (lobbyState.isSpectator) return <p>You are spectating.</p>;
+  if (!lobbyState.started) return 'Waiting for more players.';
+  if (lobbyState.isSpectator) return 'You are spectating.';
   if (lobbyState.playerSeat)
     return (
-      <p>
+      <>
         <b>
           You are playing as <TurnListCell cellType={lobbyState.playerSeat} />.
         </b>{' '}
         Have fun!
-      </p>
+      </>
     );
-  return <p>New game started.</p>;
+  return 'New game started.';
 };
 
 const TurnList = ({

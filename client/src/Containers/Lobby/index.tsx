@@ -92,10 +92,8 @@ RouteComponentProps<
     });
 
     return () => {
-      console.log('Closing socket');
-      socket.io.off();
+      console.log('Removing listeners');
       socket.off();
-      socket.close();
     };
   }, [lobbyStateRef, socket, restart, setError, setState, history, dispatch]);
 

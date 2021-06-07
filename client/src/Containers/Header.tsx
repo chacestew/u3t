@@ -26,7 +26,7 @@ const NavList = styled.div`
   justify-content: space-evenly;
 `;
 
-const NavItem = styled(NavLink)<{ logo?: boolean }>`
+const NavItem = styled(NavLink)<{ $logo?: boolean }>`
   display: inline-flex;
   align-items: center;
   padding: 0 1em;
@@ -36,7 +36,7 @@ const NavItem = styled(NavLink)<{ logo?: boolean }>`
   }
 
   ${(p) =>
-    p.logo &&
+    p.$logo &&
     `&& {
       font-size: 2em;
       background-color: transparent;
@@ -47,7 +47,7 @@ const NavItem = styled(NavLink)<{ logo?: boolean }>`
 const Header = () => (
   <StyledHeader>
     <StyledNav>
-      <NavItem exact to="/" logo>
+      <NavItem exact to="/" $logo>
         U3T
       </NavItem>
       <NavList>

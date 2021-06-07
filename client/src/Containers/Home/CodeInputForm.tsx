@@ -61,7 +61,7 @@ export default function CodeInputForm({
             setText(e.clipboardData.getData('text').trim().slice(-4));
           }}
         />
-        <Button type="submit" rounded shadow disabled={code.length !== 4}>
+        <Button type="submit" $rounded $shadow disabled={code.length !== 4}>
           <FontAwesomeIcon icon={faCheck} />
         </Button>
       </Form>

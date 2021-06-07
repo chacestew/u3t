@@ -4,8 +4,8 @@ import { Link as ReactRouterLink } from 'react-router-dom';
 import { boxShadow } from '../styles/mixins';
 
 interface ButtonStyleProps {
-  shadow?: boolean;
-  rounded?: boolean;
+  $shadow?: boolean;
+  $rounded?: boolean;
   disabled?: boolean;
 }
 
@@ -19,8 +19,8 @@ const buttonStyles = css<ButtonStyleProps>`
   font-weight: bold;
   background-color: ${palette.white};
   color: ${palette.primaryDark};
-  ${({ shadow }) => shadow && boxShadow}
-  ${({ rounded }) => rounded && 'border-radius: 4px;'}
+  ${({ $shadow }) => $shadow && boxShadow}
+  ${({ $rounded }) => $rounded && 'border-radius: 4px;'}
   ${({ disabled }) => disabled && 'opacity: 0.5; pointer-events: none;'}
   :active, :hover, :focus {
     filter: brightness(90%);

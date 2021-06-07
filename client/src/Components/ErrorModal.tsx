@@ -34,10 +34,10 @@ export default function ErrorModal() {
     <ModalContainer>
       <Paragraph>Game not found or has expired.</Paragraph>
       <ButtonContainer>
-        <ButtonLink rounded shadow to="/">
+        <ButtonLink $rounded $shadow to="/">
           Home
         </ButtonLink>
-        <ButtonLink rounded shadow to="/game">
+        <ButtonLink $rounded $shadow to="/game">
           New Game
         </ButtonLink>
       </ButtonContainer>

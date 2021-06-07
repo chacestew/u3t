@@ -102,15 +102,23 @@ export default function Home({ socket }: { socket: Socket }) {
   const [codeInputMode, setCodeInputMode] = useState<CodeInputMode>(null);
   const history = useHistory();
   const [isConnected, setIsConnected] = useState(socket.connected);
+
   useEffect(() => {
     socket.on('connect', () => setIsConnected(true));
     socket.on('disconnect', () => setIsConnected(false));
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+    };
   });
+
   const onCreateGame = () => {
     socket.emit(Events.CreateLobby, (data: CreateLobbyResponse) => {
       history.push(`/game/${data.lobbyId}`, data);
     });
   };
+
   const onSubmit = (lobbyId: string) => {
     socket.emit(
       Events.JoinLobby,
@@ -124,7 +132,7 @@ export default function Home({ socket }: { socket: Socket }) {
       }
     );
   };
-  console.log(isConnected);
+
   return (
     <Article>
       <HomeHeader />
@@ -140,28 +148,28 @@ export default function Home({ socket }: { socket: Socket }) {
               Start a new online game or join an existing game to play or spectate.
             </Description>
             <ButtonGrid>
-              <ButtonLink
+              <Button
                 style={{ gridArea: 'start' }}
                 onClick={onCreateGame}
-                rounded
-                shadow
+                $rounded
+                $shadow
                 disabled={!isConnected}
               >
                 Start
-              </ButtonLink>
+              </Button>
               <Button
                 style={{ gridArea: 'join' }}
                 onClick={() => setCodeInputMode('join')}
-                rounded
-                shadow
+                $rounded
+                $shadow
               >
                 Join
               </Button>
               <Button
                 style={{ gridArea: 'spectate' }}
                 onClick={() => setCodeInputMode('spectate')}
-                rounded
-                shadow
+                $rounded
+                $shadow
               >
                 Spectate
               </Button>
@@ -180,10 +188,10 @@ export default function Home({ socket }: { socket: Socket }) {
               Start a multiplayer game on your device or play against an AI opponent.
             </Description>
             <MultiMenuItem>
-              <ButtonLink to="/local" rounded shadow>
+              <ButtonLink to="/local" $rounded $shadow>
                 Hotseat
               </ButtonLink>
-              <ButtonLink to="/ai" rounded shadow>
+              <ButtonLink to="/ai" $rounded $shadow>
                 Play AI
               </ButtonLink>
             </MultiMenuItem>

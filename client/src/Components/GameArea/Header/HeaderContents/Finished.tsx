@@ -22,7 +22,7 @@ const PlayAgain = ({
 
   return (
     <Text justify="flex-end">
-      <Button shadow rounded onClick={onClick} disabled={confirmed}>
+      <Button $shadow $rounded onClick={onClick} disabled={confirmed}>
         Play again? {isOnline && `(${restartRequested || confirmed ? 1 : 0}/2)`}
       </Button>
     </Text>

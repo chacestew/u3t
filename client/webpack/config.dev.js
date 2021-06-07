@@ -9,7 +9,7 @@ module.exports = {
   },
   entry: { main: ['webpack-hot-middleware/client?name=client', paths.client] },
   mode: 'development',
-  devtool: 'eval',
+  devtool: 'eval-source-map',
   output: {
     path: paths.dist,
     filename: 'js/[name].js',
