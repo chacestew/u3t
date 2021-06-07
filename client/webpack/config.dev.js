@@ -1,25 +1,29 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { paths, loaders } = require('./helpers');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const path = require('path');
+
+const { loaders } = require('./helpers');
 
 module.exports = {
-  name: 'client',
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
-  entry: { main: ['webpack-hot-middleware/client?name=client', paths.client] },
+  entry: {
+    main: ['webpack-hot-middleware/client', path.resolve(process.cwd(), 'src/index.tsx')],
+  },
   mode: 'development',
   devtool: 'eval-source-map',
   output: {
-    path: paths.dist,
     filename: 'js/[name].js',
     publicPath: '/public/',
   },
   module: {
-    rules: [loaders.RHL(), loaders.JS({ cacheDirectory: true }), loaders.Images()],
+    rules: [loaders.JS({ cacheDirectory: true }), loaders.Images()],
   },
   plugins: [
-    new HtmlWebpackPlugin({ title: 'React Sweet Spot', template: 'index.html' }),
+    new HtmlWebpackPlugin({ title: 'U3T', template: 'index.html' }),
     new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin({ overlay: { sockIntegration: 'whm' } }),
   ],
 };

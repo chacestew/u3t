@@ -1,29 +1,20 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
-const { paths, loaders } = require('./helpers');
+const { loaders } = require('./helpers');
 
 module.exports = {
-  name: 'client',
-  entry: { main: paths.client },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.png'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   mode: 'production',
   output: {
-    path: paths.dist,
     filename: 'js/[name].[contenthash:8].js',
     publicPath: '/',
   },
   optimization: {
     splitChunks: {
       chunks: 'all',
-      minSize: 0,
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-        },
-      },
     },
   },
   module: {

@@ -1,5 +1,5 @@
 module.exports = (api) => {
-  api.cache(true);
+  api.cache.using(() => process.env.NODE_ENV);
 
   const presets = [
     '@babel/preset-typescript',
@@ -8,23 +8,17 @@ module.exports = (api) => {
   ];
 
   const plugins = [
-    'react-hot-loader/babel',
     '@babel/plugin-syntax-dynamic-import',
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-object-rest-spread',
-    [
-      '@simbathesailor/babel-plugin-use-what-changed',
-      {
-        active: process.env.NODE_ENV === 'development',
-      },
-    ],
     [
       'babel-plugin-styled-components',
       {
         pure: true,
       },
     ],
-  ];
+    !api.env('production') && 'react-refresh/babel',
+  ].filter(Boolean);
 
   return {
     presets,

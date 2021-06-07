@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { hot } from 'react-hot-loader/root';
 import styled from 'styled-components';
 import { io, Socket } from 'socket.io-client';
 
@@ -92,4 +91,4 @@ function App() {
   );
 }
 
-export default hot(App);
+export default App;

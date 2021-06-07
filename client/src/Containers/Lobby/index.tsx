@@ -59,7 +59,6 @@ RouteComponentProps<
     isSpectator: !!spectator,
   });
 
-  // uwc-*debug
   useEffect(() => {
     if (!socket.connected) socket.open();
 

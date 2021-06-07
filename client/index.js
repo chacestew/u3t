@@ -23,8 +23,6 @@ if (process.env.NODE_ENV === 'development') {
   const compiler = webpack(config);
 
   const webpackDevServer = webpackDevMiddleware(compiler, {
-    overlay: true,
-    hot: true,
     stats: {
       warnings: true,
       colors: true,
