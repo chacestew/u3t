@@ -107,7 +107,7 @@ export interface JoinLobbyResponse_Reconnection {
 
 // Auth
 
-interface IdFields {
+export interface IdFields {
   lobbyId: string;
   playerId: string;
 }

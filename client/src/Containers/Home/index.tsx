@@ -102,9 +102,12 @@ export default function Home({ socket }: { socket: Socket }) {
   const [codeInputMode, setCodeInputMode] = useState<CodeInputMode>(null);
   const history = useHistory();
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [isRequestingLobby, setIsRequestingLobby] = useState(false);
 
   useEffect(() => {
-    socket.on('connect', () => setIsConnected(true));
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
     socket.on('disconnect', () => setIsConnected(false));
 
     return () => {
@@ -113,10 +116,23 @@ export default function Home({ socket }: { socket: Socket }) {
     };
   });
 
+  useEffect(() => {
+    if (!isRequestingLobby) return;
+
+    const timer = setTimeout(() => {
+      socket.sendBuffer = [];
+      setIsRequestingLobby(false)
+    }, 8000)
+
+
+    return () => clearTimeout(timer)
+  }, [isRequestingLobby, socket])
+
   const onCreateGame = () => {
     socket.emit(Events.CreateLobby, (data: CreateLobbyResponse) => {
       history.push(`/game/${data.lobbyId}`, data);
     });
+    setIsRequestingLobby(true)
   };
 
   const onSubmit = (lobbyId: string) => {
@@ -153,7 +169,7 @@ export default function Home({ socket }: { socket: Socket }) {
                 onClick={onCreateGame}
                 $rounded
                 $shadow
-                disabled={!isConnected}
+                disabled={isRequestingLobby}
               >
                 Start
               </Button>
@@ -162,6 +178,7 @@ export default function Home({ socket }: { socket: Socket }) {
                 onClick={() => setCodeInputMode('join')}
                 $rounded
                 $shadow
+                disabled={isRequestingLobby}
               >
                 Join
               </Button>
@@ -170,11 +187,12 @@ export default function Home({ socket }: { socket: Socket }) {
                 onClick={() => setCodeInputMode('spectate')}
                 $rounded
                 $shadow
+                disabled={isRequestingLobby}
               >
                 Spectate
               </Button>
               {codeInputMode && (
-                <CodeInputForm onInputSubmit={onSubmit} mode={codeInputMode} />
+                <CodeInputForm disabled={isRequestingLobby} onInputSubmit={onSubmit} mode={codeInputMode} />
               )}
             </ButtonGrid>
           </MenuSection>
@@ -188,10 +206,10 @@ export default function Home({ socket }: { socket: Socket }) {
               Start a multiplayer game on your device or play against an AI opponent.
             </Description>
             <MultiMenuItem>
-              <ButtonLink to="/local" $rounded $shadow>
+              <ButtonLink disabled={isRequestingLobby} to="/local" $rounded $shadow>
                 Hotseat
               </ButtonLink>
-              <ButtonLink to="/ai" $rounded $shadow>
+              <ButtonLink disabled={isRequestingLobby} to="/ai" $rounded $shadow>
                 Play AI
               </ButtonLink>
             </MultiMenuItem>

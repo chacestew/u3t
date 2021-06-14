@@ -56,8 +56,9 @@ export default function LobbyHeader({
   if (lobbyState.isSpectator) return <SpectatorHeader state={state} />;
 
   // Before game
-  if (lobbyState.lobbyId && !lobbyState.playerSeat)
+  if (lobbyState.lobbyId && !lobbyState.started && lobbyState.hasJoined) {
     return <ShareHeader lobbyId={lobbyState.lobbyId} />;
+  }
 
   // After game
   if (state.finished)

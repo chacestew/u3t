@@ -11,7 +11,6 @@ import {
   ErrorParams,
   GameStarted,
   Sync,
-  Errors,
   ResyncArgs,
   JoinLobbyRequestArgs,
   RestartRequestArgs,
@@ -34,36 +33,41 @@ import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Socket } from 'socket.io-client';
 
-const OnlineGame = ({
-  history,
-  match,
-  location,
-  spectator,
-  socket,
-}: // socket,
-RouteComponentProps<
+type RouteProps = RouteComponentProps<
   { lobbyId: string },
   StaticContext,
-  { playerId?: string; lobbyId?: string }
-> & {
+  { lobbyId?: string; playerId?: string }
+>;
+
+interface Props extends RouteProps {
   spectator?: boolean;
   socket: Socket;
-}) => {
+}
+
+const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   const [state, { playTurn, setState, restart }] = useGameReducer();
   const [error, setError] = useState<ErrorParams | null>(null);
   const isNavigatorOnline = useNavigatorOnline();
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
 
+  const locationState = location.state || { lobbyId: undefined, playerId: undefined };
+
   const { lobbyState, lobbyStateRef, dispatch } = useMultiplerState({
     isSpectator: !!spectator,
+    hasJoined: !!locationState.playerId,
+    lobbyId: locationState.lobbyId || match.params.lobbyId,
+    playerId: locationState.playerId || sessionStorage.getItem(match.params.lobbyId),
   });
+
+  useEffect(() => {
+    if (location.state) history.replace(history.location.pathname, undefined);
+  }, [history, location.state]);
 
   useEffect(() => {
     if (!socket.connected) socket.open();
 
     socket.on(Events.GameStarted, (data: GameStarted) => {
-      console.log('received game started', data);
       sessionStorage.setItem(data.lobbyId, data.playerId);
       dispatch({ event: Events.GameStarted, data });
       setState(data.state);
@@ -97,16 +101,13 @@ RouteComponentProps<
   }, [lobbyStateRef, socket, restart, setError, setState, history, dispatch]);
 
   useEffect(() => {
-    console.log('useEffect for joinlobby called');
-    const playerId = location.state?.playerId; // sessionStorage.getItem(match.params.lobbyId)
-    const lobbyId = location.state?.lobbyId || match.params.lobbyId;
-    dispatch({ event: 'set', data: { playerId, lobbyId } });
-    if (playerId) return;
+    if (lobbyState.hasJoined) return;
+
     socket.emit(
       Events.JoinLobby,
       {
-        lobbyId,
-        playerId,
+        lobbyId: lobbyState.lobbyId,
+        playerId: lobbyState.playerId,
         spectator: lobbyState.isSpectator,
       } as JoinLobbyRequestArgs,
       (data: JoinLobbyResponses) => {
@@ -116,13 +117,23 @@ RouteComponentProps<
             break;
           case 'reconnected-player':
             dispatch({ event: Events.RejoinedGame, data });
+            setState(data.state);
             break;
           case 'spectator':
             dispatch({ event: Events.JoinedAsSpectator, data });
+            setState(data.state);
         }
       }
     );
-  }, []);
+  }, [
+    dispatch,
+    lobbyState.hasJoined,
+    lobbyState.isSpectator,
+    lobbyState.lobbyId,
+    lobbyState.playerId,
+    setState,
+    socket,
+  ]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {
     const { playerSeat, playerId, lobbyId } = lobbyState;
@@ -140,8 +151,7 @@ RouteComponentProps<
       } as PlayTurnRequestArgs,
       (res: PlayTurnResponse) => {
         if (!res.valid) {
-          // Undo the turn here
-          // Display res.error somehow
+          console.error(res.error);
         }
       }
     );

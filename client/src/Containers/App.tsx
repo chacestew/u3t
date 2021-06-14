@@ -62,21 +62,14 @@ function App() {
           </Route>
           <Route
             exact
-            path="/game/:lobbyId?"
-            render={(routeProps) => (
-              <Play socket={socket} key={routeProps.location.key} {...routeProps} />
-            )}
+            path="/game/:lobbyId"
+            render={(routeProps: any) => <Play socket={socket} {...routeProps} />}
           />
           <Route
             exact
             path="/game/:lobbyId/spectate"
-            render={(routeProps) => (
-              <Play
-                socket={socket}
-                key={routeProps.location.key}
-                spectator
-                {...routeProps}
-              />
+            render={(routeProps: any) => (
+              <Play socket={socket} spectator {...routeProps} />
             )}
           />
           <Route path="/local" component={HotSeat} />

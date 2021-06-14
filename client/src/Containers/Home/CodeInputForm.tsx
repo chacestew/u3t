@@ -30,9 +30,11 @@ const Form = styled.form`
 `;
 
 export default function CodeInputForm({
+  disabled,
   mode,
   onInputSubmit,
 }: {
+  disabled: boolean;
   onInputSubmit: (value: string) => void;
   mode: CodeInputMode;
 }) {
@@ -53,6 +55,7 @@ export default function CodeInputForm({
         }}
       >
         <input
+          disabled={disabled}
           maxLength={4}
           value={code}
           placeholder="CODE"
@@ -61,7 +64,7 @@ export default function CodeInputForm({
             setText(e.clipboardData.getData('text').trim().slice(-4));
           }}
         />
-        <Button type="submit" $rounded $shadow disabled={code.length !== 4}>
+        <Button type="submit" $rounded $shadow disabled={disabled || code.length !== 4}>
           <FontAwesomeIcon icon={faCheck} />
         </Button>
       </Form>

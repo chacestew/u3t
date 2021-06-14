@@ -15,6 +15,7 @@ export interface IMultiplayerState {
   isSpectator: boolean;
   restartRequested: boolean;
   started: boolean;
+  hasJoined: boolean;
 }
 
 const initialState: IMultiplayerState = {
@@ -23,6 +24,7 @@ const initialState: IMultiplayerState = {
   lobbyId: null,
   isSpectator: false,
   restartRequested: false,
+  hasJoined: false,
   started: false,
 };
 
@@ -49,6 +51,7 @@ export function reducer(state: IMultiplayerState, action: Action): IMultiplayerS
     case Events.JoinedLobby: {
       return {
         ...state,
+        hasJoined: true,
         lobbyId: action.data.lobbyId,
         playerId: action.data.playerId,
       };
@@ -63,6 +66,7 @@ export function reducer(state: IMultiplayerState, action: Action): IMultiplayerS
     case Events.RejoinedGame: {
       return {
         ...state,
+        hasJoined: true,
         lobbyId: action.data.lobbyId,
         playerSeat: action.data.seat,
       };
@@ -70,6 +74,7 @@ export function reducer(state: IMultiplayerState, action: Action): IMultiplayerS
     case Events.JoinedAsSpectator: {
       return {
         ...state,
+        hasJoined: true,
         isSpectator: true,
       };
     }

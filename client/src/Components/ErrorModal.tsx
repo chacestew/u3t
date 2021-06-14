@@ -24,9 +24,8 @@ const Paragraph = styled.p`
 const ButtonContainer = styled.div`
   margin-top: 1em;
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1em;
+  display: flex;
+  justify-content: center;
 `;
 
 export default function ErrorModal() {
@@ -35,10 +34,7 @@ export default function ErrorModal() {
       <Paragraph>Game not found or has expired.</Paragraph>
       <ButtonContainer>
         <ButtonLink $rounded $shadow to="/">
-          Home
-        </ButtonLink>
-        <ButtonLink $rounded $shadow to="/game">
-          New Game
+          Back to home
         </ButtonLink>
       </ButtonContainer>
     </ModalContainer>
