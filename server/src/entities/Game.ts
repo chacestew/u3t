@@ -48,7 +48,8 @@ export default class Game {
 
   getSeat(id: string) {
     const seat = this.seats.indexOf(id);
-    if (seat === -1) throw new Error(`No seat for player: ${id}`);
+    if (seat === -1)
+      throw new BadRequestError(`No seat for player ${id}. Current seats: ${this.seats}`);
     return (seat + 1) as Player;
   }
 

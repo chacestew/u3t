@@ -1,5 +1,6 @@
 import express = require('express');
 import http = require('http');
+import logger from './src/logger';
 
 import attachSockets from './src/sockets';
 
@@ -8,17 +9,8 @@ const server = http.createServer(app);
 
 attachSockets(server);
 
-app.get('/health', (req, res) => {
-  const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  console.log(`The script uses approximately ${used} MB`);
-  res.json({
-    status: 'OK',
-    mem: `${used} MB`,
-  });
-});
-
 const mode = process.env.NODE_ENV;
 const port = 8001;
 server.listen(8001, () => {
-  console.info(`Socket.IO server listening on :${port} [${mode}]`);
+  logger.info(`Server listening on :${port} [${mode}]`);
 });

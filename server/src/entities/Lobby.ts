@@ -32,14 +32,14 @@ export class Lobby {
       destroy(this.id, 'expired');
       global.clearInterval(this.timer);
     }, LOBBY_EXPIRATION_TIME);
-    this.logger = (message, data) => logger.info(`[Lobby#${this.id}]: ${message}`, data);
+    this.logger = (message, data) => logger.info(message, data);
   }
 
   private refresh = () => {
     this.timer.refresh();
   };
 
-  addPlayer(connection: string) {
+  addPlayer() {
     if (this.players.size > 1) throw new BadRequestError('Lobby already has two players');
     const id = `${this.id}_${nanoid()}`;
     this.players.add(id);
@@ -71,18 +71,18 @@ export class Lobby {
   }
 
   getGame() {
-    if (!this.game) throw new Error('Game not started');
+    if (!this.game) throw new BadRequestError('Game not started');
 
     return this.game;
   }
 
   playTurn(turnInput: ITurnInput) {
-    this.logger('Playing turn', { data: turnInput });
+    this.logger('Playing turn', { ...turnInput });
     return this.getGame().playTurn(turnInput);
   }
 
   forfeit(player: string) {
-    this.logger('Forfeiting');
+    this.logger('Forfeiting', { playerId: player });
     return this.getGame().forfeit(player);
   }
 
@@ -100,12 +100,12 @@ class LobbyManager {
     const lobby = new Lobby(id, this.remove);
     this.lobbiesMetrics.created += 1;
     this.lobbies.set(lobby.id, lobby);
-    logger.info(`Created lobby: ${id}`);
+    logger.info('Created lobby', { lobbyId: lobby.id });
     return lobby;
   }
 
   remove = (id: string, reason: string) => {
-    logger.info(`Removed lobby: ${id} (${reason})`);
+    logger.info('Removed lobby', { lobbyId: id, reason });
     this.lobbiesMetrics.started += lobbies.get(id).hasGame() ? 1 : 0;
     this.lobbiesMetrics.finished +=
       lobbies.get(id).hasGame() && lobbies.get(id).getGame().getState().finished ? 1 : 0;
@@ -114,7 +114,7 @@ class LobbyManager {
 
   get(id: string): Lobby {
     const lobby = this.lobbies.get(id);
-    if (!lobby) throw new NotFoundError(`No lobby by ID: ${id}`);
+    if (!lobby) throw new NotFoundError(`No lobby found`, { lobbyId: id });
     return lobby;
   }
 }

@@ -30,19 +30,20 @@ export default async function joinLobby(
     // Handle player rejoining a game
   } else if (data.playerId) {
     logger.info('Rejoining player to lobby', {
-      data: { lobby: lobby.id, player: data.playerId },
+      lobbyId: lobby.id,
+      playerId: data.playerId,
     });
     const game = lobby.getGame();
     cb({
       lobbyId: lobby.id,
-      seat: game.getSeat(lobby.id),
+      seat: game.getSeat(data.playerId),
       state: game.getState(),
       role: 'reconnected-player',
     });
   } else {
     // Handle first time joining a game
-    logger.info('Joining new player to lobby', { data: { lobby: lobby.id } });
-    const playerId = lobby.addPlayer(socket.id);
+    logger.info('Joining new player to lobby', { lobbyId: lobby.id });
+    const playerId = lobby.addPlayer();
 
     socket.join(playerId);
 
@@ -50,12 +51,14 @@ export default async function joinLobby(
 
     // Start when second player joined
     if (!lobby.hasGame() && lobby.players.size === 2) {
-      logger.info('Starting new game for lobby', { data: { lobby: lobby.id } });
+      logger.info('Starting new game for lobby', { lobbyId: lobby.id });
       const game = lobby.initGame();
 
       lobby.players.forEach((playerId) => {
         logger.info('Emitting game started message:', {
-          data: { lobbyId: lobby.id, playerId, seat: game.getSeat(playerId) },
+          lobbyId: lobby.id,
+          playerId,
+          seat: game.getSeat(playerId),
         });
         emitGameStarted(io, playerId, {
           lobbyId: lobby.id,
