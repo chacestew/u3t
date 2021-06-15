@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Grid from '../../Grid';
-
-import LocalBoard from '../LocalBoard/LocalBoard';
 import {
-  isInvalidTurn,
-  IGameState,
-  ITurnInput,
-  Player,
-  Errors,
-  ErrorParams,
   Board,
   Cell,
+  ErrorParams,
+  Errors,
+  IGameState,
+  isInvalidTurn,
+  ITurnInput,
+  Player,
 } from '@u3t/common';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import { gridSize } from '../../../utils/palette';
+import Grid from '../../Grid';
+import LocalBoard from '../LocalBoard/LocalBoard';
 
 interface Props {
   state: IGameState;

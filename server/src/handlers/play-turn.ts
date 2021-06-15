@@ -1,13 +1,13 @@
-import { Server } from 'socket.io';
-
 import {
   Events,
-  SocketCallback,
-  PlayTurnResponse,
-  PlayTurnRequestArgs,
   ioEmitter,
+  PlayTurnRequestArgs,
+  PlayTurnResponse,
+  SocketCallback,
   Sync,
 } from '@u3t/common';
+import { Server } from 'socket.io';
+
 import { lobbies } from '../entities';
 
 const emitSync = ioEmitter<Sync>(Events.Sync);

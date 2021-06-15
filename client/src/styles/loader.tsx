@@ -73,14 +73,14 @@ const StyledLoader = styled.div`
 
 export const Loader = () => (
   <StyledLoader>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
+    <div />
   </StyledLoader>
 );

@@ -1,6 +1,6 @@
+import { CreateLobbyResponse, SocketCallback } from '@u3t/common';
 import { Socket } from 'socket.io';
 
-import { SocketCallback, CreateLobbyResponse } from '@u3t/common';
 import { lobbies } from '../entities';
 
 async function createLobby(socket: Socket, cb: SocketCallback<CreateLobbyResponse>) {

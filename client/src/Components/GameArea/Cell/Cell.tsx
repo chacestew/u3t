@@ -1,12 +1,12 @@
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Player } from '@u3t/common';
 import React from 'react';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { Player } from '@u3t/common';
 
-import palette from '../../../utils/palette';
 import { boxShadow } from '../../../styles/mixins';
+import palette from '../../../utils/palette';
 
 export const getCellBg = (cellType: null | Player) => {
   switch (cellType) {

@@ -1,9 +1,10 @@
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+
 import { Button } from '../../Components/Button';
 import palette from '../../utils/palette';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export type CodeInputMode = null | 'join' | 'spectate';
 

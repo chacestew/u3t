@@ -7,7 +7,8 @@
     "start": "export NODE_ENV=development && nodemon ./index.js",
     "build": "del-cli dist && webpack --config ./webpack/config.prod.js",
     "build-prod": "npm i && npm run build",
-    "tsc": "tsc"
+    "tsc": "tsc --noEmit",
+    "lint": "eslint src --fix"
   },
   "keywords": [
     "tic-tac-toe",
@@ -80,6 +81,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "nodemon": "^2.0.7",
     "prettier": "^2.3.1",
     "react-refresh": "^0.9.0",

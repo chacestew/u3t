@@ -1,1 +1,1 @@
-export default seatNumber => (seatNumber === 1 ? 'X' : 'O');
+export default (seatNumber) => (seatNumber === 1 ? 'X' : 'O');

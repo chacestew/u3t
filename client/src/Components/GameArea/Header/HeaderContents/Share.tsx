@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { Text, Bar } from '../styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
+
+import { Bar, Text } from '../styles';
 
 const FLASH_DURATION = 500;
 

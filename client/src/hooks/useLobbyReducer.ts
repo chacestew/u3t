@@ -1,4 +1,3 @@
-import { useEffect, useReducer, useRef } from 'react';
 import {
   Events,
   GameStarted,
@@ -7,6 +6,7 @@ import {
   JoinLobbyResponse_Spectator,
   Sync,
 } from '@u3t/common';
+import { useEffect, useReducer, useRef } from 'react';
 
 export interface IMultiplayerState {
   playerId: null | string;

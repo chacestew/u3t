@@ -1,7 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Bar } from '../styles';
-import { Link } from 'react-router-dom';
 
 const InPlay = () => {
   return (

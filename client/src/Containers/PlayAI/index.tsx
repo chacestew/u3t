@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { generateRandomMove, Player, ITurnInput } from '@u3t/common';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { generateRandomMove, ITurnInput, Player } from '@u3t/common';
+import React, { useEffect, useState } from 'react';
+
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
-import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedo } from '@fortawesome/free-solid-svg-icons';
-
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import useGameReducer from '../../hooks/useGameReducer';
 
 const PlayAI = () => {

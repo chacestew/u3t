@@ -1,9 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import pic1 from '../../../assets/learn1.png';
 import pic2 from '../../../assets/learn2.png';
 import pic3 from '../../../assets/learn3.png';
 import palette from '../../utils/palette';
-import styled from 'styled-components';
 
 const Section = styled.div`
   display: flex;

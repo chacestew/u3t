@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
-import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { ITurnInput } from '@u3t/common';
-import useGameReducer from '../../hooks/useGameReducer';
-import GameHeader from '../../Components/GameArea/Header/GameHeader';
-import TurnList from '../../Components/GameArea/TurnList/TurnList';
-import { RelativeBox } from '../../styles/Utils';
-import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ITurnInput } from '@u3t/common';
+import React, { useEffect } from 'react';
+
+import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
+import GameHeader from '../../Components/GameArea/Header/GameHeader';
+import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import useGameReducer from '../../hooks/useGameReducer';
+import { RelativeBox } from '../../styles/Utils';
 
 export default function HotSeat() {
   const [state, { playTurn, restart }] = useGameReducer();

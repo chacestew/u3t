@@ -1,9 +1,10 @@
-import { customAlphabet } from 'nanoid';
-import Game from './Game';
-import { NotFoundError, BadRequestError } from '../errors';
 import { ITurnInput } from '@u3t/common';
-import { lobbies } from '.';
+import { customAlphabet } from 'nanoid';
+
+import { BadRequestError, NotFoundError } from '../errors';
 import logger from '../logger';
+import { lobbies } from '.';
+import Game from './Game';
 
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 4);
 

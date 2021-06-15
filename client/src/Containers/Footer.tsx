@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import palette, { gridSize } from '../utils/palette';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faDiscord } from '@fortawesome/free-brands-svg-icons';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 const StyledFooter = styled.footer`
   display: flex;

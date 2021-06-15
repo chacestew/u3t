@@ -1,10 +1,10 @@
 import play, {
-  getInitialState,
-  generateRandomMove,
-  forfeit,
-  ITurnInput,
-  IGameState,
   Errors,
+  forfeit,
+  generateRandomMove,
+  getInitialState,
+  IGameState,
+  ITurnInput,
   Player,
 } from '@u3t/common';
 

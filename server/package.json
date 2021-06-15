@@ -7,7 +7,8 @@
     "start": "export NODE_ENV=development && ts-node-dev --transpile-only ./index.ts",
     "build": "del-cli build && tsc",
     "build-prod": "npm i && npm run build",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "lint": "eslint src --fix"
   },
   "keywords": [
     "tic-tac-toe",
@@ -50,6 +51,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "prettier": "2.2.1",
     "ts-node-dev": "^1.1.6"
   }

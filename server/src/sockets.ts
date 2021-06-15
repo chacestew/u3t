@@ -1,25 +1,26 @@
-import { Server, Socket } from 'socket.io';
-import { Server as HttpServer } from 'http';
 import {
-  Events,
-  SocketCallback,
   CreateLobbyResponse,
-  JoinLobbyResponses,
+  Events,
+  ForfeitRequestArgs,
+  IdFields,
   JoinLobbyRequestArgs,
+  JoinLobbyResponses,
+  PlayTurnRequestArgs,
   PlayTurnResponse,
   RestartRequestArgs,
-  ForfeitRequestArgs,
   ResyncArgs,
-  PlayTurnRequestArgs,
-  IdFields,
+  SocketCallback,
 } from '@u3t/common';
+import { Server as HttpServer } from 'http';
+import { Server, Socket } from 'socket.io';
+
 import { BadRequestError, NotFoundError } from './errors';
 import {
   createLobby,
+  forfeit,
   joinLobby,
   playTurn,
   requestRestart,
-  forfeit,
   resync,
 } from './handlers';
 import logger from './logger';
@@ -101,7 +102,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on(Events.Disconnect, () => {
-    logger.info('Closed conneciton', { socket: socket.id });
+    logger.info('Closed connection', { socket: socket.id });
   });
 });
 

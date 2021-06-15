@@ -1,5 +1,6 @@
-import * as winston from 'winston';
 import 'winston-daily-rotate-file';
+
+import * as winston from 'winston';
 
 const logger = winston.createLogger({
   level: 'info',

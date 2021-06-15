@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
-import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  getInitialState,
-  Events,
   CreateLobbyResponse,
+  Events,
+  getInitialState,
   JoinLobbyResponses,
 } from '@u3t/common';
-import HomeHeader from '../../Components/GameArea/Header/HeaderContents/Home';
-import { flexColumns, media } from '../../styles/mixins';
-import { Button, ButtonLink } from '../../Components/Button';
-import palette from '../../utils/palette';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CodeInputForm, { CodeInputMode } from './CodeInputForm';
-
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
+import styled from 'styled-components';
+
+import { Button, ButtonLink } from '../../Components/Button';
+import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
+import HomeHeader from '../../Components/GameArea/Header/HeaderContents/Home';
+import { flexColumns, media } from '../../styles/mixins';
+import palette from '../../utils/palette';
+import CodeInputForm, { CodeInputMode } from './CodeInputForm';
 
 const Article = styled.article`
   ${flexColumns}
@@ -121,18 +121,17 @@ export default function Home({ socket }: { socket: Socket }) {
 
     const timer = setTimeout(() => {
       socket.sendBuffer = [];
-      setIsRequestingLobby(false)
-    }, 8000)
+      setIsRequestingLobby(false);
+    }, 8000);
 
-
-    return () => clearTimeout(timer)
-  }, [isRequestingLobby, socket])
+    return () => clearTimeout(timer);
+  }, [isRequestingLobby, socket]);
 
   const onCreateGame = () => {
     socket.emit(Events.CreateLobby, (data: CreateLobbyResponse) => {
       history.push(`/game/${data.lobbyId}`, data);
     });
-    setIsRequestingLobby(true)
+    setIsRequestingLobby(true);
   };
 
   const onSubmit = (lobbyId: string) => {
@@ -192,7 +191,11 @@ export default function Home({ socket }: { socket: Socket }) {
                 Spectate
               </Button>
               {codeInputMode && (
-                <CodeInputForm disabled={isRequestingLobby} onInputSubmit={onSubmit} mode={codeInputMode} />
+                <CodeInputForm
+                  disabled={isRequestingLobby}
+                  onInputSubmit={onSubmit}
+                  mode={codeInputMode}
+                />
               )}
             </ButtonGrid>
           </MenuSection>

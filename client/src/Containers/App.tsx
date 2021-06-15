@@ -1,20 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import styled from 'styled-components';
 import { io, Socket } from 'socket.io-client';
+import styled from 'styled-components';
 
 import GlobalStyle from '../styles/global';
-import Play from './Lobby';
+import { media } from '../styles/mixins';
+import { gridSize } from '../utils/palette';
+import About from './About/About';
+import Footer from './Footer';
+import Header from './Header';
 import Home from './Home';
 import HotSeat from './HotSeat';
+import Play from './Lobby';
 import PlayAI from './PlayAI';
 import Rules from './Rules';
-import Header from './Header';
-import Footer from './Footer';
-
-import { gridSize } from '../utils/palette';
-import { media } from '../styles/mixins';
-import About from './About/About';
 
 const Main = styled.main`
   display: flex;

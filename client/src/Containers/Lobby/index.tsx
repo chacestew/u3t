@@ -1,37 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { StaticContext } from 'react-router';
-
-import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
-import { RouteComponentProps } from 'react-router-dom';
+import { faFlag } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Events,
-  Player,
   Board as BoardType,
   Board as CellType,
   ErrorParams,
-  GameStarted,
-  Sync,
-  ResyncArgs,
-  JoinLobbyRequestArgs,
-  RestartRequestArgs,
+  Events,
   ForfeitRequestArgs,
+  GameStarted,
+  JoinLobbyRequestArgs,
   JoinLobbyResponses,
+  Player,
   PlayTurnRequestArgs,
   PlayTurnResponse,
+  RestartRequestArgs,
+  ResyncArgs,
+  Sync,
 } from '@u3t/common';
-
-import useGameReducer from '../../hooks/useGameReducer';
-import LobbyHeader from './LobbyHeader';
-import TurnList from '../../Components/GameArea/TurnList/TurnList';
-import { RelativeBox } from '../../styles/Utils';
-import useMultiplerState from '../../hooks/useLobbyReducer';
-import { Reconnecting } from './Reconnecting';
-import useNavigatorOnline from '../../hooks/useNavigatorOnline';
-import ErrorModal from '../../Components/ErrorModal';
-import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
-import { faFlag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
+import { StaticContext } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
+
+import ErrorModal from '../../Components/ErrorModal';
+import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
+import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
+import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import useGameReducer from '../../hooks/useGameReducer';
+import useMultiplerState from '../../hooks/useLobbyReducer';
+import useNavigatorOnline from '../../hooks/useNavigatorOnline';
+import { RelativeBox } from '../../styles/Utils';
+import LobbyHeader from './LobbyHeader';
+import { Reconnecting } from './Reconnecting';
 
 type RouteProps = RouteComponentProps<
   { lobbyId: string },

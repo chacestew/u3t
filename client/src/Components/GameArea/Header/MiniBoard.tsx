@@ -1,7 +1,8 @@
-import React from 'react';
-import BoardSVG from '../BoardSVG';
 import { Board, IBoardState } from '@u3t/common';
+import React from 'react';
+
 import palette from '../../../utils/palette';
+import BoardSVG from '../BoardSVG';
 
 const MiniBoard = ({
   activeBoard,

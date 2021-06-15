@@ -1,7 +1,8 @@
-import palette from '../utils/palette';
-import styled, { css } from 'styled-components';
 import { Link as ReactRouterLink } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+
 import { boxShadow } from '../styles/mixins';
+import palette from '../utils/palette';
 
 interface ButtonStyleProps {
   $shadow?: boolean;

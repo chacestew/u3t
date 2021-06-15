@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { Cell, Text, Bar } from '../styles';
 import { Button } from '../../../Button';
+import { Bar, Cell, Text } from '../styles';
 
 interface PlayAgainProps {
   isOnline?: boolean;

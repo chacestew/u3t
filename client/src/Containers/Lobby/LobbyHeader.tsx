@@ -1,12 +1,10 @@
+import { IGameState } from '@u3t/common';
 import React from 'react';
 
-import { IGameState } from '@u3t/common';
-
+import Finished from '../../Components/GameArea/Header/HeaderContents/Finished';
+import InPlay from '../../Components/GameArea/Header/HeaderContents/InPlay';
 import Loading from '../../Components/GameArea/Header/HeaderContents/Loading';
 import Share from '../../Components/GameArea/Header/HeaderContents/Share';
-import InPlay from '../../Components/GameArea/Header/HeaderContents/InPlay';
-import Finished from '../../Components/GameArea/Header/HeaderContents/Finished';
-
 import { IMultiplayerState } from '../../hooks/useLobbyReducer';
 
 export type Mode = 'home' | 'loading' | 'share' | 'local' | 'online' | 'spectator';

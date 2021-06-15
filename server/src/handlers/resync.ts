@@ -1,6 +1,6 @@
+import { emitter, Events, ResyncArgs, Sync } from '@u3t/common';
 import { Socket } from 'socket.io';
 
-import { Events, Sync, emitter, ResyncArgs } from '@u3t/common';
 import { lobbies } from '../entities';
 
 const emitSync = emitter<Sync>(Events.Sync);

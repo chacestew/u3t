@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { IGameState, Player } from '@u3t/common';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IGameState, Player } from '@u3t/common';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import TurnListItem, { TurnListCell, TurnListParagraph } from './TurnListItem';
+import { IMultiplayerState } from '../../../hooks/useLobbyReducer';
 import { flexColumns, media } from '../../../styles/mixins';
 import { Button } from '../../Button';
-import { IMultiplayerState } from '../../../hooks/useLobbyReducer';
+import TurnListItem, { TurnListCell, TurnListParagraph } from './TurnListItem';
 
 const TurnListButtonsContainer = styled.div`
   display: flex;

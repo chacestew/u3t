@@ -1,13 +1,13 @@
-import { Socket, Server } from 'socket.io';
-
 import {
+  Events,
+  GameStarted,
+  ioEmitter,
   JoinLobbyRequestArgs,
   JoinLobbyResponses,
   SocketCallback,
-  Events,
-  ioEmitter,
-  GameStarted,
 } from '@u3t/common';
+import { Server, Socket } from 'socket.io';
+
 import { lobbies } from '../entities';
 import logger from '../logger';
 

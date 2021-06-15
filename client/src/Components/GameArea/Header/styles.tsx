@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import palette from '../../../utils/palette';
 
+import palette from '../../../utils/palette';
 import BaseCell from '../Cell/Cell';
 
 export const Text = styled.div<{

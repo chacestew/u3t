@@ -1,8 +1,9 @@
+import { Cell as CellType, Player } from '@u3t/common';
 import React from 'react';
 import styled from 'styled-components';
-import Cell from '../Cell/Cell';
+
 import palette from '../../../utils/palette';
-import { Cell as CellType, Player } from '@u3t/common';
+import Cell from '../Cell/Cell';
 
 const DimmableHoverableCell = styled(Cell)<Partial<Props>>`
   ${({ shouldDim }) => shouldDim && `opacity: 0.5;`}

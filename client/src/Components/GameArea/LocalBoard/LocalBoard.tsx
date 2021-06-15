@@ -1,21 +1,21 @@
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Board as BoardType,
+  Cell as CellType,
+  IBoardState,
+  ITurnInput,
+  Player,
+} from '@u3t/common';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-import Grid from '../../Grid';
-import Cell from './Cell';
-import { getCellBg } from '../Cell/Cell';
-import palette from '../../../utils/palette';
-import {
-  Player,
-  IBoardState,
-  Board as BoardType,
-  ITurnInput,
-  Cell as CellType,
-} from '@u3t/common';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { media } from '../../../styles/mixins';
+import palette from '../../../utils/palette';
+import Grid from '../../Grid';
+import { getCellBg } from '../Cell/Cell';
+import Cell from './Cell';
 
 const InnerGrid = styled(Grid)<{ bgColor?: string }>`
   grid-gap: 0.25em;

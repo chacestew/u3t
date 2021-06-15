@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Board } from '@u3t/common';
+import * as React from 'react';
 
 const BoardSVG = ({
   size = '1em',

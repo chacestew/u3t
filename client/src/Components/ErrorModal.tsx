@@ -1,7 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import palette from '../utils/palette';
 import { ButtonLink } from './Button';
-import styled from 'styled-components';
 
 const ModalContainer = styled.div`
   padding: 2em;

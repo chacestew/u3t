@@ -1,8 +1,9 @@
+import { Board, Cell, Player } from '@u3t/common';
 import React, { memo } from 'react';
-import { Cell, Player, Board } from '@u3t/common';
-import BaseCell from '../Cell/Cell';
-import BoardSVG from '../BoardSVG';
 import styled from 'styled-components';
+
+import BoardSVG from '../BoardSVG';
+import BaseCell from '../Cell/Cell';
 
 export const TurnListParagraph = styled.p`
   padding: 0.5em;

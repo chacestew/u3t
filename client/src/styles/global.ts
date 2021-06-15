@@ -1,7 +1,8 @@
 import { createGlobalStyle, css } from 'styled-components';
 import styledNormalize from 'styled-normalize';
-import palette from '../utils/palette';
+
 import { media } from '../styles/mixins';
+import palette from '../utils/palette';
 
 const globalStyles = css`
   html {
