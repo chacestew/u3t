@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import styled from 'styled-components';
 
+import { useTracking } from '../hooks/useTracking';
 import GlobalStyle from '../styles/global';
 import { media } from '../styles/mixins';
 import { gridSize } from '../utils/palette';
@@ -39,16 +40,7 @@ const socket = io(socketURL, {
 });
 
 function App() {
-  // const socketRef = useRef<Socket>();
-
-  // if (!socketRef.current) {
-  //   socketRef.current = io(socketURL, {
-  //     autoConnect: true,
-  //     path: '/ws',
-  //   });
-  // }
-
-  // const socket = socketRef.current;
+  useTracking();
 
   return (
     <>
