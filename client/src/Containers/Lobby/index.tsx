@@ -3,23 +3,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Board as BoardType,
   Board as CellType,
+  ClientSocket,
   ErrorParams,
   Events,
-  ForfeitRequestArgs,
-  GameStarted,
-  JoinLobbyRequestArgs,
-  JoinLobbyResponses,
   Player,
-  PlayTurnRequestArgs,
-  PlayTurnResponse,
-  RestartRequestArgs,
-  ResyncArgs,
-  Sync,
 } from '@u3t/common';
 import React, { useEffect, useState } from 'react';
 import { StaticContext } from 'react-router';
 import { RouteComponentProps } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
 
 import ErrorModal from '../../Components/ErrorModal';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
@@ -40,7 +31,7 @@ type RouteProps = RouteComponentProps<
 
 interface Props extends RouteProps {
   spectator?: boolean;
-  socket: Socket;
+  socket: ClientSocket;
 }
 
 const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
@@ -66,13 +57,13 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   useEffect(() => {
     if (!socket.connected) socket.open();
 
-    socket.on(Events.GameStarted, (data: GameStarted) => {
+    socket.on(Events.StartGame, (data) => {
       sessionStorage.setItem(data.lobbyId, data.playerId);
-      dispatch({ event: Events.GameStarted, data });
+      dispatch({ event: Events.StartGame, data });
       setState(data.state);
     });
 
-    socket.on(Events.Sync, (data: Sync) => {
+    socket.on(Events.Sync, (data) => {
       dispatch({ event: Events.Sync, data });
       setState(data.state);
     });
@@ -83,14 +74,14 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
 
     socket.on(Events.Error, (error) => setError(error));
 
-    socket.on(Events.Disconnect, () => setSocketConnectionLost(true));
+    socket.on('disconnect', () => setSocketConnectionLost(true));
 
     socket.io.on('reconnect', () => {
       setSocketConnectionLost(false);
       socket.emit(Events.Resync, {
-        playerId: lobbyStateRef.current.playerId,
-        lobbyId: lobbyStateRef.current.lobbyId,
-      } as ResyncArgs);
+        playerId: lobbyStateRef.current.playerId!,
+        lobbyId: lobbyStateRef.current.lobbyId!,
+      });
     });
 
     return () => {
@@ -108,8 +99,8 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
         lobbyId: lobbyState.lobbyId,
         playerId: lobbyState.playerId,
         spectator: lobbyState.isSpectator,
-      } as JoinLobbyRequestArgs,
-      (data: JoinLobbyResponses) => {
+      },
+      (data) => {
         switch (data.role) {
           case 'new-player':
             dispatch({ event: Events.JoinedLobby, data });
@@ -142,13 +133,13 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
     socket.emit(
       Events.PlayTurn,
       {
-        lobbyId,
-        playerId,
+        lobbyId: lobbyId!,
+        playerId: playerId!,
         board,
         cell,
         dev: (window as any).dev,
-      } as PlayTurnRequestArgs,
-      (res: PlayTurnResponse) => {
+      },
+      (res) => {
         if (!res.valid) {
           console.error(res.error);
         }
@@ -158,17 +149,17 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
 
   const restartGame = () => {
     socket.emit(Events.Restart, {
-      playerId: lobbyState.playerId,
-      lobbyId: lobbyState.lobbyId,
-    } as RestartRequestArgs);
+      playerId: lobbyState.playerId!,
+      lobbyId: lobbyState.lobbyId!,
+    });
   };
 
   const forfeitGame = () => {
     if (!window.confirm('Are you sure you want to forfeit?')) return;
     socket.emit(Events.Forfeit, {
-      playerId: lobbyState.playerId,
-      lobbyId: lobbyState.lobbyId,
-    } as ForfeitRequestArgs);
+      playerId: lobbyState.playerId!,
+      lobbyId: lobbyState.lobbyId!,
+    });
   };
 
   return (

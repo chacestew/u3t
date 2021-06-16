@@ -1,16 +1,9 @@
 import { instrument } from '@socket.io/admin-ui';
 import {
-  CreateLobbyResponse,
+  ClientToServerEvents,
   Events,
-  ForfeitRequestArgs,
   IdFields,
-  JoinLobbyRequestArgs,
-  JoinLobbyResponses,
-  PlayTurnRequestArgs,
-  PlayTurnResponse,
-  RestartRequestArgs,
-  ResyncArgs,
-  SocketCallback,
+  ServerToClientEvents,
 } from '@u3t/common';
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
@@ -26,7 +19,7 @@ import {
 } from './handlers';
 import logger from './logger';
 
-const io = new Server();
+const io = new Server<ClientToServerEvents, ServerToClientEvents>();
 
 const errorHandler = (err: Error | BadRequestError | NotFoundError, socket: Socket) => {
   if (err instanceof NotFoundError) {
@@ -43,7 +36,7 @@ const joinRooms = (data: Partial<IdFields>, socket: Socket) => {
   if (data.playerId) socket.join(data.playerId);
 };
 
-io.on('connection', (socket: Socket) => {
+io.on('connection', (socket) => {
   logger.info('New connection', { socket: socket.id });
 
   if (process.env.NODE_ENV === 'development') {
@@ -55,54 +48,54 @@ io.on('connection', (socket: Socket) => {
   }
 
   socket.use(([event, data], next) => {
-    if (event !== Events.Disconnect && event !== Events.CreateLobby) {
+    if (event !== 'disconnect' && event !== Events.CreateLobby) {
       joinRooms(data, socket);
     }
     next();
   });
 
-  socket.on(Events.CreateLobby, (cb: SocketCallback<CreateLobbyResponse>) => {
+  socket.on(Events.CreateLobby, (cb) => {
     logger.info(`CreateLobby`, { socket: socket.id });
-    createLobby(socket, cb)
+
+    createLobby(cb)
       .then((data) => joinRooms(data, socket))
       .catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(
-    Events.JoinLobby,
-    (data: JoinLobbyRequestArgs, cb: SocketCallback<JoinLobbyResponses>) => {
-      logger.info(`JoinLobby`, { socket: socket.id, ...data });
-      joinLobby(socket, io, data, cb).catch((error) => errorHandler(error, socket));
-    }
-  );
+  socket.on(Events.JoinLobby, (data, cb) => {
+    logger.info(`JoinLobby`, { socket: socket.id, ...data });
 
-  socket.on(
-    Events.PlayTurn,
-    (data: PlayTurnRequestArgs, cb: SocketCallback<PlayTurnResponse>) => {
-      logger.info(`PlayTurn`, { socket: socket.id, ...data });
-      playTurn(data, io, cb).catch((error) => {
-        cb({ valid: false, error });
-        errorHandler(error, socket);
-      });
-    }
-  );
+    joinLobby(socket, io, data, cb).catch((error) => errorHandler(error, socket));
+  });
 
-  socket.on(Events.Restart, (data: RestartRequestArgs) => {
+  socket.on(Events.PlayTurn, (data, cb) => {
+    logger.info(`PlayTurn`, { socket: socket.id, ...data });
+
+    playTurn(data, io, cb).catch((error) => {
+      cb({ valid: false, error });
+      errorHandler(error, socket);
+    });
+  });
+
+  socket.on(Events.Restart, (data) => {
     logger.info(`RequestRestart`, { socket: socket.id, ...data });
+
     requestRestart(data, socket, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Forfeit, (data: ForfeitRequestArgs) => {
+  socket.on(Events.Forfeit, (data) => {
     logger.info(`Forfeit`, { socket: socket.id, ...data });
+
     forfeit(data, io).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Resync, (data: ResyncArgs) => {
+  socket.on(Events.Resync, (data) => {
     logger.info('Reconnect', { socket: socket.id, ...data });
+
     resync(data, socket).catch((error) => errorHandler(error, socket));
   });
 
-  socket.on(Events.Disconnect, () => {
+  socket.on('disconnect', () => {
     logger.info('Closed connection', { socket: socket.id });
   });
 });

@@ -1,10 +1,10 @@
 import {
   Events,
-  GameStarted,
+  GameStartedResponse,
   JoinLobbyResponse_NewPlayer,
   JoinLobbyResponse_Reconnection,
   JoinLobbyResponse_Spectator,
-  Sync,
+  SyncResponse,
 } from '@u3t/common';
 import { useEffect, useReducer, useRef } from 'react';
 
@@ -29,18 +29,18 @@ const initialState: IMultiplayerState = {
 };
 
 type Action =
-  | { event: Events.GameStarted; data: GameStarted }
-  | { event: Events.JoinedLobby; data: JoinLobbyResponse_NewPlayer }
-  | { event: Events.Sync; data: Sync }
-  | { event: Events.RejoinedGame; data: JoinLobbyResponse_Reconnection }
-  | { event: Events.JoinedAsSpectator; data: JoinLobbyResponse_Spectator }
-  | { event: Events.RestartRequested }
+  | { event: typeof Events.StartGame; data: GameStartedResponse }
+  | { event: typeof Events.JoinedLobby; data: JoinLobbyResponse_NewPlayer }
+  | { event: typeof Events.Sync; data: SyncResponse }
+  | { event: typeof Events.RejoinedGame; data: JoinLobbyResponse_Reconnection }
+  | { event: typeof Events.JoinedAsSpectator; data: JoinLobbyResponse_Spectator }
+  | { event: typeof Events.RestartRequested }
   | { event: 'set'; data: Partial<IMultiplayerState> }
   | { event: 'reset' };
 
 export function reducer(state: IMultiplayerState, action: Action): IMultiplayerState {
   switch (action.event) {
-    case Events.GameStarted: {
+    case Events.StartGame: {
       return {
         ...state,
         started: true,

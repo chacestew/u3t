@@ -1,14 +1,8 @@
 import { faGlobe, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  CreateLobbyResponse,
-  Events,
-  getInitialState,
-  JoinLobbyResponses,
-} from '@u3t/common';
+import { ClientSocket, Events, getInitialState } from '@u3t/common';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
 import styled from 'styled-components';
 
 import { Button, ButtonLink } from '../../Components/Button';
@@ -98,7 +92,7 @@ const MenuSection = styled.section<{ marginBottom?: boolean }>`
   }
 `;
 
-export default function Home({ socket }: { socket: Socket }) {
+export default function Home({ socket }: { socket: ClientSocket }) {
   const [codeInputMode, setCodeInputMode] = useState<CodeInputMode>(null);
   const history = useHistory();
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -128,7 +122,7 @@ export default function Home({ socket }: { socket: Socket }) {
   }, [isRequestingLobby, socket]);
 
   const onCreateGame = () => {
-    socket.emit(Events.CreateLobby, (data: CreateLobbyResponse) => {
+    socket.emit(Events.CreateLobby, (data) => {
       history.push(`/game/${data.lobbyId}`, data);
     });
     setIsRequestingLobby(true);
@@ -141,7 +135,7 @@ export default function Home({ socket }: { socket: Socket }) {
         lobbyId,
         spectator: codeInputMode === 'spectate',
       },
-      (data: JoinLobbyResponses) => {
+      (data) => {
         console.log('data inside onSubmit', data);
         history.push(`/game/${data.lobbyId}`, data);
       }

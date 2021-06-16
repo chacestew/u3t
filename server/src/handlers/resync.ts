@@ -1,18 +1,12 @@
-import { emitter, Events, ResyncArgs, Sync } from '@u3t/common';
-import { Socket } from 'socket.io';
+import { Events, ResyncArgs, ServerSocket } from '@u3t/common';
 
 import { lobbies } from '../entities';
 
-const emitSync = emitter<Sync>(Events.Sync);
-
-async function Resync(data: ResyncArgs, socket: Socket) {
+async function Resync(data: ResyncArgs, socket: ServerSocket) {
   const lobby = lobbies.get(data.lobbyId);
   const game = lobby.getGame();
 
-  emitSync(socket, {
-    state: game.getState(),
-    seat: game.getSeat(data.playerId),
-  });
+  socket.emit(Events.Sync, { state: game.getState(), seat: game.getSeat(data.playerId) });
 }
 
 export default Resync;

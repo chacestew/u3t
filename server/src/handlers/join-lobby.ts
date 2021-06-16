@@ -1,25 +1,23 @@
 import {
+  Ack,
   Events,
-  GameStarted,
-  ioEmitter,
   JoinLobbyRequestArgs,
   JoinLobbyResponses,
-  SocketCallback,
+  ServerManager,
+  ServerSocket,
 } from '@u3t/common';
-import { Server, Socket } from 'socket.io';
 
 import { lobbies } from '../entities';
 import logger from '../logger';
 
-const emitGameStarted = ioEmitter<GameStarted>(Events.GameStarted);
-
 export default async function joinLobby(
-  socket: Socket,
-  io: Server,
+  socket: ServerSocket,
+  io: ServerManager,
   data: JoinLobbyRequestArgs,
-  cb: SocketCallback<JoinLobbyResponses>
+  cb: Ack<JoinLobbyResponses>
 ) {
   const lobby = lobbies.get(data.lobbyId);
+
   // Handle spectator joining
   if ((!data.playerId && lobby.hasGame()) || data.spectator) {
     cb({
@@ -60,7 +58,7 @@ export default async function joinLobby(
           playerId,
           seat: game.getSeat(playerId),
         });
-        emitGameStarted(io, playerId, {
+        io.to(playerId).emit(Events.StartGame, {
           lobbyId: lobby.id,
           playerId,
           seat: game.getSeat(playerId),

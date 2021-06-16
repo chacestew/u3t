@@ -1,3 +1,4 @@
+import { Socket as SocketIOClientSocket } from 'socket.io-client';
 import { Server, Socket } from 'socket.io';
 
 export type Cell = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -36,35 +37,54 @@ export enum Errors {
   CellOccupied = 'Cell is occupied',
 }
 
-export enum Events {
-  CreateLobby = 'create-lobby',
-  LobbyReady = 'lobby-ready',
-  StartGame = 'start-game',
-  GameStarted = 'start-game',
-  RejoinGame = 'rejoin-game',
-  RejoinedGame = 'rejoined-game',
-  JoinLobby = 'join-lobby',
-  PlayTurn = 'play-turn',
-  InvalidTurn = 'invalid-turn',
-  Sync = 'sync',
-  Restart = 'restart-game',
-  RestartRequested = 'restart-requested',
-  JoinedAsSpectator = 'joined-as-spectator',
-  Disconnect = 'disconnect',
-  Error = 'error',
-  Forfeit = 'forfeit',
-  JoinedLobby = 'joined-lobby',
-  Resync = 'resync',
+export const Events = {
+   CreateLobby: 'create-lobby',
+   StartGame: 'start-game',
+   RejoinedGame: 'rejoined-game', // local only
+   JoinLobby: 'join-lobby',
+   PlayTurn: 'play-turn',
+   Sync: 'sync',
+   Restart: 'restart-game',
+   RestartRequested: 'restart-requested',
+   JoinedAsSpectator: 'joined-as-spectator', // local only
+   Error: 'error',
+   Forfeit: 'forfeit',
+   JoinedLobby: 'joined-lobby', // local only
+   Resync: 'resync',
+} as const;
+
+export interface ClientToServerEvents {
+  [Events.CreateLobby]: (cb: Ack<CreateLobbyResponse>) => void;
+  [Events.JoinLobby]: (
+    data: JoinLobbyRequestArgs,
+    cb: Ack<JoinLobbyResponses>
+  ) => void;
+  [Events.Resync]: (data: ResyncArgs) => void;
+  [Events.PlayTurn]: (data: PlayTurnRequestArgs, cb: Ack<PlayTurnResponse>) => void;
+  [Events.Forfeit]: (data: ForfeitRequestArgs) => void;
+  [Events.Restart]: (data: RestartRequestArgs) => void;
 }
 
-export type ServerError = 'not-found' | 'will-expire';
+export interface ServerToClientEvents {
+  [Events.StartGame]: (data: GameStartedResponse) => void;
+  [Events.Sync]: (data: SyncResponse) => void;
+  [Events.RestartRequested]: () => void;
+  [Events.JoinedLobby]: (data: JoinLobbyResponses) => void;
+  [Events.Error]: (data: ErrorParams) => void;
+}
+
+export type ClientSocket = SocketIOClientSocket<ServerToClientEvents, ClientToServerEvents>
+
+export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>
+
+export type ServerManager = Server<ClientToServerEvents, ServerToClientEvents>
 
 export type ErrorParams = {
-  code: ServerError;
+  code: 'not-found';
   errorData?: { [key: string]: string };
 };
 
-export type SocketCallback<ResponsePayload> = (payload: ResponsePayload) => void;
+export type Ack<ResponsePayload> = (payload: ResponsePayload) => void;
 
 // CreateLobby
 
@@ -76,8 +96,8 @@ export type CreateLobbyResponse = {
 // JoinLobby
 
 export interface JoinLobbyRequestArgs {
-  lobbyId: string;
-  playerId?: string;
+  lobbyId: string | null;
+  playerId?: string | null;
   spectator?: boolean;
 }
 
@@ -127,12 +147,10 @@ export interface PlayTurnResponse {
 
 // GameStarted
 
-export interface GameStarted extends IdFields {
+export interface GameStartedResponse extends IdFields {
   seat: Player;
   state: IGameState;
 }
-
-// RejoinGame
 
 export type ResyncArgs = IdFields;
 
@@ -146,23 +164,7 @@ export type ForfeitRequestArgs = IdFields;
 
 // Sync
 
-export interface Sync {
+export interface SyncResponse {
   state: IGameState;
   seat?: Player;
 }
-
-// LobbyReady
-
-export interface LobbyReady {
-  lobbyId: string;
-}
-
-export const emitter =
-  <Args>(event: Events) =>
-  (socket: Socket, args?: Args) =>
-    socket.emit(event, args);
-
-export const ioEmitter =
-  <Args>(event: Events) =>
-  (io: Server, to: string, args?: Args) =>
-    io.to(to).emit(event, args);
