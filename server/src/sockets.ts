@@ -1,3 +1,4 @@
+import { instrument } from '@socket.io/admin-ui';
 import {
   CreateLobbyResponse,
   Events,
@@ -49,7 +50,7 @@ io.on('connection', (socket: Socket) => {
     socket.use((socket, next) => {
       setTimeout(() => {
         next();
-      }, 1000);
+      }, 500);
     });
   }
 
@@ -107,11 +108,23 @@ io.on('connection', (socket: Socket) => {
 });
 
 export default function attachSockets(server: HttpServer) {
-  return io.attach(server, {
+  const origin = ['https://admin.socket.io'];
+
+  if (process.env.NODE_ENV === 'development') origin.push('http://localhost:8000');
+
+  io.attach(server, {
     path: '/ws',
     cors: {
-      origin: 'http://localhost:8000',
-      methods: ['GET', 'POST'],
+      origin,
+      credentials: true,
+    },
+  });
+
+  instrument(io, {
+    auth: {
+      type: 'basic',
+      username: 'admin',
+      password: '$2b$12$hVrCGry5JUgdA0Hu/I4kUugDkYSgMVIn7UjlbJi3yir6MttL3KZCa',
     },
   });
 }
