@@ -5,7 +5,7 @@ const historyFallback = require('connect-history-api-fallback');
 const app = express();
 const server = http.createServer(app);
 
-app.use(historyFallback({ index: '/public/index.html' }));
+app.use(historyFallback({ index: '/index.html' }));
 
 const start = () => {
   const mode = process.env.NODE_ENV;

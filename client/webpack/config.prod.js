@@ -1,6 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
+const { GenerateSW } = require('workbox-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+
 const { loaders } = require('./helpers');
 
 module.exports = {
@@ -10,7 +13,6 @@ module.exports = {
   mode: 'production',
   output: {
     filename: 'js/[name].[contenthash:8].js',
-    publicPath: '/',
   },
   optimization: {
     splitChunks: {
@@ -21,12 +23,16 @@ module.exports = {
     rules: [loaders.JS(), loaders.Images()],
   },
   plugins: [
-    new HtmlWebpackPlugin({ title: 'React Sweet Spot', template: 'index.html' }),
+    new HtmlWebpackPlugin({ template: '/public/index.html' }),
+    new CopyPlugin({
+      patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.html') }],
+    }),
     new CompressionPlugin({
       test: /\.(js|css)$/,
     }),
     new BrotliPlugin({
       test: /\.(js|css)$/,
     }),
+    new GenerateSW(),
   ],
 };
