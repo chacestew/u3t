@@ -13,6 +13,7 @@ module.exports = {
   mode: 'production',
   output: {
     filename: 'js/[name].[contenthash:8].js',
+    publicPath: '/'
   },
   optimization: {
     splitChunks: {
