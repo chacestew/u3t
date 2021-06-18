@@ -38,27 +38,24 @@ export enum Errors {
 }
 
 export const Events = {
-   CreateLobby: 'create-lobby',
-   StartGame: 'start-game',
-   RejoinedGame: 'rejoined-game', // local only
-   JoinLobby: 'join-lobby',
-   PlayTurn: 'play-turn',
-   Sync: 'sync',
-   Restart: 'restart-game',
-   RestartRequested: 'restart-requested',
-   JoinedAsSpectator: 'joined-as-spectator', // local only
-   Error: 'error',
-   Forfeit: 'forfeit',
-   JoinedLobby: 'joined-lobby', // local only
-   Resync: 'resync',
+  CreateLobby: 'create-lobby',
+  StartGame: 'start-game',
+  RejoinedGame: 'rejoined-game', // local only
+  JoinLobby: 'join-lobby',
+  PlayTurn: 'play-turn',
+  Sync: 'sync',
+  Restart: 'restart-game',
+  RestartRequested: 'restart-requested',
+  JoinedAsSpectator: 'joined-as-spectator', // local only
+  Error: 'error',
+  Forfeit: 'forfeit',
+  JoinedLobby: 'joined-lobby', // local only
+  Resync: 'resync',
 } as const;
 
 export interface ClientToServerEvents {
   [Events.CreateLobby]: (cb: Ack<CreateLobbyResponse>) => void;
-  [Events.JoinLobby]: (
-    data: JoinLobbyRequestArgs,
-    cb: Ack<JoinLobbyResponses>
-  ) => void;
+  [Events.JoinLobby]: (data: JoinLobbyRequestArgs, cb: Ack<JoinLobbyResponses>) => void;
   [Events.Resync]: (data: ResyncArgs) => void;
   [Events.PlayTurn]: (data: PlayTurnRequestArgs, cb: Ack<PlayTurnResponse>) => void;
   [Events.Forfeit]: (data: ForfeitRequestArgs) => void;
@@ -73,11 +70,14 @@ export interface ServerToClientEvents {
   [Events.Error]: (data: ErrorParams) => void;
 }
 
-export type ClientSocket = SocketIOClientSocket<ServerToClientEvents, ClientToServerEvents>
+export type ClientSocket = SocketIOClientSocket<
+  ServerToClientEvents,
+  ClientToServerEvents
+>;
 
-export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>
+export type ServerSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 
-export type ServerManager = Server<ClientToServerEvents, ServerToClientEvents>
+export type ServerManager = Server<ClientToServerEvents, ServerToClientEvents>;
 
 export type ErrorParams = {
   code: 'not-found';
@@ -140,10 +140,11 @@ export interface PlayTurnRequestArgs extends IdFields {
   dev: boolean;
 }
 
-export interface PlayTurnResponse {
-  valid: boolean;
-  error?: Errors;
-}
+export type PlayTurnResponse =
+  | {
+      valid: true;
+    }
+  | { valid: false; state: IGameState };
 
 // GameStarted
 

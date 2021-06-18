@@ -33,11 +33,12 @@ async function PlayTurn(
   const state = lobby.getGame().getState();
 
   if (error) {
+    cb({ valid: false, state });
     throw new Error(error);
-  } else {
-    cb({ valid: true });
-    io.to(lobby.id).emit(Events.Sync, { state });
   }
+
+  cb({ valid: true });
+  io.to(lobby.id).emit(Events.Sync, { state });
 }
 
 export default PlayTurn;

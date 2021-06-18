@@ -141,7 +141,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
       },
       (res) => {
         if (!res.valid) {
-          console.error(res.error);
+          setState(res.state);
         }
       }
     );

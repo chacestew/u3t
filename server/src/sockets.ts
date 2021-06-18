@@ -21,13 +21,17 @@ import logger from './logger';
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents>();
 
-const errorHandler = (err: Error | BadRequestError | NotFoundError, socket: Socket) => {
+const errorHandlerFactory = (socket: Socket) => (
+  err: Error | BadRequestError | NotFoundError
+) => {
+  let errorData = { socket: socket.id };
+
   if (err instanceof NotFoundError) {
     socket.emit('error', { code: 'not-found' });
-    logger.error(err.message, err.data);
-  } else {
-    logger.error(err.message);
+    errorData = { ...errorData, ...err.data };
   }
+
+  logger.error(err.message, errorData);
 };
 
 const joinRooms = (data: Partial<IdFields>, socket: Socket) => {
@@ -38,6 +42,8 @@ const joinRooms = (data: Partial<IdFields>, socket: Socket) => {
 
 io.on('connection', (socket) => {
   logger.info('New connection', { socket: socket.id });
+
+  const errorHandler = errorHandlerFactory(socket);
 
   if (process.env.NODE_ENV === 'development') {
     socket.use((socket, next) => {
@@ -59,40 +65,37 @@ io.on('connection', (socket) => {
 
     createLobby(cb)
       .then((data) => joinRooms(data, socket))
-      .catch((error) => errorHandler(error, socket));
+      .catch(errorHandler);
   });
 
   socket.on(Events.JoinLobby, (data, cb) => {
     logger.info(`JoinLobby`, { socket: socket.id, ...data });
 
-    joinLobby(socket, io, data, cb).catch((error) => errorHandler(error, socket));
+    joinLobby(socket, io, data, cb).catch(errorHandler);
   });
 
   socket.on(Events.PlayTurn, (data, cb) => {
     logger.info(`PlayTurn`, { socket: socket.id, ...data });
 
-    playTurn(data, io, cb).catch((error) => {
-      cb({ valid: false, error });
-      errorHandler(error, socket);
-    });
+    playTurn(data, io, cb).catch(errorHandler);
   });
 
   socket.on(Events.Restart, (data) => {
     logger.info(`RequestRestart`, { socket: socket.id, ...data });
 
-    requestRestart(data, socket, io).catch((error) => errorHandler(error, socket));
+    requestRestart(data, socket, io).catch(errorHandler);
   });
 
   socket.on(Events.Forfeit, (data) => {
     logger.info(`Forfeit`, { socket: socket.id, ...data });
 
-    forfeit(data, io).catch((error) => errorHandler(error, socket));
+    forfeit(data, io).catch(errorHandler);
   });
 
   socket.on(Events.Resync, (data) => {
     logger.info('Reconnect', { socket: socket.id, ...data });
 
-    resync(data, socket).catch((error) => errorHandler(error, socket));
+    resync(data, socket).catch(errorHandler);
   });
 
   socket.on('disconnect', () => {
