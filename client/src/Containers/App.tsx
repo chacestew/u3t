@@ -9,6 +9,7 @@ import GlobalStyle from '../styles/global';
 import { media } from '../styles/mixins';
 import { gridSize } from '../utils/palette';
 import About from './About/About';
+import Contact from './Contact/contact';
 import Footer from './Footer';
 import Header from './Header';
 import Home from './Home';
@@ -68,6 +69,7 @@ function App() {
           <Route path="/ai" component={PlayAI} />
           <Route path="/rules" component={Rules} />
           <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
           <Redirect to="/" />
         </Switch>
       </Main>

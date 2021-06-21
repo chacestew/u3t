@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import styled from 'styled-components';
 
-import { boxShadow } from '../../styles/mixins';
+import { boxShadow, media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 
 const Article = styled.div`
@@ -12,12 +12,15 @@ const Article = styled.div`
   // padding: 1em;
 `;
 
-const Section = styled.div`
+export const Section = styled.div`
   display: flex;
   padding: 1em;
-  margin-top: 1em;
-  border-radius: 6px;
   ${boxShadow}
+
+  ${media.aboveMobileL`
+    // margin-top: 1em;
+    // border-radius: 6px;
+  `}
 
   background-color: ${palette.primaryLight};
   // border-bottom: 2px solid ${palette.primaryLight};
