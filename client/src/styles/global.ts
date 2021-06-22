@@ -1,7 +1,6 @@
 import { createGlobalStyle, css } from 'styled-components';
 import styledNormalize from 'styled-normalize';
 
-import { media } from '../styles/mixins';
 import palette from '../utils/palette';
 
 const globalStyles = css`
@@ -37,7 +36,6 @@ const globalStyles = css`
 
     #root {
       background-color: ${palette.background};
-      height: 100vh;
       min-height: 100vh;
       margin: 0 auto;
       display: flex;

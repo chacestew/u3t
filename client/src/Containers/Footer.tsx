@@ -1,11 +1,12 @@
 import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import palette, { gridSize } from '../utils/palette';
+import { media } from '../styles/mixins';
+import palette from '../utils/palette';
 
 const StyledFooter = styled.footer`
   display: flex;
@@ -17,7 +18,7 @@ const StyledFooter = styled.footer`
 const FooterInner = styled.div`
   max-width: 580px;
   display: flex;
-  padding: 1em;
+  align-items: stretch;
   width: 100%;
   justify-content: space-between;
   align-items: center;
@@ -26,23 +27,71 @@ const FooterInner = styled.div`
   font-weight: bold;
 `;
 
+const SocialLinks = styled.ul`
+  height: 100%;
+  display: flex;
+  padding-right: 0.5em;
+
+  > * + * {
+    margin-left: 0.1em;
+  }
+`;
+
+const IconLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+`;
+
+const IconAnchor = styled.a`
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+`;
+
+const Button = styled.button`
+  cursor: pointer;
+  padding: 0 0.5em;
+  color: white;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: none;
+`;
+
+const Text = styled.span`
+  display: flex;
+  align-items: center;
+  padding-left: 1em;
+
+  ${media.aboveMobileL`display: none;`}
+
+  &.desktop {
+    display: none;
+    ${media.aboveMobileL`display: flex;`}
+  }
+`;
+
 const Footer = () => {
   return (
     <StyledFooter>
       <FooterInner>
-        <span>© Chace Stewart {new Date().getFullYear()}</span>
-        <div>
-          <Link css="text-decoration: underline;" to="/about">
-            About
-          </Link>
-          <a css="margin-left: 1em;" href="https://www.github.com/chacestew">
+        <Text>© C Stewart {new Date().getFullYear()}</Text>
+        <Text className="desktop">© Chace Stewart {new Date().getFullYear()}</Text>
+        <SocialLinks>
+          <IconLink to="/contact">
+            <FontAwesomeIcon icon={faEnvelope} size="lg" />
+          </IconLink>
+          <IconAnchor href="https://www.github.com/chacestew">
             <FontAwesomeIcon icon={faGithub} size="lg" />
-          </a>
-          <a css="margin-left: 1em;" href="https://www.github.com/chacestew">
+          </IconAnchor>
+          <IconAnchor href="https://www.github.com/chacestew">
             <FontAwesomeIcon icon={faDiscord} size="lg" />
-          </a>
-          <FontAwesomeIcon css="margin-left: 1em;" icon={faDownload} size="lg" />
-        </div>
+          </IconAnchor>
+          <Button>
+            <FontAwesomeIcon icon={faDownload} size="lg" />
+          </Button>
+        </SocialLinks>
       </FooterInner>
     </StyledFooter>
   );
