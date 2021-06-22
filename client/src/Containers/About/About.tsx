@@ -90,8 +90,8 @@ export default function About() {
         </p>
         <p>
           This application is provided freely for entertainment and education and will
-          remain ad-free forever. If you would like to support the project, you can keep
-          me and the server chugging through coffee donations below.
+          remain ad-free forever. You can help to keep me and the server chugging through
+          coffee donations below.
         </p>
         <CoffeeButton
           href="https://www.buymeacoffee.com/u3tapp"

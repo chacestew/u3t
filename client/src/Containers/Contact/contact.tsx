@@ -123,17 +123,21 @@ export default function Contact() {
 
           setSentStatus('sending');
 
-          const response = await fetch('http://localhost:8001/contact', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(state),
-          });
+          try {
+            const response = await fetch('/contact', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(state),
+            });
 
-          if (response.ok) {
-            setSentStatus('sent');
-          } else {
+            if (response.ok) {
+              setSentStatus('sent');
+            } else {
+              setSentStatus('failed');
+            }
+          } catch (error) {
             setSentStatus('failed');
           }
         }}
