@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Button } from '../../Button';
 
 interface Props {
+  disabled?: boolean;
   onClick: () => void;
   text: string;
   icon: JSX.Element;
@@ -18,9 +19,9 @@ const StyledButton = styled(Button)`
   }
 `;
 
-export default function RestartButton({ onClick, text, icon }: Props) {
+export default function RestartButton({ onClick, text, icon, disabled }: Props) {
   return (
-    <StyledButton shadow={false} onClick={onClick}>
+    <StyledButton disabled={disabled} onClick={onClick}>
       {text}
       {icon}
     </StyledButton>

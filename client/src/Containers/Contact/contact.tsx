@@ -1,13 +1,10 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { send } from 'process';
-import React, { FormEvent, FormEventHandler, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../../Components/Button';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
-import { Section } from '../About/About';
+import { Article } from '../Rules/index';
 
 const emailRegex =
   /^([a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)$/;
@@ -44,7 +41,8 @@ const B = styled(Button)`
   grid-area: 'button';
 `;
 
-const Form = styled(Section)`
+const Form = styled(Article)`
+  padding: 1em;
   display: flex;
   flex-direction: column;
   color: white;

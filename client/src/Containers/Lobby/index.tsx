@@ -186,6 +186,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
             state={state}
             RestartButton={
               <RestartButton
+                disabled={!lobbyState.started}
                 onClick={forfeitGame}
                 text="Forfeit"
                 icon={

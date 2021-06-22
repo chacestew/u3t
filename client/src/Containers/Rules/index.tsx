@@ -1,83 +1,110 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import pic1 from '../../../assets/learn1.png';
 import pic2 from '../../../assets/learn2.png';
 import pic3 from '../../../assets/learn3.png';
+import { TurnListCell } from '../../Components/GameArea/TurnList/TurnListItem';
+import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 
-const Section = styled.div`
-  display: flex;
-  padding: 0.5em;
-  // background-color: ${palette.primaryLight};
-  // border-bottom: 2px solid ${palette.primaryLight};
+export const Section = styled.div<{ $dark?: boolean }>`
+  display: grid;
+  grid-template-areas:
+    'text'
+    'image';
+  grid-gap: 1em;
+  padding: 1em;
 
-  img {
-    object-fit: contain;
-  }
+  ${media.aboveMobileL`
+    grid-template-areas: 'text image';
+    grid-template-columns: 1fr 1fr;
+  `}
+
+  ${({ $dark }) => $dark && `background-color: ${palette.primaryDark};`}
 `;
 
 const Text = styled.div`
-  width: 55%;
-  color: white; //${palette.primaryLight};
-  background-color: ${palette.primaryLight};
-  margin-${({ side }) => side}: 1em;
-  padding: 1em;
+  grid-area: text;
 
-  h3 {
-    margin: 0;
-    font-style: italic;
-    margin-bottom: 1em;
+  > * + * {
+    margin-top: 1em;
   }
 `;
 
-export default () => (
-  <div>
-    <Section>
-      <Text side="right">
-        <h3>Three in a row</h3>
-        Ultimate tic-tac-toe is played over nine smaller tic-tac-toe boards. You must win
-        three smaller boards in a row to win the game.
-      </Text>
-      <img
-        css={`
-          // background-color: ${palette.primaryLight};
-          // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
-          width: 45%;
-        `}
-        src={pic1}
-      />
-    </Section>
-    <Section>
-      <img
-        css={`
-          // background-color: ${palette.primaryLight};
-          // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
-          width: 45%;
-        `}
-        src={pic2}
-      />
-      <Text side="left">
-        <h3>Every move counts</h3>
-        Plan your moves carefully as the cell you choose will decide the next board in
-        play. Here <b>X</b> has chosen the top-right cell of the middle board, so <b>O</b>{' '}
-        must play in the top-right board.
-      </Text>
-    </Section>
-    <Section>
-      <Text side="right">
-        <h3>No Man's Land</h3>When a board has been won or has no cells remaining, it
-        becomes unplayable. If a player is sent to such a board, that player may{' '}
-        <b>choose any open board to play in.</b>
-      </Text>
-      <img
-        css={`
-          // background-color: ${palette.primaryLight};
-          // box-shadow: 0px 2px 2px rgba(204, 197, 185, 0.5);
-          width: 45%;
-        `}
-        src={pic3}
-      />
-    </Section>
-  </div>
-);
+export const Article = styled.article`
+  background-color: ${palette.primaryLight};
+  color: white;
+  line-height: 135%;
+`;
+
+const Image = styled.img`
+  grid-area: image;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+`;
+
+const Description = styled.p`
+  padding: 1em;
+`;
+
+const InlineLink = styled(Link)`
+  text-decoration: underline;
+`;
+
+export default function Learn() {
+  return (
+    <Article>
+      <Description>
+        Ultimate Tic-Tac-Toe uses all the mechanics of the regular game in a 9x9 format.
+        The difference is in where you get to play. Read on to learn more!
+      </Description>
+      <Section $dark>
+        <Image src={pic2} />
+        <Text>
+          <h3>Taking Turns</h3>
+          <p>
+            Every time a player chooses a cell, the other player is sent to the board in
+            the same position.
+          </p>
+          <p>
+            In this example, <TurnListCell cellType={1} /> has made his first move in the{' '}
+            <b>top-right</b> cell of the center board. Now <TurnListCell cellType={2} />{' '}
+            must choose a cell from the <b>top-right</b> board.
+          </p>
+        </Text>
+      </Section>
+      <Section>
+        <Text>
+          <h3>Occupied Boards</h3>
+          <p>Once a board is either won or tied, it can no longer be played in.</p>
+          <p>
+            If a player is sent to such a board, they can choose <b>any open board</b> to
+            play in.
+          </p>
+          <p>Be careful! Much of the game's strategy lies in this simple rule.</p>
+        </Text>
+        <Image src={pic3} />
+      </Section>
+      <Section $dark>
+        <Text>
+          <h3>Winning</h3>
+          <p>
+            You win overall when you win <b>three boards in a row</b>.
+          </p>
+          <p>
+            It is much harder to reach a stalemate in U3T due to the increased constraints
+            and permutations of moves (but still possible!).
+          </p>
+          <p>
+            Have fun! You can also learn how this app was made{' '}
+            <InlineLink to="/about">here</InlineLink>.
+          </p>
+        </Text>
+        <Image src={pic1} />
+      </Section>
+    </Article>
+  );
+}

@@ -129,13 +129,13 @@ const Header = () => (
       </Logo>
       <NavList>
         <NavItem exact to="/" $alwaysShow>
-          PLAY
+          Play
         </NavItem>
         <NavItem to="/rules" $alwaysShow>
-          LEARN
+          Learn
         </NavItem>
-        <NavItem to="/about">ABOUT</NavItem>
-        <NavItem to="/contact">CONTACT</NavItem>
+        <NavItem to="/about">About</NavItem>
+        <NavItem to="/contact">Contact</NavItem>
         <DropMenu />
       </NavList>
     </StyledNav>
