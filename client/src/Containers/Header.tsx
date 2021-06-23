@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import logo from '../../assets/logo.png';
 import { media } from '../styles/mixins';
 import palette, { gridSize } from '../utils/palette';
 
@@ -51,14 +52,16 @@ const NavItem = styled(NavLink)<{ $alwaysShow?: boolean }>`
 
 const DropMenuNavItem = styled(Link)`
   ${NavItemStyles}
+  padding: 0;
   display: flex;
   justify-content: center;
+  width: 100%;
 `;
 
-const Logo = styled(NavItem)`
-  padding: 0 0.5em;
-  font-size: 2em;
-  background-color: transparent;
+const Logo = styled(Link)`
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
 `;
 
 const MenuIconButton = styled.button`
@@ -76,14 +79,24 @@ const MenuIconButton = styled.button`
   `}
 `;
 
-const Flex = styled.div`
+const StyledDropMenu = styled.div`
   top: 100%;
   right: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: absolute;
   z-index: 10;
   min-width: 50vw;
+  background-color: ${palette.primaryDark};
+  border: 1px solid ${palette.primaryLight};
+  border-right: 0;
+`;
+
+const Divider = styled.div`
+  height: 1px;
+  width: 80%;
+  background-color: ${palette.primaryLight};
 `;
 
 const DropMenu = () => {
@@ -112,10 +125,11 @@ const DropMenu = () => {
     <MenuIconButton ref={menuButtonRef} onClick={() => setIsOpen((current) => !current)}>
       <FontAwesomeIcon icon={faBars} />
       {isOpen && (
-        <Flex>
-          <DropMenuNavItem to="/about">ABOUT</DropMenuNavItem>
-          <DropMenuNavItem to="/contact">CONTACT</DropMenuNavItem>
-        </Flex>
+        <StyledDropMenu>
+          <DropMenuNavItem to="/about">About</DropMenuNavItem>
+          <Divider />
+          <DropMenuNavItem to="/contact">Contact</DropMenuNavItem>
+        </StyledDropMenu>
       )}
     </MenuIconButton>
   );
@@ -124,8 +138,8 @@ const DropMenu = () => {
 const Header = () => (
   <StyledHeader>
     <StyledNav>
-      <Logo exact to="/" $alwaysShow>
-        U3T
+      <Logo to="/">
+        <img src={logo} width="80px" height="27px" alt="U3T logo" />
       </Logo>
       <NavList>
         <NavItem exact to="/" $alwaysShow>
@@ -141,5 +155,4 @@ const Header = () => (
     </StyledNav>
   </StyledHeader>
 );
-
 export default Header;
