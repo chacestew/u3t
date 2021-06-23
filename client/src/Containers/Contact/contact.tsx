@@ -69,10 +69,11 @@ const FormGrid = styled.div`
     'message';
 
   ${media.aboveMobileL`
-  grid-template-areas:
-    'name email'
-    'message message';
-  `}
+    grid-template-areas:
+      'name email'
+      'message message';
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  `};
 `;
 
 const Text = styled.p<{ color: string }>`

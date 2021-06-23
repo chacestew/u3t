@@ -24,7 +24,6 @@ const FooterInner = styled.div`
   align-items: center;
 
   color: ${palette.white};
-  font-weight: bold;
 `;
 
 const SocialLinks = styled.ul`
