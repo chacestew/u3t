@@ -32,7 +32,7 @@ const globalStyles = css`
   }
 
   body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
 
     #root {
       background-color: ${palette.background};

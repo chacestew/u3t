@@ -44,9 +44,9 @@ export default function About() {
       <Section>
         <h3>Features</h3>
         <p>
-          <b>u3t.app</b> is a web implementation of <i>ultimate tic-tac-toe</i>, a
-          beautifully complex expansion on regular tic-tac-toe. You can find out more
-          about the game on its{' '}
+          <b>u3t.app</b> is a web implementation of ultimate tic-tac-toe, a beautifully
+          complex expansion on regular tic-tac-toe. You can find out more about the game
+          on its{' '}
           <Anchor href="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe">
             <span>Wikipedia page</span>
             <FontAwesomeIcon size="sm" icon={faExternalLinkAlt} />
