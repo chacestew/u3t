@@ -2,9 +2,9 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import UnderlineLink from '../../Components/UnderlineLink';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
 
@@ -27,10 +27,6 @@ const Anchor = styled.a<{ iconLeft?: boolean }>`
   &:hover > span {
     text-decoration: none;
   }
-`;
-
-const InlineLink = styled(Link)`
-  text-decoration: underline;
 `;
 
 const CoffeeButton = styled.a`
@@ -86,7 +82,7 @@ export default function About() {
         <h3>Thank you</h3>
         <p>
           If you enjoyed yourself or you have any questions or feedback, please let me
-          know via the contact form <InlineLink to="/contact">here</InlineLink>.
+          know via the contact form <UnderlineLink to="/contact">here</UnderlineLink>.
         </p>
         <p>
           This application is provided freely for entertainment and education and will

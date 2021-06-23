@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import pic1 from '../../../assets/learn1.png';
 import pic2 from '../../../assets/learn2.png';
 import pic3 from '../../../assets/learn3.png';
 import { TurnListCell } from '../../Components/GameArea/TurnList/TurnListItem';
+import UnderlineLink from '../../Components/UnderlineLink';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 
@@ -48,10 +48,6 @@ const Image = styled.img`
 
 const Description = styled.p`
   padding: 1em;
-`;
-
-const InlineLink = styled(Link)`
-  text-decoration: underline;
 `;
 
 export default function Learn() {
@@ -100,7 +96,7 @@ export default function Learn() {
           </p>
           <p>
             Have fun! You can also learn how this app was made{' '}
-            <InlineLink to="/about">here</InlineLink>.
+            <UnderlineLink to="/about">here</UnderlineLink>.
           </p>
         </Text>
         <Image src={pic1} />
