@@ -35,7 +35,12 @@ const LinkContainer = styled.div`
   font-weight: normal;
 `;
 
-const CopyToClipboard = styled.div<{ flashing: boolean }>`
+const CopyToClipboard = styled.button<{ flashing: boolean }>`
+  cursor: pointer;
+  color: inherit;
+  background: transparent;
+  outline: none;
+  border: none;
   text-align: end;
   max-width: 50%;
 
