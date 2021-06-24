@@ -12,8 +12,8 @@ import logger from './logger';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'chacestew@gmail.com',
-    pass: 'JayGoogGem123',
+    user: '',
+    pass: '',
   },
 });
 
@@ -34,7 +34,7 @@ interface ContactRequestSchema extends ValidatedRequestSchema {
 export default function (req: ValidatedRequest<ContactRequestSchema>, res: Response) {
   transporter
     .sendMail({
-      to: 'chacestew@gmail.com',
+      to: '',
       subject: `New U3T Contact Submission`,
       text: `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage ${req.body.message}`,
     })
@@ -43,8 +43,6 @@ export default function (req: ValidatedRequest<ContactRequestSchema>, res: Respo
       logger.info('Contact submission sent');
     })
     .catch((e) => {
-      console.error('In error block for contact');
-      console.error(e.message);
       logger.error(`Contact submission failed: ${e.message}`);
       res.sendStatus(500);
     });

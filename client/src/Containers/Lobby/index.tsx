@@ -55,7 +55,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   }, [history, location.state]);
 
   useEffect(() => {
-    if (!socket.connected) socket.open();
+    if (socket.disconnected) socket.connect();
 
     socket.on(Events.StartGame, (data) => {
       sessionStorage.setItem(data.lobbyId, data.playerId);
@@ -87,6 +87,8 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
     return () => {
       console.log('Removing listeners');
       socket.off();
+      socket.io.off();
+      socket.disconnect();
     };
   }, [lobbyStateRef, socket, restart, setError, setState, history, dispatch]);
 

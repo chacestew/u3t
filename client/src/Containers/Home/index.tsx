@@ -104,11 +104,13 @@ export default function Home({ socket }: { socket: ClientSocket }) {
     });
     socket.on('disconnect', () => setIsConnected(false));
 
+    if (socket.disconnected) socket.connect();
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
     };
-  });
+  }, [socket]);
 
   useEffect(() => {
     if (!isRequestingLobby) return;

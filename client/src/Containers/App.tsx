@@ -1,7 +1,7 @@
 import { ClientSocket } from '@u3t/common';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import styled from 'styled-components';
 
 import { useTracking } from '../hooks/useTracking';
@@ -36,10 +36,7 @@ const socketURL =
     ? 'http://localhost:8001'
     : window.location.protocol + '//' + window.location.host;
 
-const socket: ClientSocket = io(socketURL, {
-  autoConnect: true,
-  path: '/ws',
-});
+const socket: ClientSocket = io(socketURL, { path: '/ws' });
 
 function App() {
   useTracking();
