@@ -6,6 +6,7 @@ import pic2 from '../../../assets/learn2.png';
 import pic3 from '../../../assets/learn3.png';
 import { TurnListCell } from '../../Components/GameArea/TurnList/TurnListItem';
 import UnderlineLink from '../../Components/UnderlineLink';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 
@@ -51,6 +52,8 @@ const Description = styled.p`
 `;
 
 export default function Learn() {
+  useDocumentTitle('Learn');
+
   return (
     <Article>
       <Description>

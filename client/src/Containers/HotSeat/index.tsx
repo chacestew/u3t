@@ -7,21 +7,19 @@ import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useGameReducer from '../../hooks/useGameReducer';
 import { RelativeBox } from '../../styles/Utils';
 
 export default function HotSeat() {
   const [state, { playTurn, restart }] = useGameReducer();
+  useDocumentTitle('Hotseat');
 
   const onValidTurn = ({ board, cell }: ITurnInput) => {
     const player = state.currentPlayer;
 
     playTurn({ player, board, cell });
   };
-
-  useEffect(() => {
-    window.state = state;
-  }, [state]);
 
   return (
     <>

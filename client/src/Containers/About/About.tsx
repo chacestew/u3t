@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import UnderlineLink from '../../Components/UnderlineLink';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
 
@@ -35,6 +36,8 @@ const CoffeeButton = styled.a`
 `;
 
 export default function About() {
+  useDocumentTitle('About');
+
   return (
     <Article>
       <Section>

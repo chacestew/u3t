@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Button, ButtonLink } from '../../Components/Button';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import HomeHeader from '../../Components/GameArea/Header/HeaderContents/Home';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { flexColumns, media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 import CodeInputForm, { CodeInputMode } from './CodeInputForm';
@@ -97,6 +98,7 @@ export default function Home({ socket }: { socket: ClientSocket }) {
   const history = useHistory();
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [isRequestingLobby, setIsRequestingLobby] = useState(false);
+  useDocumentTitle('');
 
   useEffect(() => {
     socket.on('connect', () => {

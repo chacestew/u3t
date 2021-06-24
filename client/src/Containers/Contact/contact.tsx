@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '../../Components/Button';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
@@ -92,6 +93,7 @@ export default function Contact() {
   const [state, setState] = useState<ContactBody>({ name: '', email: '', message: '' });
   const [sentStatus, setSentStatus] = useState<SentStates>('ready');
   const [invalidFields, setInvalidFields] = useState<(keyof ContactBody)[]>([]);
+  useDocumentTitle('Contact');
 
   const set = (key: keyof ContactBody, value: string) =>
     setState((s) => ({ ...s, [key]: value }));

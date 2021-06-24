@@ -16,6 +16,7 @@ import ErrorModal from '../../Components/ErrorModal';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useGameReducer from '../../hooks/useGameReducer';
 import useMultiplerState from '../../hooks/useLobbyReducer';
 import useNavigatorOnline from '../../hooks/useNavigatorOnline';
@@ -40,6 +41,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   const isNavigatorOnline = useNavigatorOnline();
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
+  const setTitle = useDocumentTitle(match.params.lobbyId || '');
 
   const locationState = location.state || { lobbyId: undefined, playerId: undefined };
 
@@ -125,6 +127,35 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
     lobbyState.playerId,
     setState,
     socket,
+  ]);
+
+  useEffect(() => {
+    console.log('running');
+    if (state.winner) setTitle(`${state.winner === 1 ? 'X' : 'O'} wins!`);
+    else if (state.tied) setTitle('Stalemate');
+    else if (lobbyState.started) {
+      if (lobbyState.playerSeat) {
+        setTitle(
+          `${
+            state.currentPlayer === lobbyState.playerSeat
+              ? 'Your turn'
+              : 'Waiting for opponent'
+          }`
+        );
+      } else {
+        setTitle(`${state.currentPlayer === 1 ? 'X' : 'O'}'s turn`);
+      }
+    } else if (lobbyState.isSpectator) setTitle('Spectating');
+    else if (lobbyState.lobbyId) setTitle(`${lobbyState.lobbyId}`);
+  }, [
+    lobbyState.isSpectator,
+    lobbyState.lobbyId,
+    lobbyState.playerSeat,
+    lobbyState.started,
+    setTitle,
+    state.currentPlayer,
+    state.tied,
+    state.winner,
   ]);
 
   const onValidTurn = ({ board, cell }: { board: BoardType; cell: CellType }) => {

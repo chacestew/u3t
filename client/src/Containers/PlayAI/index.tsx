@@ -7,11 +7,13 @@ import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import GameHeader from '../../Components/GameArea/Header/GameHeader';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useGameReducer from '../../hooks/useGameReducer';
 
 const PlayAI = () => {
   const [gameState, { playTurn, restart }] = useGameReducer();
   const [seat, setSeat] = useState<Player | null>(null);
+  useDocumentTitle('AI');
 
   useEffect(() => {
     const yourSeat = Math.ceil(Math.random() * 2) as 1 | 2;

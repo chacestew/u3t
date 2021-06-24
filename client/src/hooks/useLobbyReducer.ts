@@ -77,6 +77,7 @@ export function reducer(state: IMultiplayerState, action: Action): IMultiplayerS
         ...state,
         hasJoined: true,
         isSpectator: true,
+        started: true,
       };
     }
     case Events.RestartRequested: {
