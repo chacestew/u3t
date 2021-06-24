@@ -19,15 +19,25 @@ const Section = styled.div<{ $dark?: boolean }>`
   }
 `;
 
-const Anchor = styled.a<{ iconLeft?: boolean }>`
-  & > span {
-    text-decoration: underline;
-    margin-right: 0.25em;
-  }
+const Anchor = styled.a`
+  text-decoration: underline;
 
-  &:hover > span {
+  &:hover {
     text-decoration: none;
   }
+
+  & > span {
+    margin-right: 0.25em;
+  }
+`;
+
+const Button = styled(Anchor).attrs({ as: 'button' })`
+  cursor: pointer;
+  border: none;
+  outline: none;
+  padding: 0;
+  color: inherit;
+  background: transparent;
 `;
 
 const CoffeeButton = styled.a`
@@ -35,7 +45,23 @@ const CoffeeButton = styled.a`
   justify-content: center;
 `;
 
-export default function About() {
+const OutboundLink = ({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) => (
+  <Anchor href={href} target="_blank" rel="noreferrer">
+    {children}
+  </Anchor>
+);
+
+interface Props {
+  deferredInstallPrompt: BeforeInstallPromptEvent | null;
+}
+
+export default function About({ deferredInstallPrompt }: Props) {
   useDocumentTitle('About');
 
   return (
@@ -46,10 +72,10 @@ export default function About() {
           <b>u3t.app</b> is a web implementation of ultimate tic-tac-toe, a beautifully
           complex expansion on regular tic-tac-toe. You can find out more about the game
           on its{' '}
-          <Anchor href="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe">
+          <OutboundLink href="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe">
             <span>Wikipedia page</span>
             <FontAwesomeIcon size="sm" icon={faExternalLinkAlt} />
-          </Anchor>
+          </OutboundLink>
           .
         </p>
         <p>
@@ -59,25 +85,34 @@ export default function About() {
         <p>
           This site also also meets the requirements for a progressive web application
           (PWA), so you can{' '}
-          <Anchor href="https://en.wikipedia.org/wiki/Ultimate_tic-tac-toe">
+          <Button
+            onClick={() => {
+              if (deferredInstallPrompt?.prompt) deferredInstallPrompt.prompt();
+              else alert('Installing is not currently supported on your device.');
+            }}
+          >
             <span>install it</span>
             <FontAwesomeIcon size="sm" icon={faDownload} />
-          </Anchor>{' '}
+          </Button>{' '}
           on your device and continue playing even while offline.
         </p>
       </Section>
       <Section $dark>
         <h3>Open Source</h3>
         <p>
-          This application was developed in <b>Typescript</b> using <b>React</b>, and{' '}
-          <b>Node.js</b> and <b>Socket.IO</b> to power the backend.
+          This application was developed in{' '}
+          <OutboundLink href="https://www.typescriptlang.org/">TypeScript</OutboundLink>{' '}
+          using <OutboundLink href="https://reactjs.org/">React</OutboundLink>, and{' '}
+          <OutboundLink href="https://nodejs.org/en/">Node.js</OutboundLink> and{' '}
+          <OutboundLink href="https://socket.io/">Socket.IO</OutboundLink> to power the
+          backend.
         </p>
         <p>
           The complete source code is available for learning purposes on{' '}
-          <Anchor href="https://www.github.com/chacestew">
+          <OutboundLink href="https://www.github.com/chacestew">
             <span>GitHub</span>
             <FontAwesomeIcon icon={faGithub} />
-          </Anchor>
+          </OutboundLink>
           .
         </p>
       </Section>
@@ -85,7 +120,7 @@ export default function About() {
         <h3>Thank you</h3>
         <p>
           If you enjoyed yourself or you have any questions or feedback, please let me
-          know via the contact form <UnderlineLink to="/contact">here</UnderlineLink>.
+          know via the <UnderlineLink to="/contact">contact form</UnderlineLink>.
         </p>
         <p>
           This application is provided freely for entertainment and education and will

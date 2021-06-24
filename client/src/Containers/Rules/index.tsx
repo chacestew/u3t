@@ -69,9 +69,9 @@ export default function Learn() {
             the same position.
           </p>
           <p>
-            In this example, <TurnListCell cellType={1} /> has made his first move in the{' '}
-            <b>top-right</b> cell of the center board. Now <TurnListCell cellType={2} />{' '}
-            must choose a cell from the <b>top-right</b> board.
+            Example: <TurnListCell cellType={1} /> has made his first move in the{' '}
+            <b>top-right</b> cell of the center board, so <TurnListCell cellType={2} />{' '}
+            must choose a cell from the <b>top-right</b> board to play in.
           </p>
         </Text>
       </Section>

@@ -1,5 +1,5 @@
 import { ClientSocket } from '@u3t/common';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styled from 'styled-components';
@@ -40,6 +40,16 @@ const socket: ClientSocket = io(socketURL, { path: '/ws' });
 
 function App() {
   useTracking();
+  const [deferredInstallPrompt, setDeferredInstallPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredInstallPrompt(e);
+      console.log(`'beforeinstallprompt' event was fired.`);
+    });
+  });
 
   return (
     <>
@@ -65,12 +75,17 @@ function App() {
           <Route path="/local" component={HotSeat} />
           <Route path="/ai" component={PlayAI} />
           <Route path="/rules" component={Rules} />
-          <Route path="/about" component={About} />
+          <Route
+            path="/about"
+            render={(routeProps) => (
+              <About {...routeProps} deferredInstallPrompt={deferredInstallPrompt} />
+            )}
+          />
           <Route path="/contact" component={Contact} />
           <Redirect to="/" />
         </Switch>
       </Main>
-      <Footer />
+      <Footer deferredInstallPrompt={deferredInstallPrompt} />
     </>
   );
 }

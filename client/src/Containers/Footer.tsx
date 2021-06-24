@@ -71,7 +71,11 @@ const Text = styled.span`
   }
 `;
 
-const Footer = () => {
+interface Props {
+  deferredInstallPrompt: BeforeInstallPromptEvent | null;
+}
+
+const Footer = ({ deferredInstallPrompt }: Props) => {
   return (
     <StyledFooter>
       <FooterInner>
@@ -87,7 +91,12 @@ const Footer = () => {
           <IconAnchor href="https://www.github.com/chacestew">
             <FontAwesomeIcon icon={faDiscord} size="lg" />
           </IconAnchor>
-          <Button>
+          <Button
+            onClick={() => {
+              if (deferredInstallPrompt?.prompt) deferredInstallPrompt.prompt();
+              else alert('Installing is not currently supported on your device.');
+            }}
+          >
             <FontAwesomeIcon icon={faDownload} size="lg" />
           </Button>
         </SocialLinks>
