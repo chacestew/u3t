@@ -10,7 +10,7 @@ import {
 } from '@u3t/common';
 import React, { useEffect, useState } from 'react';
 import { StaticContext } from 'react-router';
-import { RouteComponentProps } from 'react-router-dom';
+import { Prompt, RouteComponentProps } from 'react-router-dom';
 
 import ErrorModal from '../../Components/ErrorModal';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
@@ -130,7 +130,6 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   ]);
 
   useEffect(() => {
-    console.log('running');
     if (state.winner) setTitle(`${state.winner === 1 ? 'X' : 'O'} wins!`);
     else if (state.tied) setTitle('Stalemate');
     else if (lobbyState.started) {
@@ -197,6 +196,10 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
 
   return (
     <>
+      <Prompt
+        when={lobbyState.started && !state.finished}
+        message={`Are you sure you want to leave the game?\n\nYou can rejoin within 24 hours using this code: ${lobbyState.lobbyId}`}
+      />
       <LobbyHeader
         state={state}
         lobbyState={lobbyState}
