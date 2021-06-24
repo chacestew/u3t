@@ -43,6 +43,8 @@ export default function (req: ValidatedRequest<ContactRequestSchema>, res: Respo
       logger.info('Contact submission sent');
     })
     .catch((e) => {
+      console.error('In error block for contact');
+      console.error(e.message);
       logger.error(`Contact submission failed: ${e.message}`);
       res.sendStatus(500);
     });
