@@ -66,10 +66,10 @@ export function reducer(state: IMultiplayerState, action: Action): IMultiplayerS
     case Events.RejoinedGame: {
       return {
         ...state,
-        started: true,
         hasJoined: true,
+        started: action.data.started,
         lobbyId: action.data.lobbyId,
-        playerSeat: action.data.seat,
+        playerSeat: action.data.seat || null,
       };
     }
     case Events.JoinedAsSpectator: {

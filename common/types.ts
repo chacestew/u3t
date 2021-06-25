@@ -107,22 +107,24 @@ export type JoinLobbyResponses =
   | JoinLobbyResponse_Spectator;
 
 export interface JoinLobbyResponse_NewPlayer {
+  role: 'new-player';
   lobbyId: string;
   playerId: string;
-  role: 'new-player';
 }
 
 export interface JoinLobbyResponse_Spectator {
+  role: 'spectator';
   lobbyId: string;
   state: IGameState;
-  role: 'spectator';
 }
 
 export interface JoinLobbyResponse_Reconnection {
-  lobbyId: string;
-  state: IGameState;
-  seat: Player;
   role: 'reconnected-player';
+  lobbyId: string;
+  playerId: string;
+  started: boolean;
+  state?: IGameState;
+  seat?: Player;
 }
 
 // Auth

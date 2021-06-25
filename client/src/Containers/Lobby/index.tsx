@@ -60,7 +60,6 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
     if (socket.disconnected) socket.connect();
 
     socket.on(Events.StartGame, (data) => {
-      sessionStorage.setItem(data.lobbyId, data.playerId);
       dispatch({ event: Events.StartGame, data });
       setState(data.state);
     });
@@ -95,8 +94,13 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   }, [lobbyStateRef, socket, restart, setError, setState, history, dispatch]);
 
   useEffect(() => {
-    if (lobbyState.hasJoined) return;
+    if (lobbyState.hasJoined && lobbyState.lobbyId && lobbyState.playerId) {
+      // Created the game and was joined at the home screen
+      sessionStorage.setItem(lobbyState.lobbyId, lobbyState.playerId);
+      return;
+    }
 
+    // Joined the game from a fresh page load
     socket.emit(
       Events.JoinLobby,
       {
@@ -107,11 +111,12 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
       (data) => {
         switch (data.role) {
           case 'new-player':
+            sessionStorage.setItem(data.lobbyId, data.playerId);
             dispatch({ event: Events.JoinedLobby, data });
             break;
           case 'reconnected-player':
             dispatch({ event: Events.RejoinedGame, data });
-            setState(data.state);
+            if (data.state) setState(data.state);
             break;
           case 'spectator':
             dispatch({ event: Events.JoinedAsSpectator, data });

@@ -31,13 +31,26 @@ export default async function joinLobby(
       lobbyId: lobby.id,
       playerId: data.playerId,
     });
-    const game = lobby.getGame();
-    cb({
-      lobbyId: lobby.id,
-      seat: game.getSeat(data.playerId),
-      state: game.getState(),
-      role: 'reconnected-player',
-    });
+
+    if (lobby.hasGame()) {
+      const game = lobby.getGame();
+
+      cb({
+        playerId: data.playerId,
+        lobbyId: lobby.id,
+        seat: game.getSeat(data.playerId),
+        state: game.getState(),
+        role: 'reconnected-player',
+        started: true,
+      });
+    } else {
+      cb({
+        playerId: data.playerId,
+        lobbyId: lobby.id,
+        role: 'reconnected-player',
+        started: false,
+      });
+    }
   } else {
     // Handle first time joining a game
     logger.info('Joining new player to lobby', { lobbyId: lobby.id });
