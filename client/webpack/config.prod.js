@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
-const { GenerateSW } = require('workbox-webpack-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 const { loaders } = require('./helpers');
@@ -34,6 +34,10 @@ module.exports = {
     new BrotliPlugin({
       test: /\.(js|css)$/,
     }),
-    new GenerateSW(),
+    new InjectManifest({
+      swSrc: '/src/service-worker.ts',
+      dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
+      exclude: [/\.map$/, /LICENSE/],
+    }),
   ],
 };
