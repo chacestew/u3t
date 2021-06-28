@@ -12,8 +12,8 @@ module.exports = {
   },
   mode: 'production',
   output: {
-    filename: 'js/[name].[contenthash:8].js',
-    publicPath: '/'
+    filename: 'js/[name].[contenthash].js',
+    publicPath: '/',
   },
   optimization: {
     splitChunks: {
@@ -21,7 +21,7 @@ module.exports = {
     },
   },
   module: {
-    rules: [loaders.JS(), loaders.Images()],
+    rules: [loaders.JS(), loaders.Images({ name: '[contenthash].[ext]' })],
   },
   plugins: [
     new HtmlWebpackPlugin({ template: '/public/index.html' }),
@@ -31,9 +31,9 @@ module.exports = {
     new CompressionPlugin({
       test: /\.(js|css)$/,
     }),
-    new BrotliPlugin({
-      test: /\.(js|css)$/,
-    }),
+    // new BrotliPlugin({
+    //   test: /\.(js|css)$/,
+    // }),
     new InjectManifest({
       swSrc: '/src/service-worker.ts',
       dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,

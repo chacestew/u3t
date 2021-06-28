@@ -61,7 +61,6 @@ export default function Learn() {
         The difference is in where you get to play. Read on to learn more!
       </Description>
       <Section $dark>
-        <Image src={pic2} />
         <Text>
           <h3>Taking Turns</h3>
           <p>
@@ -74,6 +73,10 @@ export default function Learn() {
             must choose a cell from the <b>top-right</b> board to play in.
           </p>
         </Text>
+        <Image
+          src={pic2}
+          alt="Player 2 must play in the top-right board because Player 1 chose a top-right cell"
+        />
       </Section>
       <Section>
         <Text>
@@ -85,7 +88,10 @@ export default function Learn() {
           </p>
           <p>Be careful! Much of the game's strategy lies in this simple rule.</p>
         </Text>
-        <Image src={pic3} />
+        <Image
+          src={pic3}
+          alt="Sending the other player to an occupied boards lets them choose from any open board to play in"
+        />
       </Section>
       <Section $dark>
         <Text>
@@ -99,10 +105,13 @@ export default function Learn() {
           </p>
           <p>
             Have fun! You can also learn how this app was made{' '}
-            <UnderlineLink to="/about">here</UnderlineLink>.
+            <UnderlineLink to="/about" aria-label="About Page">
+              here
+            </UnderlineLink>
+            .
           </p>
         </Text>
-        <Image src={pic1} />
+        <Image src={pic1} alt="Win three boards in a row to win the game" />
       </Section>
     </Article>
   );

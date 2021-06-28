@@ -17,7 +17,7 @@ module.exports = {
   devtool: 'eval-source-map',
   output: {
     filename: 'js/[name].js',
-    publicPath: '/'
+    publicPath: '/',
   },
   module: {
     rules: [loaders.JS({ cacheDirectory: true }), loaders.Images()],
