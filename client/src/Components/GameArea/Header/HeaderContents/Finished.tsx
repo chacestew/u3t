@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import { Button } from '../../../Button';
 import { Bar, Cell, Text } from '../styles';
@@ -29,6 +30,10 @@ const PlayAgain = ({
   );
 };
 
+const Span = styled.span`
+  margin-left: 0.5em;
+`;
+
 interface Props extends PlayAgainProps {
   winner: 1 | 2 | null;
 }
@@ -39,8 +44,8 @@ const Finished = ({ isOnline, winner, restartRequested, onPlayAgainConfirm }: Pr
       <Text justify="flex-start">
         {winner ? (
           <>
-            <Cell css="margin-right: 0.5em;" cellType={winner} />
-            wins!
+            <Cell cellType={winner} />
+            <Span>wins!</Span>
           </>
         ) : (
           'Stalemate!'

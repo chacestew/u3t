@@ -122,7 +122,11 @@ const DropMenu = () => {
   }, [menuButtonElement]);
 
   return (
-    <MenuIconButton ref={menuButtonRef} onClick={() => setIsOpen((current) => !current)}>
+    <MenuIconButton
+      aria-label="Dropdown Menu"
+      ref={menuButtonRef}
+      onClick={() => setIsOpen((current) => !current)}
+    >
       <FontAwesomeIcon icon={faBars} />
       {isOpen && (
         <StyledDropMenu>

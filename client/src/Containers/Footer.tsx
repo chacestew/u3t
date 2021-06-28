@@ -26,7 +26,7 @@ const FooterInner = styled.div`
   color: ${palette.white};
 `;
 
-const SocialLinks = styled.ul`
+const SocialLinks = styled.div`
   height: 100%;
   display: flex;
   padding-right: 0.5em;
@@ -82,16 +82,17 @@ const Footer = ({ deferredInstallPrompt }: Props) => {
         <Text>© C Stewart {new Date().getFullYear()}</Text>
         <Text className="desktop">© Chace Stewart {new Date().getFullYear()}</Text>
         <SocialLinks>
-          <IconLink to="/contact">
+          <IconLink to="/contact" aria-label="Contact Page">
             <FontAwesomeIcon icon={faEnvelope} size="lg" />
           </IconLink>
-          <IconAnchor href="https://www.github.com/chacestew">
+          <IconAnchor href="https://www.github.com/chacestew" aria-label="GitHub Link">
             <FontAwesomeIcon icon={faGithub} size="lg" />
           </IconAnchor>
-          <IconAnchor href="https://www.github.com/chacestew">
+          <IconAnchor href="https://www.github.com/chacestew" aria-label="Discord Link">
             <FontAwesomeIcon icon={faDiscord} size="lg" />
           </IconAnchor>
           <Button
+            aria-label="Install Application"
             onClick={() => {
               if (deferredInstallPrompt?.prompt) deferredInstallPrompt.prompt();
               else alert('Installing is not currently supported on your device.');

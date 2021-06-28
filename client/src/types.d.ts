@@ -1,7 +1,5 @@
 export {};
 
-declare module '*.png';
-
 declare global {
   /**
    * The BeforeInstallPromptEvent is fired at the Window.onbeforeinstallprompt handler

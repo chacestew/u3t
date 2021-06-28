@@ -44,8 +44,9 @@ const CellContainer = styled.button<Props>`
 `;
 
 export default function Cell({ ...rest }: Props) {
+  const label = rest.cellType ? 'Empty Cell' : rest.cellType === 1 ? 'X Cell' : 'O Cell';
   return (
-    <CellContainer {...rest}>
+    <CellContainer aria-label={label} {...rest}>
       {rest.cellType && (
         <FontAwesomeIcon icon={rest.cellType === 1 ? faTimes : faCircle} />
       )}
