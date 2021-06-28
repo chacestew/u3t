@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') app.use(cors());
 const jsonParser = json();
 const validator = createValidator();
 
-app.post('/contact', jsonParser, validator.body(schema), contact);
+app.post('/send-contact', jsonParser, validator.body(schema), contact);
 
 const mode = process.env.NODE_ENV;
 const port = 8001;

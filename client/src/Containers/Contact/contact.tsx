@@ -127,7 +127,7 @@ export default function Contact() {
           setSentStatus('sending');
 
           try {
-            const response = await fetch('/contact', {
+            const response = await fetch('/send-contact', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
