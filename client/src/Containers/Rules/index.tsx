@@ -104,9 +104,9 @@ export default function Learn() {
             and permutations of moves (but still possible!).
           </p>
           <p>
-            Have fun! You can also learn how this app was made{' '}
+            Have fun! You can also{' '}
             <UnderlineLink to="/about" aria-label="About Page">
-              here
+              learn how this app was made
             </UnderlineLink>
             .
           </p>
