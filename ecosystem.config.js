@@ -2,10 +2,12 @@ module.exports = {
   apps: [
     {
       name: 'u3t',
-      script: 'server/build/index.js',
+      script: './build/index.js',
+      cwd: './server/',
       env: {
         NODE_ENV: 'production',
       },
+      node_args: '-r dotenv/config',
     },
   ],
 };

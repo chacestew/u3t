@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { Response } from 'express';
 import {
   ContainerTypes,
@@ -12,8 +13,8 @@ import logger from './logger';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: '',
-    pass: '',
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -34,8 +35,8 @@ interface ContactRequestSchema extends ValidatedRequestSchema {
 export default function (req: ValidatedRequest<ContactRequestSchema>, res: Response) {
   transporter
     .sendMail({
-      to: '',
-      subject: `New U3T Contact Submission`,
+      to: process.env.EMAIL_USER,
+      subject: `Message from U3T`,
       text: `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage ${req.body.message}`,
     })
     .then(() => {
@@ -43,6 +44,7 @@ export default function (req: ValidatedRequest<ContactRequestSchema>, res: Respo
       logger.info('Contact submission sent');
     })
     .catch((e) => {
+      Sentry.captureException(e);
       logger.error(`Contact submission failed: ${e.message}`);
       res.sendStatus(500);
     });

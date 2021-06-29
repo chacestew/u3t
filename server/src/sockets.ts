@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { instrument } from '@socket.io/admin-ui';
 import {
   ClientToServerEvents,
@@ -24,6 +25,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>();
 const errorHandlerFactory = (socket: Socket) => (
   err: Error | BadRequestError | NotFoundError
 ) => {
+  Sentry.captureException(err);
   let errorData = { socket: socket.id };
 
   if (err instanceof NotFoundError) {
@@ -120,7 +122,7 @@ export default function attachSockets(server: HttpServer) {
     auth: {
       type: 'basic',
       username: 'admin',
-      password: '$2b$12$hVrCGry5JUgdA0Hu/I4kUugDkYSgMVIn7UjlbJi3yir6MttL3KZCa',
+      password: process.env.IO_ADMIN_PASS,
     },
   });
 }

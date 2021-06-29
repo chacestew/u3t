@@ -115,7 +115,7 @@ class LobbyManager {
 
   get(id: string): Lobby {
     const lobby = this.lobbies.get(id);
-    if (!lobby) throw new NotFoundError(`No lobby found`, { lobbyId: id });
+    if (!lobby) throw new NotFoundError(`No lobby found for ID: ${id}`, { lobbyId: id });
     return lobby;
   }
 }
