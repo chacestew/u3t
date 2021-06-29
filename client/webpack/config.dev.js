@@ -1,3 +1,4 @@
+const Dotenv = require('dotenv-webpack');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
@@ -23,9 +24,10 @@ module.exports = {
     rules: [loaders.JS({ cacheDirectory: true }), loaders.Images()],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: '/public/index.html' }),
+    new Dotenv(),
+    new HtmlWebpackPlugin({ template: '/public/index.ejs' }),
     new CopyPlugin({
-      patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.html') }],
+      patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.ejs') }],
     }),
     new webpack.HotModuleReplacementPlugin(),
     new ReactRefreshWebpackPlugin({ overlay: { sockIntegration: 'whm' } }),

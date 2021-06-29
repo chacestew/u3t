@@ -1,3 +1,4 @@
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
@@ -24,9 +25,10 @@ module.exports = {
     rules: [loaders.JS(), loaders.Images({ name: '[contenthash].[ext]' })],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: '/public/index.html' }),
+    new Dotenv(),
+    new HtmlWebpackPlugin({ template: '/public/index.ejs' }),
     new CopyPlugin({
-      patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.html') }],
+      patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.ejs') }],
     }),
     new CompressionPlugin({
       test: /\.(js|css)$/,

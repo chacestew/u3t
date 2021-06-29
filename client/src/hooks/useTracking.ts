@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const trackingId = 'G-D694YQTG4R';
+const trackingId = process.env.GA_TRACKING_ID;
 
 declare global {
   interface Window {
