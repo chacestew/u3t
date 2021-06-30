@@ -49,7 +49,6 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
   font-weight: bold;
   font-size: 16px;
   color: #594b5c;
-  padding-top: 20%;
   z-index: 1;
 
   ${({ expanded }) =>
@@ -59,11 +58,17 @@ const StyledTurnList = styled.div<{ expanded: boolean }>`
      bottom: 0;
      width: 100%;`}
 
-  @media (min-height: 721px) {
+  @media (min-width: 580px) and (min-height: 920px), (max-width: 580px) and (min-height: 720px) {
     position: relative;
     padding-top: 0;
     bottom: 0;
   }
+
+  // @media (max-width: 600px) and (min-height: 800px) {
+  //   position: relative;
+  //   padding-top: 0;
+  //   bottom: 0;
+  // }
 `;
 
 const OpeningText = ({ lobbyState }: { lobbyState: Partial<IMultiplayerState> }) => {
