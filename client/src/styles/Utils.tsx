@@ -4,7 +4,7 @@ import { flexColumns } from './mixins';
 
 export const RelativeBox = styled.div`
   ${flexColumns}
+  height: calc(100vh - 172px);
   position: relative;
-  overflow: hidden;
-  flex: 1;
+  overflow: auto;
 `;

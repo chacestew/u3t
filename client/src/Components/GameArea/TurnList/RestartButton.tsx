@@ -11,6 +11,8 @@ interface Props {
 }
 
 const StyledButton = styled(Button)`
+  border: 1px solid #dbdbdb;
+  border-bottom: 0;
   :hover {
     filter: none;
   }

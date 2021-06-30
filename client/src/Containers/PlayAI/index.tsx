@@ -9,6 +9,7 @@ import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useGameReducer from '../../hooks/useGameReducer';
+import { RelativeBox } from '../../styles/Utils';
 
 const PlayAI = () => {
   const [gameState, { playTurn, restart }] = useGameReducer();
@@ -41,18 +42,20 @@ const PlayAI = () => {
   return (
     <>
       <GameHeader seat={seat!} state={gameState} onPlayAgainConfirm={restartGame} />
-      <Board state={gameState} seat={seat} onValidTurn={play} />
-      <TurnList
-        lobbyState={{ playerSeat: seat, started: true }}
-        state={gameState}
-        RestartButton={
-          <RestartButton
-            onClick={restartGame}
-            text="Restart"
-            icon={<FontAwesomeIcon icon={faRedo} />}
-          />
-        }
-      />
+      <RelativeBox>
+        <Board state={gameState} seat={seat} onValidTurn={play} />
+        <TurnList
+          lobbyState={{ playerSeat: seat, started: true }}
+          state={gameState}
+          RestartButton={
+            <RestartButton
+              onClick={restartGame}
+              text="Restart"
+              icon={<FontAwesomeIcon icon={faRedo} />}
+            />
+          }
+        />
+      </RelativeBox>
     </>
   );
 };
