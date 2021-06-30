@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from '../../Components/Button';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import client from '../../micro-sentry';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
@@ -141,6 +142,7 @@ export default function Contact() {
               setSentStatus('failed');
             }
           } catch (error) {
+            client.report(error);
             setSentStatus('failed');
           }
         }}

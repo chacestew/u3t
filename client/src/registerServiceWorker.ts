@@ -11,6 +11,7 @@ const isLocalhost = Boolean(
 type Config = {
   onSuccess?: (registration: ServiceWorkerRegistration) => void;
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
+  onError?: (error: Error) => void;
 };
 
 export default function register(config?: Config) {
@@ -88,6 +89,9 @@ function registerValidSW(swUrl: string, config?: Config) {
     })
     .catch((error) => {
       console.error('Error during service worker registration:', error);
+      if (config && config.onError) {
+        config.onError(error);
+      }
     });
 }
 
