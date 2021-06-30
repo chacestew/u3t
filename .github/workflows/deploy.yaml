@@ -15,7 +15,6 @@ jobs:
           password: ${{ secrets.DO_PASSWORD }}
           script: |
             cd /home/u3t
-            git fetch
-            git pull
+            git pull -f
             bash deploy.sh
           script_stop: true
