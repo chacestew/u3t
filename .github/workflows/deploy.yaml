@@ -18,3 +18,4 @@ jobs:
             git fetch
             git pull
             bash deploy.sh
+          script_stop: true
