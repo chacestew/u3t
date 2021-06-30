@@ -4,17 +4,27 @@ module.exports = (api) => {
   const presets = [
     '@babel/preset-typescript',
     '@babel/preset-react',
-    ['@babel/preset-env', { useBuiltIns: 'usage', corejs: 3 }],
+    [
+      '@babel/preset-env',
+      {
+        bugfixes: true,
+        useBuiltIns: 'usage',
+        corejs: 3.15,
+      },
+    ],
   ];
 
   const plugins = [
-    '@babel/plugin-syntax-dynamic-import',
-    '@babel/plugin-proposal-class-properties',
-    '@babel/plugin-proposal-object-rest-spread',
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        version: '^7.14.6',
+      },
+    ],
     [
       'babel-plugin-styled-components',
       {
-        pure: true,
+        ...(api.env('production') && { pure: true, displayName: false, filename: false }),
       },
     ],
     !api.env('production') && 'react-refresh/babel',

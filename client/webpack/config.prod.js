@@ -4,6 +4,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const { InjectManifest } = require('workbox-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { loaders } = require('./helpers');
 
@@ -41,5 +42,6 @@ module.exports = {
       dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
       exclude: [/\.map$/, /LICENSE/],
     }),
+    // new BundleAnalyzerPlugin(),
   ],
 };
