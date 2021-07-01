@@ -143,7 +143,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
           `${
             state.currentPlayer === lobbyState.playerSeat
               ? 'Your turn'
-              : 'Waiting for opponent'
+              : "Opponent's turn"
           }`
         );
       } else {

@@ -87,24 +87,18 @@ const StyledTurnList = styled.div<{ expanded: boolean; $requiresOverlay: boolean
 `;
 
 const OpeningText = ({ lobbyState }: { lobbyState: Partial<IMultiplayerState> }) => {
-  if (!lobbyState.started) return <>Waiting for more players.</>;
-  if (lobbyState.isSpectator) return <>You are spectating.</>;
+  if (!lobbyState.started) return <span>Waiting for opponent to join.</span>;
+  if (lobbyState.isSpectator) return <span>You are spectating.</span>;
   if (lobbyState.playerSeat)
     return (
-      <>
-        <b>
-          You are playing as <TurnListCell cellType={lobbyState.playerSeat} />.
-        </b>{' '}
-        Have fun!
-      </>
+      <span>
+        You are playing as <TurnListCell cellType={lobbyState.playerSeat} /> . Have fun!
+      </span>
     );
-  return <>New game started.</>;
+  return <span>New game started.</span>;
 };
 
-const isOverlayRequired = (el: HTMLDivElement | null) => {
-  console.log('called with', el, el?.offsetHeight);
-  return !!(el && el?.offsetHeight < 200);
-};
+const isOverlayRequired = (el: HTMLDivElement | null) => !!(el && el?.offsetHeight < 200);
 
 const TurnList = ({
   state,
@@ -117,7 +111,6 @@ const TurnList = ({
   lobbyState: Partial<IMultiplayerState>;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   const [requiresOverlay, setRequiresOverlay] = useState(false);
   const [expanded, setExpanded] = useState(true);
@@ -136,12 +129,6 @@ const TurnList = ({
     window.addEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({
-      behavior: 'smooth',
-    });
-  }, [state.turnList.length]);
-
   return (
     <OuterContainer ref={containerRef} $requiresOverlay={requiresOverlay}>
       <StyledTurnList expanded={expanded} $requiresOverlay={requiresOverlay}>
@@ -156,8 +143,8 @@ const TurnList = ({
           <TurnListParagraph>
             <OpeningText lobbyState={lobbyState} />
           </TurnListParagraph>
-          {state.turnList.map((t, i) => (
-            <TurnListItem key={i} turn={i} {...t} />
+          {[...state.turnList].reverse().map((t, i, arr) => (
+            <TurnListItem key={i} turn={arr.length - 1 - i} {...t} />
           ))}
           {state.finished && (
             <TurnListParagraph>
@@ -170,7 +157,7 @@ const TurnList = ({
               )}
             </TurnListParagraph>
           )}
-          <div ref={bottomRef} />
+          {/* <div ref={bottomRef} /> */}
         </TurnListContainer>
       </StyledTurnList>
     </OuterContainer>
