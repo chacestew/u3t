@@ -12,10 +12,10 @@ const minutes = (n: number) => 1000 * 60 * n;
 
 const LOBBY_EXPIRATION_TIME = minutes(3 * 60);
 
-function createID(collection: Map<string, any>): string {
+function createID(collection: Map<string, Lobby>): string {
   const id = nanoid();
-  if (!collection.has(id)) return id;
-  return createID(collection);
+  if (collection.has(id)) return createID(collection);
+  return id;
 }
 
 export class Lobby {
@@ -24,7 +24,7 @@ export class Lobby {
   readonly restartRequests: Map<string, string> = new Map();
   private game?: Game;
   readonly timer: NodeJS.Timeout;
-  logger: (message: string, data?: { [key: string]: any }) => void;
+  logger: (message: string, data?: { [key: string]: unknown }) => void;
   updated: number = new Date().getTime();
 
   constructor(id: string, destroy: typeof lobbies.remove) {

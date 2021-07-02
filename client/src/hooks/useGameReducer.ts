@@ -30,6 +30,7 @@ type Action =
 function reducer(state: IGameState, action: Action): IGameState {
   switch (action.type) {
     case PLAY_TURN: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ((window as any).dev === true) {
         return instantEnd(state);
       }

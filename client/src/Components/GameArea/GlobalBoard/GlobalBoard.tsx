@@ -17,10 +17,10 @@ import LocalBoard from '../LocalBoard/LocalBoard';
 
 interface Props {
   state: IGameState;
-  seat: null | Player;
+  seat?: null | Player;
   error?: ErrorParams | null;
   dismissError?: () => void;
-  onValidTurn: (turnInput: ITurnInput) => void;
+  onValidTurn?: (turnInput: ITurnInput) => void;
   onInvalidTurn?: (error: Errors) => void;
   Alert?: false | React.ReactElement;
   disabled?: boolean;
@@ -71,7 +71,7 @@ export default function GameView({
         }, 350);
       }
     } else {
-      onValidTurn(turn);
+      onValidTurn && onValidTurn(turn);
     }
   };
 

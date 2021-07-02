@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { media } from '../styles/mixins';
-import palette from '../utils/palette';
+import palette, { gridSize } from '../utils/palette';
 
 const StyledFooter = styled.footer`
   display: flex;
@@ -16,7 +16,7 @@ const StyledFooter = styled.footer`
 `;
 
 const FooterInner = styled.div`
-  max-width: 580px;
+  max-width: ${gridSize};
   display: flex;
   align-items: stretch;
   width: 100%;

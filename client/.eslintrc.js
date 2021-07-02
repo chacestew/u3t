@@ -40,13 +40,15 @@ module.exports = {
     'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.ts'] }],
     'react/self-closing-comp': 1,
     'react/prop-types': 0,
+    'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
     '@typescript-eslint/explicit-module-boundary-types': 0,
+    '@typescript-eslint/no-non-null-assertion': 0,
     'no-console': 0,
     'import/default': 0,
   },
   settings: {
-    'react': {
-      'version': 'latest',
+    react: {
+      version: 'latest',
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],

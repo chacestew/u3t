@@ -67,11 +67,13 @@ function App() {
               <Route
                 exact
                 path="/game/:lobbyId"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 render={(routeProps: any) => <Lobby socket={socket} {...routeProps} />}
               />
               <Route
                 exact
                 path="/game/:lobbyId/spectate"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 render={(routeProps: any) => (
                   <Lobby socket={socket} spectator {...routeProps} />
                 )}
