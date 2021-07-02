@@ -75,7 +75,7 @@ export default function Share({ lobbyId }: { lobbyId: string }) {
     <Bar>
       <Container justify="space-between">
         <LinkContainer>
-          u3t.io/game/
+          u3t.app/game/
           <b>{lobbyId}</b>
         </LinkContainer>
         <CopyToClipboard onClick={handleCopy} flashing={clicked}>
