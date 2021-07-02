@@ -118,11 +118,13 @@ export default function attachSockets(server: HttpServer) {
     },
   });
 
-  instrument(io, {
-    auth: {
-      type: 'basic',
-      username: 'admin',
-      password: process.env.IO_ADMIN_PASS,
-    },
-  });
+  if (process.env.IO_ADMIN_PASS) {
+    instrument(io, {
+      auth: {
+        type: 'basic',
+        username: 'admin',
+        password: process.env.IO_ADMIN_PASS,
+      },
+    });
+  }
 }

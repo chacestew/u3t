@@ -6,6 +6,7 @@ module.exports = {
       cwd: './server/',
       env: {
         NODE_ENV: 'production',
+        DOTENV_CONFIG_PATH: '../../u3t-configs/.env-server'
       },
       node_args: '-r dotenv/config',
     },

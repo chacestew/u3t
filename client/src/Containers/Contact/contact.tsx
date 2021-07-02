@@ -140,7 +140,7 @@ export default function Contact() {
             if (response.ok) {
               setSentStatus('sent');
             } else {
-              setSentStatus('failed');
+              throw new Error(response.statusText);
             }
           } catch (error) {
             client.report(error);

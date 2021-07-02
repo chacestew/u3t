@@ -8,10 +8,9 @@ const server = http.createServer(app);
 app.use(historyFallback({ index: '/index.html' }));
 
 const start = () => {
-  const mode = process.env.NODE_ENV;
   const port = 8000;
   server.listen(8000, () => {
-    console.info(`React server listening on :${port} [${mode}]`);
+    console.info(`Development server listening on http://localhost:${port}`);
   });
 };
 
