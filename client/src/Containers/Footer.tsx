@@ -1,4 +1,4 @@
-import { faDiscord, faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -87,9 +87,6 @@ const Footer = ({ deferredInstallPrompt }: Props) => {
           </IconLink>
           <IconAnchor href="https://www.github.com/chacestew" aria-label="GitHub Link">
             <FontAwesomeIcon icon={faGithub} size="lg" />
-          </IconAnchor>
-          <IconAnchor href="https://www.github.com/chacestew" aria-label="Discord Link">
-            <FontAwesomeIcon icon={faDiscord} size="lg" />
           </IconAnchor>
           <Button
             aria-label="Install Application"

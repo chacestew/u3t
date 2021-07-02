@@ -7,6 +7,7 @@
     "common"
   ],
   "scripts": {
+    "install-all": "(cd common && npm install && npm run build) && (cd client && npm install) && (cd server && npm install) && npm install",
     "start": "(cd client && npm start) & (cd server && npm start)",
     "build": "(cd server && npm run build) & (cd client && npm run build)",
     "build-all": "export NODE_ENV=production && (cd common && npm run build-prod) && (cd server && npm run build-prod) && (cd client && npm run build-prod)",

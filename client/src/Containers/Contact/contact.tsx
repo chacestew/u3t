@@ -148,7 +148,7 @@ export default function Contact() {
           }
         }}
       >
-        <h2>Contact Form</h2>
+        <h3>Contact me</h3>
         <Text color={palette.white}>
           Please feel free to send me your questions or share any feedback or bug reports
           via the form below.

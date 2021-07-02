@@ -57,8 +57,8 @@ export default function Learn() {
   return (
     <Article>
       <Description>
-        Ultimate Tic-Tac-Toe uses all the mechanics of the regular game in a 9x9 format.
-        The difference is in where you get to play. Read on to learn more!
+        Ultimate Tic-Tac-Toe uses all the mechanics of the original game with a few new
+        mechanics and 3x3 format. Read on to learn more!
       </Description>
       <Section $dark>
         <Text>
@@ -100,11 +100,15 @@ export default function Learn() {
             You win overall when you win <b>three boards in a row</b>.
           </p>
           <p>
-            It is much harder to reach a stalemate in U3T due to the increased constraints
-            and permutations of moves (but still possible!).
+            It is much harder to reach a stalemate due to the increased constraints and
+            permutations of moves (but still possible!).
           </p>
           <p>
-            Have fun! You can also{' '}
+            Have fun!{' '}
+            <UnderlineLink to="/" aria-label="Home Page">
+              Start playing
+            </UnderlineLink>{' '}
+            or{' '}
             <UnderlineLink to="/about" aria-label="About Page">
               learn how this app was made
             </UnderlineLink>

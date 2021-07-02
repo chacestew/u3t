@@ -102,14 +102,14 @@ export default function About({ deferredInstallPrompt }: Props) {
         <p>
           This application was developed in{' '}
           <OutboundLink href="https://www.typescriptlang.org/">TypeScript</OutboundLink>{' '}
-          using <OutboundLink href="https://reactjs.org/">React</OutboundLink>, and{' '}
-          <OutboundLink href="https://nodejs.org/en/">Node.js</OutboundLink> and{' '}
-          <OutboundLink href="https://socket.io/">Socket.IO</OutboundLink> to power the
-          backend.
+          using <OutboundLink href="https://reactjs.org/">React</OutboundLink> on the
+          frontend and <OutboundLink href="https://nodejs.org/en/">Node.js</OutboundLink>{' '}
+          and <OutboundLink href="https://socket.io/">Socket.IO</OutboundLink> to power
+          the backend.
         </p>
         <p>
-          The complete source code is available for learning purposes on{' '}
-          <OutboundLink href="https://www.github.com/chacestew">
+          The complete source code is available on{' '}
+          <OutboundLink href="https://www.github.com/chacestew/u3t">
             <span>GitHub</span>
             <FontAwesomeIcon icon={faGithub} />
           </OutboundLink>
@@ -140,7 +140,7 @@ export default function About({ deferredInstallPrompt }: Props) {
           />
         </CoffeeButton>
         <p>Thanks for playing!</p>
-        <p>- Chace</p>
+        <p>Chace</p>
       </Section>
     </Article>
   );
