@@ -5,7 +5,7 @@ export default function (initalTitle: string) {
 
   useEffect(() => {
     if (title) document.title = `U3T - ${title}`;
-    else document.title = 'U3T';
+    else document.title = 'U3T - Ultimate Tic-Tac-Toe';
   }, [title]);
 
   return setTitle;
