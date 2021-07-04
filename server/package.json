@@ -1,7 +1,7 @@
 {
-  "name": "u3t-server",
-  "version": "0.1.0",
-  "description": "Ultimate Tic-Tac-Toe",
+  "name": "@u3t/server",
+  "version": "1.0.0",
+  "description": "Socket.IO API for U3T",
   "main": "index.js",
   "scripts": {
     "start": "export NODE_ENV=development && ts-node-dev --transpile-only -r dotenv/config ./index.ts",
@@ -11,14 +11,15 @@
     "lint": "eslint src --fix"
   },
   "keywords": [
-    "tic-tac-toe",
+    "u3t",
+    "u3t-app",
+    "ultimate tic-tac-toe",
     "ultimate",
-    "tic",
-    "tac",
-    "toe"
+    "tic-tac-toe",
+    "tic tac toe"
   ],
   "author": "Chace Stewart",
-  "license": "ISC",
+  "license": "MIT",
   "browserslist": [
     "last 1 version",
     "> 1%",
