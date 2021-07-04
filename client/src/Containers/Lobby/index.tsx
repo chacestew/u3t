@@ -174,8 +174,6 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
         playerId: playerId!,
         board,
         cell,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        dev: (window as any).dev,
       },
       (res) => {
         if (!res.valid) {

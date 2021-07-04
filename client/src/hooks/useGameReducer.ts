@@ -1,20 +1,5 @@
-import playTurn, {
-  generateRandomMove,
-  getInitialState,
-  IGameState,
-  ITurnInput,
-} from '@u3t/common';
+import playTurn, { getInitialState, IGameState, ITurnInput } from '@u3t/common';
 import { useMemo, useReducer } from 'react';
-
-function instantEnd(state: IGameState): IGameState {
-  const turn = generateRandomMove(state);
-
-  const nextState = playTurn(state, turn).state;
-
-  if (nextState.finished) return nextState;
-
-  return instantEnd(nextState);
-}
 
 const PLAY_TURN = 'play-turn';
 const SET_STATE = 'set-state';
@@ -30,10 +15,6 @@ type Action =
 function reducer(state: IGameState, action: Action): IGameState {
   switch (action.type) {
     case PLAY_TURN: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((window as any).dev === true) {
-        return instantEnd(state);
-      }
       const turnInput = action.payload;
       return playTurn(state, turnInput).state;
     }

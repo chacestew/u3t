@@ -139,7 +139,6 @@ export interface IdFields {
 export interface PlayTurnRequestArgs extends IdFields {
   board: Board;
   cell: Cell;
-  dev: boolean;
 }
 
 export type PlayTurnResponse =

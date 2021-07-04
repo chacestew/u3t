@@ -22,13 +22,7 @@ async function PlayTurn(
     cell: data.cell,
   };
 
-  let error;
-
-  if (process.env.NODE_ENV === 'development' && data.dev === true) {
-    lobby.endGameInstantly();
-  } else {
-    error = lobby.playTurn(payload).error;
-  }
+  const error = lobby.playTurn(payload).error;
 
   const state = lobby.getGame().getState();
 
