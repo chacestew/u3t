@@ -157,7 +157,6 @@ const TurnList = ({
               )}
             </TurnListParagraph>
           )}
-          {/* <div ref={bottomRef} /> */}
         </TurnListContainer>
       </StyledTurnList>
     </OuterContainer>

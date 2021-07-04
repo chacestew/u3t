@@ -49,7 +49,6 @@ function App() {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredInstallPrompt(e);
-      console.log(`'beforeinstallprompt' event was fired.`);
     });
   });
 

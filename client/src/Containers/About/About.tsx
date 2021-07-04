@@ -128,7 +128,7 @@ export default function About({ deferredInstallPrompt }: Props) {
           coffee donations below.
         </p>
         <CoffeeButton
-          href="https://www.buymeacoffee.com/u3tapp"
+          href="https://www.buymeacoffee.com/chaceopensource"
           target="_blank"
           rel="noreferrer"
         >
