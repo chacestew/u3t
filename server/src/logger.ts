@@ -50,11 +50,10 @@ const logToConsole = () => {
   logger.add(consoleTransport);
 };
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'production') {
   logToFiles();
-  logToConsole();
 } else {
-  logToFiles();
+  logToConsole();
 }
 
 export default {
