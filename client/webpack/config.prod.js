@@ -41,6 +41,18 @@ module.exports = {
       swSrc: '/src/service-worker.ts',
       dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
       exclude: [/\.map$/, /LICENSE/],
+      manifestTransforms: [
+        async (manifestEntries) => {
+          const manifest = manifestEntries.map((entry) => {
+            if (entry.url === '/index.html') {
+              // Rewrite cached asset because react-snap will rename app shell to 200.html
+              entry.url = '/200.html';
+            }
+            return entry;
+          });
+          return { manifest, warnings: [] };
+        },
+      ],
     }),
     // new BundleAnalyzerPlugin(),
   ],
