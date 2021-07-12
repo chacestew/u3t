@@ -1,6 +1,6 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate, render } from 'react-dom';
 import { Router } from 'react-router-dom';
 
 import App from './Containers/App';
@@ -11,11 +11,24 @@ const history = createBrowserHistory();
 
 const rootElement = document.getElementById('root');
 
-render(
-  <Router history={history}>
-    <App />
-  </Router>,
-  rootElement
-);
+if (rootElement!.hasChildNodes()) {
+  console.log('Hydrating');
+  hydrate(
+    <Router history={history}>
+      <App />
+    </Router>,
+    rootElement
+  );
+} else {
+  console.log('Rendering');
+  render(
+    <Router history={history}>
+      <App />
+    </Router>,
+    rootElement
+  );
+}
 
-registerSW({ onError: (error) => client.report(error) });
+if (navigator.userAgent !== 'ReactSnap') {
+  registerSW({ onError: (error) => client.report(error) });
+}
