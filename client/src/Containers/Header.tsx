@@ -149,7 +149,7 @@ const Header = () => (
         <NavItem exact to="/" $alwaysShow>
           Play
         </NavItem>
-        <NavItem to="/rules" $alwaysShow>
+        <NavItem to="/learn" $alwaysShow>
           Learn
         </NavItem>
         <NavItem to="/about">About</NavItem>

@@ -2,10 +2,10 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import UnderlineLink from '../../Components/UnderlineLink';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
 
@@ -62,10 +62,16 @@ interface Props {
 }
 
 export default function About({ deferredInstallPrompt }: Props) {
-  useDocumentTitle('About');
-
   return (
     <Article>
+      <Helmet>
+        <title>U3T - About</title>
+        <link rel="canonical" href="https://u3t.app/about" />
+        <meta
+          name="description"
+          content="U3T is an open-source Progressive Web Application. Learn about the game and how it was made."
+        />
+      </Helmet>
       <Section>
         <h3>Features</h3>
         <p>

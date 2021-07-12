@@ -9,6 +9,7 @@ import {
   Player,
 } from '@u3t/common';
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { StaticContext } from 'react-router';
 import { Prompt, RouteComponentProps } from 'react-router-dom';
 
@@ -16,7 +17,6 @@ import ErrorModal from '../../Components/ErrorModal';
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import RestartButton from '../../Components/GameArea/TurnList/RestartButton';
 import TurnList from '../../Components/GameArea/TurnList/TurnList';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useGameReducer from '../../hooks/useGameReducer';
 import useMultiplerState from '../../hooks/useLobbyReducer';
 import useNavigatorOnline from '../../hooks/useNavigatorOnline';
@@ -41,7 +41,9 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   const isNavigatorOnline = useNavigatorOnline();
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
-  const setTitle = useDocumentTitle(match.params.lobbyId || '');
+  const [title, setTitle] = useState(
+    match.params.lobbyId ? `U3T - ${match.params.lobbyId}` : 'U3T'
+  );
 
   const locationState = location.state || { lobbyId: undefined, playerId: undefined };
 
@@ -200,6 +202,10 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
 
   return (
     <>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <Prompt
         when={lobbyState.started && !state.finished}
         message={`Are you sure you want to leave the game?\n\nYou can rejoin within 24 hours using this code: ${lobbyState.lobbyId}`}
