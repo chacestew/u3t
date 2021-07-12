@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import pic1 from '../../../assets/learn1.png';
@@ -6,7 +7,6 @@ import pic2 from '../../../assets/learn2.png';
 import pic3 from '../../../assets/learn3.png';
 import { TurnListCell } from '../../Components/GameArea/TurnList/TurnListItem';
 import UnderlineLink from '../../Components/UnderlineLink';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 
@@ -52,10 +52,17 @@ const Description = styled.p`
 `;
 
 export default function Learn() {
-  useDocumentTitle('Learn');
-
   return (
     <Article>
+      <Helmet>
+        <title>U3T - Learn</title>
+        <link rel="canonical" href="https://u3t.app/learn" />
+        <meta
+          name="description"
+          content="Learn the rules of ultimate tic-tac-toe, the complex and competitive expansion
+          on regular tic-tac-toe."
+        />
+      </Helmet>
       <Description>
         Ultimate Tic-Tac-Toe uses all the mechanics of the original game with a few new
         mechanics and 3x3 format. Read on to learn more!

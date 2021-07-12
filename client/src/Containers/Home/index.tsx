@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { Button, ButtonLink } from '../../Components/Button';
 import GameView from '../../Components/GameArea/GlobalBoard/GlobalBoard';
 import HomeHeader from '../../Components/GameArea/Header/HeaderContents/Home';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { flexColumns, media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 import CodeInputForm, { CodeInputMode } from './CodeInputForm';
@@ -98,7 +97,6 @@ export default function Home({ socket }: { socket: ClientSocket }) {
   const history = useHistory();
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [isRequestingLobby, setIsRequestingLobby] = useState(false);
-  useDocumentTitle('');
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -207,7 +205,7 @@ export default function Home({ socket }: { socket: ClientSocket }) {
               Start a multiplayer game on your device or play against an AI opponent.
             </Description>
             <MultiMenuItem>
-              <ButtonLink disabled={isRequestingLobby} to="/local" $rounded $shadow>
+              <ButtonLink disabled={isRequestingLobby} to="/hotseat" $rounded $shadow>
                 Hotseat
               </ButtonLink>
               <ButtonLink disabled={isRequestingLobby} to="/ai" $rounded $shadow>

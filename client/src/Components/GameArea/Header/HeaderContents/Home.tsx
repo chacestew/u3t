@@ -8,7 +8,7 @@ const InPlay = () => {
     <Bar>
       <p>
         Welcome! Start a game or{' '}
-        <UnderlineLink to="/rules">learn the rules</UnderlineLink>.
+        <UnderlineLink to="/learn">learn the rules</UnderlineLink>.
       </p>
     </Bar>
   );

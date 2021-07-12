@@ -79,7 +79,6 @@ const didWinGame = (state: T.IGameState, payload: T.ITurnInput) => {
 // Public
 export const generateRandomMove = (state: T.IGameState) => {
   const { boards, currentPlayer: player, activeBoard } = state;
-  console.log('state?', state);
 
   const randomElement = (arr: any) => arr[Math.floor(Math.random() * arr.length)];
 

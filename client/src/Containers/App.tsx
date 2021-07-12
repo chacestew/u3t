@@ -1,5 +1,6 @@
 import { ClientSocket } from '@u3t/common';
 import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styled from 'styled-components';
@@ -54,6 +55,14 @@ function App() {
 
   return (
     <>
+      <Helmet>
+        <title>U3T - Ultimate Tic-Tac-Toe</title>
+        <link rel="canonical" href="https://u3t.app" />
+        <meta
+          name="description"
+          content="U3T is the best way to play ultimate tic-tac-toe in online multiplayer and single-player against an AI. Install as a Progressive Web Application and play from anywhere!"
+        />
+      </Helmet>
       <GlobalStyle />
       <Header />
       <ErrorBoundary>
@@ -77,9 +86,9 @@ function App() {
                   <Lobby socket={socket} spectator {...routeProps} />
                 )}
               />
-              <Route path="/local" component={HotSeat} />
+              <Route path="/hotseat" component={HotSeat} />
               <Route path="/ai" component={PlayAI} />
-              <Route path="/rules" component={Rules} />
+              <Route path="/learn" component={Rules} />
               <Route
                 path="/about"
                 render={(routeProps) => (
