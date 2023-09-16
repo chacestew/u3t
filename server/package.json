@@ -4,7 +4,7 @@
   "description": "Socket.IO API for U3T",
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development && ts-node-dev --transpile-only -r dotenv/config ./index.ts",
+    "start": "export NODE_ENV=development && bun run ./index.ts",
     "build": "del-cli build && tsc",
     "build-prod": "npm i && npm run build",
     "tsc": "tsc --noEmit",
@@ -40,7 +40,7 @@
     "express-joi-validation": "^5.0.0",
     "express-static-gzip": "^2.0.8",
     "joi": "^17.4.0",
-    "nanoid": "^3.1.12",
+    "nanoid": "^3.3.4",
     "nodemailer": "^6.6.2",
     "socket.io": "^4.1.2",
     "typescript": "^4.0.2",
@@ -62,7 +62,6 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "prettier": "2.2.1",
-    "ts-node-dev": "^1.1.6"
+    "prettier": "2.2.1"
   }
 }
