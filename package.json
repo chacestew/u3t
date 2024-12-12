@@ -16,11 +16,11 @@
   "author": "Chace Stewart",
   "license": "MIT",
   "scripts": {
-    "install-all": "(cd common && npm install && npm run build) && (cd client && npm install) && (cd server && npm install) && npm install",
-    "start": "(cd client && npm start) & (cd server && npm start)",
-    "build": "(cd server && npm run build) & (cd client && npm run build)",
-    "build-all": "export NODE_ENV=production && (cd common && npm run build-prod) && (cd server && npm run build-prod) && (cd client && npm run build-prod)",
-    "test": "npm run test -w=common"
+    "install-all": "(cd common && bun install && bun run build) && (cd client && bun install) && (cd server && bun install) && bun install",
+    "start": "(cd client && bun start) & (cd server && bun start)",
+    "build": "(cd server && bun run build) & (cd client && bun run build)",
+    "build-all": "export NODE_ENV=production && (cd common && bun run build-prod) && (cd server && bun run build-prod) && (cd client && bun run build-prod)",
+    "test": "bun run test -w=common"
   },
   "repository": {
     "type": "git",

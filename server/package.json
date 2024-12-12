@@ -6,7 +6,7 @@
   "scripts": {
     "start": "export NODE_ENV=development && bun run ./index.ts",
     "build": "del-cli build && tsc",
-    "build-prod": "npm i && npm run build",
+    "build-prod": "bun install && bun build",
     "tsc": "tsc --noEmit",
     "lint": "eslint src --fix"
   },

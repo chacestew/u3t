@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "build": "del-cli build && tsc",
-    "build-prod": "npm i && npm run build"
+    "build-prod": "bun install && bun build"
   },
   "keywords": [
     "u3t",
