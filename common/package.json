@@ -6,8 +6,7 @@
   "module": "./index.ts",
   "scripts": {
     "test": "jest",
-    "build": "del-cli build && tsc",
-    "build-prod": "bun install && bun build"
+    "build": "del-cli build && tsc"
   },
   "keywords": [
     "u3t",

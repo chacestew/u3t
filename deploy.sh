@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-bun install
-bun run build-all
+npm run install-all
+npm run build
 pm2 startOrReload ecosystem.config.js
