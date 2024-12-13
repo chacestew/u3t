@@ -113,7 +113,8 @@ export default function attachSockets(server: HttpServer) {
   io.attach(server, {
     path: '/ws',
     cors: {
-      origin,
+      // todo: lock this down again
+      origin: "*",
       credentials: true,
     },
   });
