@@ -4,9 +4,8 @@
   "description": "Socket.IO API for U3T",
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development && bun run ./index.ts",
+    "start": "export NODE_ENV=development && tsx ./index.ts",
     "build": "del-cli build && tsc",
-    "build-prod": "bun install && bun build",
     "tsc": "tsc --noEmit",
     "lint": "eslint src --fix"
   },
@@ -47,6 +46,7 @@
     "nanoid": "^3.3.4",
     "nodemailer": "^6.6.2",
     "socket.io": "^4.1.2",
+    "tsx": "^4.19.2",
     "typescript": "^4.0.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"

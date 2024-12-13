@@ -4,9 +4,8 @@
   "description": "React UI for U3T",
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development && bun run ./index.js",
-    "build": "export NODE_ENV=production && del-cli dist && webpack --config ./webpack/config.prod.js --stats-error-details",
-    "build-prod": "bun install && bun run build",
+    "start": "NODE_ENV=development && node ./index.js",
+    "build": "NODE_ENV=production && del-cli dist && webpack --config ./webpack/config.prod.js --stats-error-details",
     "serve": "http-server dist",
     "tsc": "tsc --noEmit",
     "lint": "eslint src --fix"
@@ -61,7 +60,6 @@
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
     "brotli-webpack-plugin": "^1.1.0",
-    "bun-types": "^1.0.2",
     "clone-deep": "^4.0.1",
     "compression-webpack-plugin": "^8.0.0",
     "connect-history-api-fallback": "^1.6.0",
@@ -79,7 +77,6 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-snap": "^0.2.0",
-    "serve-static-bun": "^0.5.3",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
     "styled-components": "^5.3.0",
@@ -97,7 +94,7 @@
     "workbox-webpack-plugin": "^6.1.5"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "@types/node": "^15.12.1",
     "@types/styled-components": "^5.1.9",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
@@ -113,7 +110,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "prettier": "^2.3.1",
-    "react-refresh": "^0.9.0",
+    "react-refresh": "^0.16.0",
     "webpack-dev-middleware": "^5.0.0",
     "webpack-hot-middleware": "^2.25.0"
   }

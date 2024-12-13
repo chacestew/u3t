@@ -36,8 +36,8 @@ Follow these steps to start the application in development mode:
 
 1. Clone this repo
 2. From the repo root, run
-   1. `bun install-all` (installs modules in each directory)
-   2. `bun start` (runs the client webpack dev server and the server via nodemon)
+   1. `npm run install-all` (installs modules in each directory)
+   2. `npm run start` (runs the client webpack dev server and the server via nodemon)
 3. Open http://localhost:8000 to view the app
 4. Any code changes made will reflect immediately
 
