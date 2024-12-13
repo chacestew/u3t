@@ -22,6 +22,8 @@ const validator = createValidator();
 
 app.use(Sentry.Handlers.requestHandler());
 
+app.get('/marco', (_, res) => { res.status(200).send('polo') });
+
 app.post('/send-contact', jsonParser, validator.body(schema), contact);
 
 app.use(Sentry.Handlers.errorHandler());

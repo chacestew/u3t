@@ -22,6 +22,7 @@
     "build-common": "cd common && npm run build",
     "build-client": "cd client && npm run build",
     "build-server": "cd server && npm run build",
+    "start-server": "node server/build/index.js",
     "test": "npm run test -w=common"
   },
   "repository": {
