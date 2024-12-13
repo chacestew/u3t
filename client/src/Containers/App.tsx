@@ -34,10 +34,7 @@ export const Main = styled.main`
   ${media.aboveMobileL`overflow: auto`}
 `;
 
-const socketURL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8001'
-    : window.location.protocol + '//' + window.location.host;
+const socketURL = process.env.SOCKET_SERVER_URL ?? window.location.protocol + '//' + window.location.host;
 
 const socket: ClientSocket = io(socketURL, { path: '/ws' });
 
