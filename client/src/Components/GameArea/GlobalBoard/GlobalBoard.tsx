@@ -8,7 +8,7 @@ import {
   ITurnInput,
   Player,
 } from '@u3t/common';
-import React, { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 
 import { gridSize } from '../../../utils/palette';
@@ -22,9 +22,9 @@ interface Props {
   dismissError?: () => void;
   onValidTurn?: (turnInput: ITurnInput) => void;
   onInvalidTurn?: (error: Errors) => void;
-  Alert?: false | React.ReactElement;
+  Alert?: false | ReactElement;
   disabled?: boolean;
-  Modal?: React.ReactElement | null;
+  Modal?: ReactElement | null;
 }
 
 const Container = styled.div`

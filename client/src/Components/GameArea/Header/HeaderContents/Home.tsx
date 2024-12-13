@@ -1,5 +1,3 @@
-import React from 'react';
-
 import UnderlineLink from '../../../UnderlineLink';
 import { Bar } from '../styles';
 

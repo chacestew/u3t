@@ -1,5 +1,4 @@
 import { Cell as CellType, Player } from '@u3t/common';
-import React from 'react';
 import styled from 'styled-components';
 
 import palette from '../../../utils/palette';

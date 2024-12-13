@@ -1,5 +1,4 @@
 import { IGameState } from '@u3t/common';
-import React from 'react';
 
 import Finished from '../../Components/GameArea/Header/HeaderContents/Finished';
 import InPlay from '../../Components/GameArea/Header/HeaderContents/InPlay';

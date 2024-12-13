@@ -1,5 +1,4 @@
 import { Board, IBoardState } from '@u3t/common';
-import React from 'react';
 
 import palette from '../../../utils/palette';
 import BoardSVG from '../BoardSVG';

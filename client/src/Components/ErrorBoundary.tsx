@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
 import styled from 'styled-components';
 
@@ -30,7 +30,7 @@ function ErrorFallback({ error }: { error: Error }) {
     <Main>
       <Section>
         <h3>Something went wrong</h3>
-        {process.env.NODE_ENV === 'development' && <pre>{error.message}</pre>}
+        {import.meta.env.NODE_ENV === 'development' && <pre>{error.message}</pre>}
         <p>The error has been recorded and sent to me.</p>
         <p>Please try one of the links below to continue.</p>
         <Buttons>
@@ -47,7 +47,7 @@ function ErrorFallback({ error }: { error: Error }) {
 }
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function ErrorBoundary(props: Props) {

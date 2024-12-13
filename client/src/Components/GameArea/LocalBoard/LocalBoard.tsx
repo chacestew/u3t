@@ -8,7 +8,7 @@ import {
   ITurnInput,
   Player,
 } from '@u3t/common';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { media } from '../../../styles/mixins';

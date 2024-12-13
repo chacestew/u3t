@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const trackingId = process.env.GA_TRACKING_ID;
+const trackingId = import.meta.env.VITE_VITE_GA_TRACKING_ID;
 
 declare global {
   interface Window {

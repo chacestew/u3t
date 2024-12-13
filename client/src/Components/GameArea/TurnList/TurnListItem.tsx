@@ -1,5 +1,5 @@
 import { Board, Cell, Player } from '@u3t/common';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import { media } from '../../../styles/mixins';
