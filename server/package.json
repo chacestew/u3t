@@ -4,7 +4,8 @@
   "description": "Socket.IO API for U3T",
   "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=development && tsx ./index.ts",
+    "dev": "export NODE_ENV=development && tsx ./index.ts",
+    "start": "NODE_ENV=production && node build/index.js",
     "build": "del-cli build && tsc",
     "tsc": "tsc --noEmit",
     "lint": "eslint src --fix"
