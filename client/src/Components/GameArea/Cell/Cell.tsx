@@ -2,7 +2,6 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Player } from '@u3t/common';
-import React from 'react';
 import styled from 'styled-components';
 
 import { boxShadow } from '../../../styles/mixins';

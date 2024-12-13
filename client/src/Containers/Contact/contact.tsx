@@ -1,9 +1,8 @@
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
 import { Button } from '../../Components/Button';
-import client from '../../micro-sentry';
 import { media } from '../../styles/mixins';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
@@ -150,7 +149,6 @@ export default function Contact() {
               throw new Error(response.statusText);
             }
           } catch (error) {
-            client.report(error);
             setSentStatus('failed');
           }
         }}

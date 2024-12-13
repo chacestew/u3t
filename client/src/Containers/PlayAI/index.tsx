@@ -1,7 +1,7 @@
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateRandomMove, ITurnInput, Player } from '@u3t/common';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import Board from '../../Components/GameArea/GlobalBoard/GlobalBoard';

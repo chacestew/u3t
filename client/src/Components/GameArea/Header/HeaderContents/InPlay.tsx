@@ -1,5 +1,4 @@
 import { Cell as CellType, IBoardState } from '@u3t/common';
-import React from 'react';
 
 import MiniBoard from '../MiniBoard';
 import { Bar, Cell, Text } from '../styles';

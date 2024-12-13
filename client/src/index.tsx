@@ -1,6 +1,5 @@
 import { createBrowserHistory } from 'history';
-import React from 'react';
-import { hydrate, render } from 'react-dom';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { Router } from 'react-router-dom';
 
 import App from './Containers/App';
@@ -9,26 +8,14 @@ import registerSW from './registerServiceWorker';
 
 const history = createBrowserHistory();
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById('root')!;
 
-if (rootElement!.hasChildNodes()) {
+if (rootElement.hasChildNodes()) {
   console.log('Hydrating');
-  hydrate(
-    <Router history={history}>
-      <App />
-    </Router>,
-    rootElement
-  );
+  hydrateRoot(rootElement, <Router history={history}><App /></Router>);
 } else {
   console.log('Rendering');
-  render(
-    <Router history={history}>
-      <App />
-    </Router>,
-    rootElement
-  );
+  createRoot(rootElement).render(<Router history={history}><App /></Router>);
 }
 
-if (navigator.userAgent !== 'ReactSnap') {
-  registerSW({ onError: (error) => client.report(error) });
-}
+registerSW({ onError: (error) => client.report(error) });
