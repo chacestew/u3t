@@ -9,8 +9,7 @@
     "build-prod": "bun install && bun run build",
     "serve": "http-server dist",
     "tsc": "tsc --noEmit",
-    "lint": "eslint src --fix",
-    "postbuild": "react-snap"
+    "lint": "eslint src --fix"
   },
   "reactSnap": {
     "source": "dist",
