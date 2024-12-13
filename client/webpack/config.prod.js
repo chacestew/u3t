@@ -26,7 +26,7 @@ module.exports = {
     rules: [loaders.JS(), loaders.Images({ name: '[contenthash].[ext]' })],
   },
   plugins: [
-    new Dotenv({ path: '../../u3t-configs/.env-client' }),
+    new Dotenv({ systemvars: true }),
     new HtmlWebpackPlugin({ template: '/public/index.ejs' }),
     new CopyPlugin({
       patterns: [{ from: 'public', to: '.', filter: (f) => !f.includes('index.ejs') }],
