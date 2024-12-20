@@ -7,7 +7,7 @@
     "lint": "eslint . --fix",
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "fmt": "prettier src -c"
+    "fmt": "prettier src -w"
   },
   "keywords": [
     "u3t",

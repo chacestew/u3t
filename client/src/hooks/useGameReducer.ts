@@ -52,7 +52,7 @@ export default function (): [IGameState, Dispatchers] {
         dispatch({ type: UNDO });
       },
     }),
-    []
+    [],
   );
   return [state, dispatchers];
 }

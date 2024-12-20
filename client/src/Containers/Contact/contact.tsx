@@ -101,7 +101,8 @@ export default function Contact() {
   const validate = () => {
     const invalidFields = Object.entries(state)
       .filter(
-        ([key, value]) => value.length < 2 || (key === 'email' && !emailRegex.test(value))
+        ([key, value]) =>
+          value.length < 2 || (key === 'email' && !emailRegex.test(value)),
       )
       .map(([key]) => key as keyof ContactBody);
 
@@ -148,7 +149,7 @@ export default function Contact() {
             } else {
               throw new Error(response.statusText);
             }
-          } catch (error) {
+          } catch {
             setSentStatus('failed');
           }
         }}
@@ -211,8 +212,8 @@ export default function Contact() {
           {sentStatus === 'sent'
             ? 'Sent!'
             : sentStatus === 'sending'
-            ? 'Sending...'
-            : 'Send Message'}
+              ? 'Sending...'
+              : 'Send Message'}
         </B>
       </Form>
     </div>

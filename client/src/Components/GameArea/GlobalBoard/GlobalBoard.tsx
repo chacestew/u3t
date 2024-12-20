@@ -48,8 +48,8 @@ const OuterGrid = styled(Grid)<{ disabled?: boolean }>`
 export default function GameView({
   state,
   seat,
-  onValidTurn,
-  onInvalidTurn,
+  onValidTurn = () => {},
+  onInvalidTurn = () => {},
   Modal,
   Alert,
   disabled,
@@ -62,7 +62,7 @@ export default function GameView({
     const turn = { player: seat!, ...turnInput };
     const invalidTurnError = isInvalidTurn(state, turn);
     if (invalidTurnError) {
-      onInvalidTurn && onInvalidTurn(invalidTurnError);
+      onInvalidTurn(invalidTurnError);
       if (invalidTurnError === Errors.BoardNotPlayable) {
         if (flashing) return;
         setFlashing(true);
@@ -71,7 +71,7 @@ export default function GameView({
         }, 350);
       }
     } else {
-      onValidTurn && onValidTurn(turn);
+      onValidTurn(turn);
     }
   };
 

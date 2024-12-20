@@ -12,10 +12,19 @@ const rootElement = document.getElementById('root')!;
 
 if (rootElement.hasChildNodes()) {
   console.log('Hydrating');
-  hydrateRoot(rootElement, <Router history={history}><App /></Router>);
+  hydrateRoot(
+    rootElement,
+    <Router history={history}>
+      <App />
+    </Router>,
+  );
 } else {
   console.log('Rendering');
-  createRoot(rootElement).render(<Router history={history}><App /></Router>);
+  createRoot(rootElement).render(
+    <Router history={history}>
+      <App />
+    </Router>,
+  );
 }
 
 registerSW({ onError: (error) => client.report(error) });

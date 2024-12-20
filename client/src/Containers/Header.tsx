@@ -115,7 +115,7 @@ const DropMenu = () => {
     document.addEventListener('mousedown', closeModal);
     document.addEventListener('touchstart', closeModal);
 
-    () => {
+    return () => {
       document.removeEventListener('mousedown', closeModal);
       document.removeEventListener('touchstart', closeModal);
     };

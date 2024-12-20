@@ -140,7 +140,7 @@ export default function Home({ socket }: { socket: ClientSocket }) {
       (data) => {
         console.log('data inside onSubmit', data);
         history.push(`/game/${data.lobbyId}`, data);
-      }
+      },
     );
   };
 

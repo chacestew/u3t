@@ -34,7 +34,9 @@ export const Main = styled.main`
   ${media.aboveMobileL`overflow: auto`}
 `;
 
-const socketURL = import.meta.env.VITE_SOCKET_SERVER_URL ?? window.location.protocol + '//' + window.location.host;
+const socketURL =
+  import.meta.env.VITE_SOCKET_SERVER_URL ??
+  window.location.protocol + '//' + window.location.host;
 
 const socket: ClientSocket = io(socketURL, { path: '/ws' });
 

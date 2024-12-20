@@ -38,7 +38,7 @@ registerRoute(
     // Return true to signal that we want to use the handler.
     return true;
   },
-  createHandlerBoundToURL('/200.html')
+  createHandlerBoundToURL('/200.html'),
 );
 
 // An example runtime caching route for requests that aren't handled by the
@@ -54,7 +54,7 @@ registerRoute(
       // least-recently used images are removed.
       new ExpirationPlugin({ maxEntries: 50 }),
     ],
-  })
+  }),
 );
 
 // This allows the web app to trigger skipWaiting via

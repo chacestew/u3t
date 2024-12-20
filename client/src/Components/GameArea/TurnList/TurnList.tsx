@@ -78,6 +78,8 @@ const StyledTurnList = styled.div<{ expanded: boolean; $requiresOverlay: boolean
      `}
 
   ${({ $requiresOverlay }) =>
+    // todo: why was this turned off?
+    // eslint-disable-next-line no-constant-binary-expression
     false &&
     !$requiresOverlay &&
     `position: relative;
