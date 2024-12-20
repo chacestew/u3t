@@ -4,8 +4,8 @@ const isLocalhost = Boolean(
     window.location.hostname === '[::1]' ||
     // 127.0.0.0/8 are considered localhost for IPv4.
     window.location.hostname.match(
-      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/,
+    ),
 );
 
 type Config = {
@@ -71,8 +71,9 @@ function registerValidSW(swUrl: string, config?: Config) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              window.confirm('New version available. Refresh to update?') &&
+              if (window.confirm('New version available. Refresh to update?')) {
                 updateServiceWorker(registration);
+              }
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);

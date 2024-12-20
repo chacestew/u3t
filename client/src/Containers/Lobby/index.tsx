@@ -42,7 +42,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
   const [socketConnectionLost, setSocketConnectionLost] = useState(false);
   const hasLostConnection = !isNavigatorOnline || socketConnectionLost;
   const [title, setTitle] = useState(
-    match.params.lobbyId ? `U3T - ${match.params.lobbyId}` : 'U3T'
+    match.params.lobbyId ? `U3T - ${match.params.lobbyId}` : 'U3T',
   );
 
   const locationState = location.state || { lobbyId: undefined, playerId: undefined };
@@ -124,7 +124,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
             dispatch({ event: Events.JoinedAsSpectator, data });
             setState(data.state);
         }
-      }
+      },
     );
   }, [
     dispatch,
@@ -146,7 +146,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
             state.currentPlayer === lobbyState.playerSeat
               ? 'Your turn'
               : "Opponent's turn"
-          }`
+          }`,
         );
       } else {
         setTitle(`${state.currentPlayer === 1 ? 'X' : 'O'}'s turn`);
@@ -181,7 +181,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
         if (!res.valid) {
           setState(res.state);
         }
-      }
+      },
     );
   };
 

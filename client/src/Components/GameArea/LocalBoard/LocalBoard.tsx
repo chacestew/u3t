@@ -67,7 +67,7 @@ const Board = ({
   const active = !gameWinner && activeBoard.includes(boardIndex);
   const shouldDim = useMemo(
     () => (gameWinner ? !winningSet.includes(boardIndex) : !active),
-    [gameWinner, winningSet, boardIndex, active]
+    [gameWinner, winningSet, boardIndex, active],
   );
   return (
     <InnerGrid
