@@ -10,10 +10,10 @@ declare global {
 }
 
 export const useTracking = () => {
-  const { listen } = useHistory();
+  const history = useHistory();
 
   useEffect(() => {
-    const unlisten = listen((location) => {
+    const unlisten = history.listen((location) => {
       if (!window.gtag) return;
       if (!trackingId) return;
 
@@ -21,5 +21,5 @@ export const useTracking = () => {
     });
 
     return unlisten;
-  }, [listen]);
+  }, [history.listen]);
 };
