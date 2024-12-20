@@ -18,11 +18,7 @@
   ],
   "author": "Chace Stewart",
   "license": "MIT",
-  "browserslist": [
-    "last 2 versions",
-    "> 1%",
-    "not dead"
-  ],
+  "browserslist": ["last 2 versions", "> 1%", "not dead"],
   "dependencies": {
     "@types/clone-deep": "^4.0.1",
     "clone-deep": "^4.0.1",
@@ -30,7 +26,7 @@
     "del-cli": "^3.0.1",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
-    "typescript": "^4.2.4"
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
