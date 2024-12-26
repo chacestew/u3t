@@ -208,7 +208,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
       </Helmet>
       <Prompt
         when={lobbyState.started && !state.finished}
-        message={`Are you sure you want to leave the game?\n\nYou can rejoin within 24 hours using this code: ${lobbyState.lobbyId}`}
+        message={`Are you sure you want to leave the game?\n\nYou can rejoin within 15 minutes using the code: ${lobbyState.lobbyId}`}
       />
       <LobbyHeader
         state={state}
