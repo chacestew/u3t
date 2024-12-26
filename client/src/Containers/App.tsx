@@ -16,7 +16,6 @@ import Header from './Header';
 const Home = lazy(() => import('./Home'));
 const Lobby = lazy(() => import('./Lobby'));
 const About = lazy(() => import('./About/About'));
-const Contact = lazy(() => import('./Contact/contact'));
 const HotSeat = lazy(() => import('./HotSeat'));
 const PlayAI = lazy(() => import('./PlayAI'));
 const Rules = lazy(() => import('./Rules'));
@@ -94,7 +93,6 @@ function App() {
                   <About {...routeProps} deferredInstallPrompt={deferredInstallPrompt} />
                 )}
               />
-              <Route path="/contact" component={Contact} />
               <Redirect to="/" />
             </Switch>
           </Suspense>

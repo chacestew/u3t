@@ -126,7 +126,11 @@ export default function About({ deferredInstallPrompt }: Props) {
         <h3>Thank you</h3>
         <p>
           If you enjoyed yourself or you have any questions or feedback, please let me
-          know via the <UnderlineLink to="/contact">contact form</UnderlineLink>.
+          know by creating a{' '}
+          <OutboundLink href="https://github.com/chacestew/u3t/issues">
+            GitHub issue
+          </OutboundLink>
+          .
         </p>
         <p>
           This application is provided freely for entertainment and education and will

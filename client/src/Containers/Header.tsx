@@ -1,12 +1,9 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import logo from '../../assets/logo.png';
-import { media } from '../styles/mixins';
 import palette, { gridSize } from '../utils/palette';
+import { media } from '../styles/mixins';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -31,31 +28,19 @@ const NavList = styled.div`
   justify-content: space-evenly;
 `;
 
-const NavItemStyles = css`
+const NavItem = styled(NavLink)`
+  display: inline-flex;
   height: 50px;
   font-weight: bold;
   align-items: center;
-  padding: 0 1em;
   background-color: ${palette.primaryDark};
-`;
 
-const NavItem = styled(NavLink)<{ $alwaysShow?: boolean }>`
-  ${NavItemStyles}
-
-  ${(p) => (p.$alwaysShow ? 'display: inline-flex;' : 'display: none;')}
-  ${media.aboveMobileL`display: inline-flex;`}
+  padding: 0 0.5em;
+  ${media.aboveMobileS`padding: 0 1em;`}
 
   &.active {
     background-color: ${palette.primaryLight};
   }
-`;
-
-const DropMenuNavItem = styled(Link)`
-  ${NavItemStyles}
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  width: 100%;
 `;
 
 const Logo = styled(Link)`
@@ -64,81 +49,6 @@ const Logo = styled(Link)`
   align-items: center;
 `;
 
-const MenuIconButton = styled.button`
-  cursor: pointer;
-  color: white;
-  background-color: transparent;
-  outline: none;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  padding: 1em;
-
-  ${media.aboveMobileL`
-    display: none;
-  `}
-`;
-
-const StyledDropMenu = styled.div`
-  top: 100%;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  z-index: 10;
-  min-width: 50vw;
-  background-color: ${palette.primaryDark};
-  border: 1px solid ${palette.primaryLight};
-  border-right: 0;
-`;
-
-const Divider = styled.div`
-  height: 1px;
-  width: 80%;
-  background-color: ${palette.primaryLight};
-`;
-
-const DropMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuButtonElement = menuButtonRef.current;
-
-  useEffect(() => {
-    const closeModal = (e: MouseEvent | TouchEvent) => {
-      if (!menuButtonElement || menuButtonElement.contains(e.target as Node)) {
-        return;
-      }
-      setIsOpen(false);
-    };
-
-    document.addEventListener('mousedown', closeModal);
-    document.addEventListener('touchstart', closeModal);
-
-    return () => {
-      document.removeEventListener('mousedown', closeModal);
-      document.removeEventListener('touchstart', closeModal);
-    };
-  }, [menuButtonElement]);
-
-  return (
-    <MenuIconButton
-      aria-label="Dropdown Menu"
-      ref={menuButtonRef}
-      onClick={() => setIsOpen((current) => !current)}
-    >
-      <FontAwesomeIcon icon={faBars} />
-      {isOpen && (
-        <StyledDropMenu>
-          <DropMenuNavItem to="/about">About</DropMenuNavItem>
-          <Divider />
-          <DropMenuNavItem to="/contact">Contact</DropMenuNavItem>
-        </StyledDropMenu>
-      )}
-    </MenuIconButton>
-  );
-};
-
 const Header = () => (
   <StyledHeader>
     <StyledNav>
@@ -146,15 +56,11 @@ const Header = () => (
         <img src={logo} width="80px" height="27px" alt="U3T logo" />
       </Logo>
       <NavList>
-        <NavItem exact to="/" $alwaysShow>
+        <NavItem exact to="/">
           Play
         </NavItem>
-        <NavItem to="/learn" $alwaysShow>
-          Learn
-        </NavItem>
+        <NavItem to="/learn">Learn</NavItem>
         <NavItem to="/about">About</NavItem>
-        {/* <NavItem to="/contact">Contact</NavItem> */}
-        <DropMenu />
       </NavList>
     </StyledNav>
   </StyledHeader>

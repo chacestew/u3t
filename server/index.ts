@@ -1,11 +1,8 @@
 import * as Sentry from '@sentry/node';
-import { json } from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import { createValidator } from 'express-joi-validation';
 import http from 'http';
 
-import contact, { schema } from './src/contact';
 import logger from './src/logger';
 import attachSockets from './src/sockets';
 
@@ -17,14 +14,11 @@ attachSockets(server);
 
 if (process.env.NODE_ENV === 'development') app.use(cors());
 
-const jsonParser = json();
-const validator = createValidator();
-
 app.use(Sentry.Handlers.requestHandler());
 
-app.get('/marco', (_, res) => { res.status(200).send('polo') });
-
-app.post('/send-contact', jsonParser, validator.body(schema), contact);
+app.get('/marco', (_, res) => {
+  res.status(200).send('polo');
+});
 
 app.use(Sentry.Handlers.errorHandler());
 

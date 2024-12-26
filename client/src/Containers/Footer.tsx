@@ -81,7 +81,7 @@ const Footer = ({ deferredInstallPrompt }: Props) => {
         <Text>© C Stewart {new Date().getFullYear()}</Text>
         <Text className="desktop">© Chace Stewart {new Date().getFullYear()}</Text>
         <SocialLinks>
-          <IconLink to="/contact" aria-label="Contact Page">
+          <IconLink to="/about" aria-label="Contact Information">
             <FontAwesomeIcon icon={faEnvelope} size="lg" />
           </IconLink>
           <IconAnchor href="https://www.github.com/chacestew" aria-label="GitHub Link">
