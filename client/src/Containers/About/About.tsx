@@ -5,7 +5,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 
-import UnderlineLink from '../../Components/UnderlineLink';
 import palette from '../../utils/palette';
 import { Article } from '../Rules/index';
 
