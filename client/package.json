@@ -20,7 +20,11 @@
   ],
   "author": "Chace Stewart",
   "license": "MIT",
-  "browserslist": ["last 2 versions", "> 1%", "not dead"],
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
@@ -56,6 +60,8 @@
     "typescript-eslint": "^8.15.0",
     "vite": "^6.0.3",
     "vite-plugin-html": "^3.2.2",
-    "vite-plugin-pwa": "^0.21.1"
+    "vite-plugin-pwa": "^0.21.1",
+    "workbox-core": "^7.3.0",
+    "workbox-window": "^7.3.0"
   }
 }
