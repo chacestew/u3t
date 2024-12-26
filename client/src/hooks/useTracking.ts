@@ -1,4 +1,3 @@
-import { History } from 'history';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -11,10 +10,10 @@ declare global {
 }
 
 export const useTracking = () => {
-  const history: History = useHistory();
+  const history = useHistory();
 
   useEffect(() => {
-    const unlisten = history.listen(({ location }) => {
+    const unlisten = history.listen((location) => {
       if (!window.gtag) return;
       if (!trackingId) return;
 
@@ -22,5 +21,5 @@ export const useTracking = () => {
     });
 
     return unlisten;
-  }, [history.listen]);
+  }, [history]);
 };

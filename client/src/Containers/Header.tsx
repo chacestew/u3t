@@ -153,7 +153,7 @@ const Header = () => (
           Learn
         </NavItem>
         <NavItem to="/about">About</NavItem>
-        <NavItem to="/contact">Contact</NavItem>
+        {/* <NavItem to="/contact">Contact</NavItem> */}
         <DropMenu />
       </NavList>
     </StyledNav>

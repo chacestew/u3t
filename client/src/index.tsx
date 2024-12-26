@@ -3,8 +3,6 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import { Router } from 'react-router-dom';
 
 import App from './Containers/App';
-import client from './micro-sentry';
-import registerSW from './registerServiceWorker';
 
 const history = createBrowserHistory();
 
@@ -26,5 +24,3 @@ if (rootElement.hasChildNodes()) {
     </Router>,
   );
 }
-
-registerSW({ onError: (error) => client.report(error) });
