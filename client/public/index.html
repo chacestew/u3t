@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -19,7 +19,9 @@
         font-style: normal;
         font-weight: 400;
         font-display: swap;
-        src: local(''), url('/fonts/poppins-v15-latin-regular.woff2') format('woff2'),
+        src:
+          local(''),
+          url('/fonts/poppins-v15-latin-regular.woff2') format('woff2'),
           url('/fonts/poppins-v15-latin-regular.woff') format('woff');
       }
       @font-face {
@@ -27,25 +29,12 @@
         font-style: normal;
         font-weight: 700;
         font-display: swap;
-        src: local(''), url('/fonts/poppins-v15-latin-700.woff2') format('woff2'),
+        src:
+          local(''),
+          url('/fonts/poppins-v15-latin-700.woff2') format('woff2'),
           url('/fonts/poppins-v15-latin-700.woff') format('woff');
       }
     </style>
-    <% if (process.env.VITE_GA_TRACKING_ID) { %>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=<%= process.env.VITE_GA_TRACKING_ID %>"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-
-      gtag('config', '<%= process.env.VITE_GA_TRACKING_ID %>');
-    </script>
-    <% } %>
   </head>
   <body>
     <div id="root"></div>
