@@ -97,6 +97,7 @@ export default function Home({ socket }: { socket: ClientSocket }) {
   const history = useHistory();
   const [, setIsConnected] = useState(socket.connected);
   const [isRequestingLobby, setIsRequestingLobby] = useState(false);
+  const [isServerWakingUp, setIsServerWakingUp] = useState(false);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -118,7 +119,8 @@ export default function Home({ socket }: { socket: ClientSocket }) {
     const timer = setTimeout(() => {
       socket.sendBuffer = [];
       setIsRequestingLobby(false);
-    }, 8000);
+      setIsServerWakingUp(true);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [isRequestingLobby, socket]);
@@ -194,6 +196,7 @@ export default function Home({ socket }: { socket: ClientSocket }) {
                 />
               )}
             </ButtonGrid>
+            {isServerWakingUp && <Description>💤 It looks like the server is waking up. Please try again in 1 minute.</Description>}
           </MenuSection>
 
           <MenuSection>
