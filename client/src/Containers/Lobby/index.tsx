@@ -207,7 +207,7 @@ const OnlineGame = ({ history, match, location, spectator, socket }: Props) => {
         <meta name="robots" content="noindex" />
       </Helmet>
       <Prompt
-        when={lobbyState.started && !state.finished}
+        when={lobbyState.started && !state.finished && !error}
         message={`Are you sure you want to leave the game?\n\nYou can rejoin within 15 minutes using the code: ${lobbyState.lobbyId}`}
       />
       <LobbyHeader
