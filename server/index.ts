@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import express from 'express';
